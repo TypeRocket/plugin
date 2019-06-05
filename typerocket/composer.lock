@@ -1,0 +1,515 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "5b29c80c736d2c145560a2c71944b3e4",
+    "packages": [
+        {
+            "name": "psr/log",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2018-11-20T15:27:04+00:00"
+        },
+        {
+            "name": "symfony/console",
+            "version": "v3.4.28",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/console.git",
+                "reference": "8e1d1e406dd31727fa70cd5a99cda202e9d6a5c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/console/zipball/8e1d1e406dd31727fa70cd5a99cda202e9d6a5c6",
+                "reference": "8e1d1e406dd31727fa70cd5a99cda202e9d6a5c6",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9|>=7.0.8",
+                "symfony/debug": "~2.8|~3.0|~4.0",
+                "symfony/polyfill-mbstring": "~1.0"
+            },
+            "conflict": {
+                "symfony/dependency-injection": "<3.4",
+                "symfony/process": "<3.3"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0"
+            },
+            "require-dev": {
+                "psr/log": "~1.0",
+                "symfony/config": "~3.3|~4.0",
+                "symfony/dependency-injection": "~3.4|~4.0",
+                "symfony/event-dispatcher": "~2.8|~3.0|~4.0",
+                "symfony/lock": "~3.4|~4.0",
+                "symfony/process": "~3.3|~4.0"
+            },
+            "suggest": {
+                "psr/log": "For using the console logger",
+                "symfony/event-dispatcher": "",
+                "symfony/lock": "",
+                "symfony/process": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Console\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Console Component",
+            "homepage": "https://symfony.com",
+            "time": "2019-05-09T08:42:51+00:00"
+        },
+        {
+            "name": "symfony/debug",
+            "version": "v4.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/debug.git",
+                "reference": "97cde06d798f1326857090bc1b7c8f9d225c3dcb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/97cde06d798f1326857090bc1b7c8f9d225c3dcb",
+                "reference": "97cde06d798f1326857090bc1b7c8f9d225c3dcb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3",
+                "psr/log": "~1.0"
+            },
+            "conflict": {
+                "symfony/http-kernel": "<3.4"
+            },
+            "require-dev": {
+                "symfony/http-kernel": "~3.4|~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Debug\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Debug Component",
+            "homepage": "https://symfony.com",
+            "time": "2019-05-20T16:16:12+00:00"
+        },
+        {
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "fe5e94c604826c35a32fa832f35bd036b6799609"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fe5e94c604826c35a32fa832f35bd036b6799609",
+                "reference": "fe5e94c604826c35a32fa832f35bd036b6799609",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.11-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2019-02-06T07:57:58+00:00"
+        },
+        {
+            "name": "typerocket/core",
+            "version": "v4.0.32",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TypeRocket/core.git",
+                "reference": "a3513f69e2b0c449a905f612ba6927e4c41c8e2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/a3513f69e2b0c449a905f612ba6927e4c41c8e2e",
+                "reference": "a3513f69e2b0c449a905f612ba6927e4c41c8e2e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7",
+                "symfony/console": "3.4.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "7.4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "functions/functions.php",
+                    "functions/helpers.php"
+                ],
+                "psr-4": {
+                    "TypeRocket\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Dees",
+                    "homepage": "https://kevdees.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "The TypeRocket WordPress Framework.",
+            "homepage": "https://typerocket.com",
+            "keywords": [
+                "framework",
+                "typerocket",
+                "wordpress"
+            ],
+            "time": "2019-06-05T18:43:22+00:00"
+        },
+        {
+            "name": "typerocket/plugin-builder",
+            "version": "v4.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TypeRocket/plugin-builder.git",
+                "reference": "8da96dd0b0f08c471c1ca33063a76496fe829667"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-builder/zipball/8da96dd0b0f08c471c1ca33063a76496fe829667",
+                "reference": "8da96dd0b0f08c471c1ca33063a76496fe829667",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7"
+            },
+            "type": "extension",
+            "autoload": {
+                "psr-4": {
+                    "TypeRocketPageBuilder\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Dees",
+                    "homepage": "https://kevdees.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "Page Builder TypeRocket Plugin",
+            "homepage": "https://typerocket.com",
+            "keywords": [
+                "plugin",
+                "typerocket"
+            ],
+            "time": "2019-04-24T15:51:30+00:00"
+        },
+        {
+            "name": "typerocket/plugin-dashboard",
+            "version": "v4.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TypeRocket/plugin-dashboard.git",
+                "reference": "e10553bb0e00e78a17ebcdeb1a21f2ffb9a876c2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-dashboard/zipball/e10553bb0e00e78a17ebcdeb1a21f2ffb9a876c2",
+                "reference": "e10553bb0e00e78a17ebcdeb1a21f2ffb9a876c2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7"
+            },
+            "type": "extension",
+            "autoload": {
+                "psr-4": {
+                    "TypeRocketDashboard\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Dees",
+                    "homepage": "https://kevdees.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "Dashboard TypeRocket Plugin",
+            "homepage": "https://typerocket.com",
+            "keywords": [
+                "plugin",
+                "typerocket"
+            ],
+            "time": "2019-04-24T07:03:02+00:00"
+        },
+        {
+            "name": "typerocket/plugin-dev",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TypeRocket/plugin-dev.git",
+                "reference": "92b46df17b7d1eca41714104669d73dc35f00168"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-dev/zipball/92b46df17b7d1eca41714104669d73dc35f00168",
+                "reference": "92b46df17b7d1eca41714104669d73dc35f00168",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7"
+            },
+            "type": "extension",
+            "autoload": {
+                "psr-4": {
+                    "TypeRocketDev\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Dees",
+                    "homepage": "https://kevdees.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "Dev TypeRocket Plugin",
+            "homepage": "https://typerocket.com",
+            "keywords": [
+                "plugin",
+                "typerocket"
+            ],
+            "time": "2019-04-24T05:54:58+00:00"
+        },
+        {
+            "name": "typerocket/plugin-seo",
+            "version": "v4.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TypeRocket/plugin-seo.git",
+                "reference": "19931f03fa273126d4836c0272256e0ab7ab7276"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-seo/zipball/19931f03fa273126d4836c0272256e0ab7ab7276",
+                "reference": "19931f03fa273126d4836c0272256e0ab7ab7276",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7"
+            },
+            "type": "extension",
+            "autoload": {
+                "psr-4": {
+                    "TypeRocketSEO\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Dees",
+                    "homepage": "https://kevdees.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "SEO TypeRocket Plugin",
+            "homepage": "https://typerocket.com",
+            "keywords": [
+                "plugin",
+                "typerocket"
+            ],
+            "time": "2019-05-14T22:24:32+00:00"
+        },
+        {
+            "name": "typerocket/plugin-theme-options",
+            "version": "v4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TypeRocket/plugin-theme-options.git",
+                "reference": "9d5f06a77ffc11ec12eb52225292e965ccc68067"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-theme-options/zipball/9d5f06a77ffc11ec12eb52225292e965ccc68067",
+                "reference": "9d5f06a77ffc11ec12eb52225292e965ccc68067",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7"
+            },
+            "type": "extension",
+            "autoload": {
+                "psr-4": {
+                    "TypeRocketThemeOptions\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Dees",
+                    "homepage": "https://kevdees.com",
+                    "role": "Creator"
+                }
+            ],
+            "description": "Theme Options TypeRocket Plugin",
+            "homepage": "https://typerocket.com",
+            "keywords": [
+                "plugin",
+                "typerocket"
+            ],
+            "time": "2019-04-24T06:50:19+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7"
+    },
+    "platform-dev": []
+}

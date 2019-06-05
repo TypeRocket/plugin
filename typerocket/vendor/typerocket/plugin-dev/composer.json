@@ -1,0 +1,27 @@
+{
+    "name": "typerocket/plugin-dev",
+    "description": "Dev TypeRocket Plugin",
+    "keywords": ["plugin", "typerocket"],
+    "type": "extension",
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://typerocket.com",
+    "authors": [
+        {
+            "name": "Kevin Dees",
+            "homepage": "https://kevdees.com",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "docs": "https://typerocket.com/docs/v4/dev-plugin"
+    },
+    "require": {
+        "php": ">=7"
+    },
+    "autoload": {
+        "psr-4": {
+            "TypeRocketDev\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

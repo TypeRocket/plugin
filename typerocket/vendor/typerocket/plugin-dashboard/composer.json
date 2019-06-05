@@ -1,0 +1,27 @@
+{
+    "name": "typerocket/plugin-dashboard",
+    "description": "Dashboard TypeRocket Plugin",
+    "keywords": ["plugin", "typerocket"],
+    "type": "extension",
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://typerocket.com",
+    "authors": [
+        {
+            "name": "Kevin Dees",
+            "homepage": "https://kevdees.com",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "docs": "https://typerocket.com/docs/v4/dashboard-plugin"
+    },
+    "require": {
+        "php": ">=7"
+    },
+    "autoload": {
+        "psr-4": {
+            "TypeRocketDashboard\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

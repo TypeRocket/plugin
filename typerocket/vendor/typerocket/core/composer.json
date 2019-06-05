@@ -1,0 +1,34 @@
+{
+    "name": "typerocket/core",
+    "description": "The TypeRocket WordPress Framework.",
+    "keywords": ["framework", "typerocket", "wordpress"],
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://typerocket.com",
+    "authors": [
+        {
+            "name": "Kevin Dees",
+            "homepage": "https://kevdees.com",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "docs": "https://typerocket.com/docs/v4/"
+    },
+    "require" : {
+        "php": ">=7",
+        "symfony/console": "3.4.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.4.*"
+    },
+    "autoload": {
+        "files": [
+            "functions/functions.php",
+            "functions/helpers.php"
+        ],
+        "psr-4": {
+            "TypeRocket\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

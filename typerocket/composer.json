@@ -1,0 +1,36 @@
+{
+    "name": "typerocket/typerocket",
+    "description": "TypeRocket for WordPress.",
+    "keywords": ["framework", "typerocket", "wordpress"],
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://typerocket.com",
+    "authors": [
+        {
+            "name": "Kevin Dees",
+            "homepage": "https://kevdees.com",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "docs": "https://typerocket.com/docs/v4/"
+    },
+    "require": {
+        "php": ">=7",
+        "typerocket/core": "^4.0",
+        "typerocket/plugin-seo": "^4.0",
+        "typerocket/plugin-theme-options": "^4.0",
+        "typerocket/plugin-builder": "^4.0",
+        "typerocket/plugin-dev": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "php galaxy config:seed"
+        ]
+    },
+    "minimum-stability": "stable"
+}
