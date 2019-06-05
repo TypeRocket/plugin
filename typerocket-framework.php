@@ -10,6 +10,11 @@ License: GPLv3 or later
 */
 defined( 'ABSPATH' ) or die( 'Nothing here to see!' );
 
+// Allow only one version of TypeRocket
+if(defined('TR_PATH')) {
+    return;
+}
+
 function tr_autoload_psr4(array &$map = []) {
     if(isset($map['init'])) {
         foreach ($map['init'] as $file) {
