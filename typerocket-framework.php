@@ -118,6 +118,11 @@ if(!function_exists('tr_plugin_config_paths')) {
     function tr_plugin_config_paths() {
         $temp_uri = get_template_directory_uri();
         $temp_dir = get_template_directory();
+        $app_path = TR_PATH . '/app';
+
+        if(file_exists( $temp_dir . '/app/Http/Kernel.php')) {
+            $app_path = $temp_dir . '/app';
+        }
 
         return [
             'urls' => [
@@ -131,7 +136,7 @@ if(!function_exists('tr_plugin_config_paths')) {
             'visuals'  => $temp_dir . '/resources/visuals',
             'components'  => $temp_dir . '/resources/components',
             'plugins' => $temp_dir . '/plugins',
-            'app'  => TR_PATH . '/app',
+            'app'  => $app_path,
             'themes'  => $temp_dir . '/resources/themes',
             'migrate'  => [
                 'driver' => 'file',
