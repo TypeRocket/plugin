@@ -1,4 +1,4 @@
-=== TypeRocket for WordPress ===
+=== TypeRocket Framework 4 ===
 Contributors: kevindees
 Tags: framework, fields
 Requires at least: 5.2
