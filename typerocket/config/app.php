@@ -8,11 +8,7 @@ return [
     | The class names of the TypeRocket plugins you wish to enable.
     |
     */
-    'plugins' => [
-        '\TypeRocketSEO\Plugin',
-        '\TypeRocketThemeOptions\Plugin',
-        '\TypeRocketDev\Plugin',
-    ],
+    'plugins' => tr_plugin_plugins(),
 
     /*
     |--------------------------------------------------------------------------
@@ -23,7 +19,7 @@ return [
     |
     */
     'features' => [
-        'gutenberg' => true,
+        'gutenberg' => tr_plugin_gutenberg(true),
         'posts_menu' => true,
         'comments' => true,
     ],
@@ -46,7 +42,7 @@ return [
     | A 'random' string of text to help with security from time to time.
     |
     */
-    'seed' => 'seed_5cf814180de19',
+    'seed' => immutable('TR_PLUGIN_SEED', 'tr5673kdr9'),
 
     /*
     |--------------------------------------------------------------------------
@@ -87,6 +83,6 @@ return [
     | browser caches.
     |
     */
-    'assets' => '4.0.8'
+    'assets' => immutable('TR_PLUGIN_VERSION', '4.0.8')
 
 ];

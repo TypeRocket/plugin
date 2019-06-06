@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b29c80c736d2c145560a2c71944b3e4",
+    "content-hash": "6802fdae25f34c80608cf8fa77c02ea4",
     "packages": [
         {
             "name": "psr/log",
@@ -127,16 +127,16 @@
         },
         {
             "name": "symfony/debug",
-            "version": "v4.3.0",
+            "version": "v4.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "97cde06d798f1326857090bc1b7c8f9d225c3dcb"
+                "reference": "4e025104f1f9adb1f7a2d14fb102c9986d6e97c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/97cde06d798f1326857090bc1b7c8f9d225c3dcb",
-                "reference": "97cde06d798f1326857090bc1b7c8f9d225c3dcb",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/4e025104f1f9adb1f7a2d14fb102c9986d6e97c6",
+                "reference": "4e025104f1f9adb1f7a2d14fb102c9986d6e97c6",
                 "shasum": ""
             },
             "require": {
@@ -179,7 +179,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2019-05-20T16:16:12+00:00"
+            "time": "2019-05-30T16:10:05+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -334,59 +334,17 @@
             "time": "2019-04-24T15:51:30+00:00"
         },
         {
-            "name": "typerocket/plugin-dashboard",
+            "name": "typerocket/plugin-dev",
             "version": "v4.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/TypeRocket/plugin-dashboard.git",
-                "reference": "e10553bb0e00e78a17ebcdeb1a21f2ffb9a876c2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/plugin-dashboard/zipball/e10553bb0e00e78a17ebcdeb1a21f2ffb9a876c2",
-                "reference": "e10553bb0e00e78a17ebcdeb1a21f2ffb9a876c2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7"
-            },
-            "type": "extension",
-            "autoload": {
-                "psr-4": {
-                    "TypeRocketDashboard\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Kevin Dees",
-                    "homepage": "https://kevdees.com",
-                    "role": "Creator"
-                }
-            ],
-            "description": "Dashboard TypeRocket Plugin",
-            "homepage": "https://typerocket.com",
-            "keywords": [
-                "plugin",
-                "typerocket"
-            ],
-            "time": "2019-04-24T07:03:02+00:00"
-        },
-        {
-            "name": "typerocket/plugin-dev",
-            "version": "v4.0.0",
-            "source": {
-                "type": "git",
                 "url": "https://github.com/TypeRocket/plugin-dev.git",
-                "reference": "92b46df17b7d1eca41714104669d73dc35f00168"
+                "reference": "b153d33fd24a60b71ddb23fc184504d949f023ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/plugin-dev/zipball/92b46df17b7d1eca41714104669d73dc35f00168",
-                "reference": "92b46df17b7d1eca41714104669d73dc35f00168",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-dev/zipball/b153d33fd24a60b71ddb23fc184504d949f023ec",
+                "reference": "b153d33fd24a60b71ddb23fc184504d949f023ec",
                 "shasum": ""
             },
             "require": {
@@ -415,20 +373,20 @@
                 "plugin",
                 "typerocket"
             ],
-            "time": "2019-04-24T05:54:58+00:00"
+            "time": "2019-06-05T20:43:31+00:00"
         },
         {
             "name": "typerocket/plugin-seo",
-            "version": "v4.1.4",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/plugin-seo.git",
-                "reference": "19931f03fa273126d4836c0272256e0ab7ab7276"
+                "reference": "08f873074409e0ce1fe71aefbc59af7777431f27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/plugin-seo/zipball/19931f03fa273126d4836c0272256e0ab7ab7276",
-                "reference": "19931f03fa273126d4836c0272256e0ab7ab7276",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-seo/zipball/08f873074409e0ce1fe71aefbc59af7777431f27",
+                "reference": "08f873074409e0ce1fe71aefbc59af7777431f27",
                 "shasum": ""
             },
             "require": {
@@ -457,7 +415,7 @@
                 "plugin",
                 "typerocket"
             ],
-            "time": "2019-05-14T22:24:32+00:00"
+            "time": "2019-04-24T05:06:03+00:00"
         },
         {
             "name": "typerocket/plugin-theme-options",

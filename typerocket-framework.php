@@ -10,9 +10,56 @@ License: GPLv3 or later
 */
 defined( 'ABSPATH' ) or die( 'Nothing here to see!' );
 
-// Allow only one version of TypeRocket
-if(defined('TR_PATH')) {
-    return;
+// TypeRocket Framework
+class TypeRocket_Framework {
+
+    public $path = null;
+    public $message = '';
+    public $activating = false;
+    public $id = 'settings_typerocket';
+
+    function __construct()
+    {
+        $this->path = plugin_dir_path(__FILE__);
+        define('TR_AUTO_LOADER', 'tr_auto_loader');
+        register_activation_hook( __FILE__, array($this, 'activation') );
+        add_action('admin_notices',  array($this, 'activation_notice') );
+        add_action('plugins_loaded', array($this, 'plugins_loaded'));
+    }
+
+    function activation() {
+        $this->activating = true;
+        flush_rewrite_rules();
+        set_transient( 'typerocket-admin-notice' , true );
+    }
+
+    function activation_notice() {
+        if( get_transient( 'typerocket-admin-notice' ) && ! $this->activating ) {
+            ?>
+            <div class="notice notice-warning is-dismissible">
+                <p>TypeRocket wants you to <a href="<?php menu_page_url($this->id, true); ?>">check your TypeRocket settings</a> to validate your installation is correct.</p>
+            </div>
+            <?php
+        }
+    }
+
+    function plugins_loaded() {
+        require 'typerocket/init.php';
+
+        if(!defined('TR_PLUGIN_ADMIN')) {
+            define('TR_PLUGIN_ADMIN', true);
+        }
+
+        if(TR_PLUGIN_ADMIN) {
+            $settings = [
+                'view_file' => __DIR__ . '/admin.php',
+                'menu' => 'TypeRocket',
+                'capability' => 'activate_plugins'
+            ];
+            (new \TypeRocket\Register\Page('settings', __('TypeRocket'), __('TypeRocket'), $settings))
+                ->addToRegistry();
+        }
+    }
 }
 
 function tr_autoload_psr4(array &$map = []) {
@@ -36,6 +83,35 @@ function tr_autoload_psr4(array &$map = []) {
             return;
         }
     });
+}
+
+if(!function_exists('tr_plugin_plugins')) {
+    function tr_plugin_plugins() {
+
+        $plugins = [
+            '\TypeRocketSEO\Plugin',
+            '\TypeRocketThemeOptions\Plugin',
+        ];
+
+        if(defined('TR_PLUGIN_PAGE_BUILDER')) {
+            $plugins[] = '\TypeRocketPageBuilder\Plugin';
+        }
+
+        return $plugins;
+    }
+}
+
+if(!function_exists('tr_plugin_gutenberg')) {
+    function tr_plugin_gutenberg($value = true) {
+
+        if(defined('TR_PLUGIN_PAGE_BUILDER') && $value) {
+            if(TR_PLUGIN_PAGE_BUILDER) {
+                $value = ['post'];
+            }
+        }
+
+        return $value;
+    }
 }
 
 function tr_auto_loader() {
@@ -85,8 +161,4 @@ function tr_auto_loader() {
     tr_autoload_psr4($map_seo);
 }
 
-define('TR_AUTO_LOADER', 'tr_auto_loader');
-
-add_action('plugins_loaded', function() {
-    require 'typerocket/init.php';
-});
+new TypeRocket_Framework();
