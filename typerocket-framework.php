@@ -120,118 +120,19 @@ if(!function_exists('tr_plugin_config_paths')) {
         $temp_dir = get_template_directory();
 
         return [
-            /*
-            |--------------------------------------------------------------------------
-            | Assets URL
-            |--------------------------------------------------------------------------
-            |
-            | The URL where TypeRocket assets can be found.
-            |
-            */
             'urls' => [
                 'assets' => plugins_url( '/typerocket/wordpress/assets/', TR_PATH ),
                 'components' => $temp_uri . '/wordpress/assets/components',
             ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | TypeRocket Root
-            |--------------------------------------------------------------------------
-            |
-            | The URL where TypeRocket assets can be found.
-            |
-            */
             'base'  => TR_PATH,
-
-            /*
-            |--------------------------------------------------------------------------
-            | Resources
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were resources can be found.
-            |
-            */
             'resources'  => $temp_dir . '/resources',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Views
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were front-end views can be found.
-            |
-            */
             'views'  => $temp_dir . '/resources/views',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Pages
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were admin pages can be found.
-            |
-            */
             'pages'  => $temp_dir . '/resources/pages',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Visuals
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were component visuals can be found.
-            |
-            */
             'visuals'  => $temp_dir . '/resources/visuals',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Components
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were components can be found.
-            |
-            */
             'components'  => $temp_dir . '/resources/components',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Plugins
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were plugins can be found.
-            |
-            */
             'plugins' => $temp_dir . '/plugins',
-
-            /*
-            |--------------------------------------------------------------------------
-            | App
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were the main app can be found.
-            |
-            */
-            'app'  => $temp_dir . '/app',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Themes
-            |--------------------------------------------------------------------------
-            |
-            | The PATH were theme templates can be found. Used if you install
-            | TypeRocket as root.
-            |
-            */
+            'app'  => TR_PATH . '/app',
             'themes'  => $temp_dir . '/resources/themes',
-
-            /*
-            |--------------------------------------------------------------------------
-            | Migrations
-            |--------------------------------------------------------------------------
-            |
-            | The PATHs for migrations and run migrations. Drivers include: file
-            |
-            */
             'migrate'  => [
                 'driver' => 'file',
                 'migrations' => [
@@ -250,9 +151,17 @@ function tr_auto_loader() {
     include "typerocket/vendor/typerocket/core/functions/helpers.php";
 
     if(!defined('TR_WP_PLUGIN_APP_MAP')) {
+
+        $temp_dir = get_template_directory();
+        $app_path = __DIR__ . '/typerocket/app/';
+
+        if(file_exists( $temp_dir . '/app/Http/Kernel.php')) {
+            $app_path = $temp_dir . '/app/';
+        }
+
         $map_app = [
             'prefix' => 'App\\',
-            'folder' => __DIR__ . '/typerocket/app/',
+            'folder' => $app_path,
         ];
     } else {
         $map_app = TR_WP_PLUGIN_APP_MAP;
