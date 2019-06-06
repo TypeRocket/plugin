@@ -10,7 +10,7 @@ $rules = get_option('rewrite_rules');
 if(empty($rules)) {
     ?>
     <div class="notice notice-error is-dismissible">
-        <p>Enable <a href="https://wordpress.org/support/article/using-permalinks/">Pretty Permalinks</a> under <a href="/wp-admin/options-permalink.php">Permalink Settings</a>. "Pretty Permalinks" are required for TypeRocket to work.</p>
+        <p>Enable pretty permalinks under your <a href="/wp-admin/options-permalink.php">admin "Permalink Settings" page</a>. <a href="https://wordpress.org/support/article/using-permalinks/">Pretty Permalinks</a> are required for TypeRocket to work.</p>
     </div>
     <?php
 }
@@ -30,18 +30,17 @@ if(empty($rules)) {
                 <h3>Next Steps</h3>
                 <ul>
                     <li><a href="https://typerocket.com/docs/v4/post-types-making/" class="welcome-icon welcome-add-page">Add your first post type</a></li>
-                    <li><a href="https://plugin.tr/wp-admin/post-new.php?post_type=page" class="welcome-icon welcome-write-blog">Add an About page</a></li>
-                    <li><a href="https://plugin.tr/wp-admin/customize.php?autofocus[section]=static_front_page" class="welcome-icon welcome-setup-home">Set up your homepage</a></li>
-                    <li><a href="https://plugin.tr/" class="welcome-icon welcome-view-site">View your site</a></li>
+                    <li><a href="https://typerocket.com/docs/v4/theme-options/" class="welcome-icon welcome-add-page">Edit your theme options</a></li>
+                    <li><a href="https://typerocket.com/docs/v4/builder/" class="welcome-icon welcome-add-page">Use the page builder</a></li>
+                    <li><a href="https://github.com/TypeRocket/typerocket-skeleton-theme" class="welcome-icon welcome-add-page">Try our skeleton theme</a></li>
                 </ul>
             </div>
             <div class="welcome-panel-column welcome-panel-last">
                 <h3>More Actions</h3>
                 <ul>
-                    <li><div class="welcome-icon welcome-widgets-menus">
-                            Manage <a href="https://plugin.tr/wp-admin/widgets.php">widgets</a> or <a href="https://plugin.tr/wp-admin/nav-menus.php">menus</a>			</div></li>
-                    <li><a href="https://plugin.tr/wp-admin/options-discussion.php" class="welcome-icon welcome-comments">Turn comments on or off</a></li>
-                    <li><a href="https://codex.wordpress.org/First_Steps_With_WordPress" class="welcome-icon welcome-learn-more">Learn more about getting started</a></li>
+                    <li><a href="https://www.youtube.com/channel/UCsuLPuiwCYpZRrD1yoDUajQ/playlists" class="welcome-icon welcome-add-page">Explore our videos</a></li>
+                    <li><a href="https://github.com/TypeRocket/typerocket/issues" class="welcome-icon welcome-add-page">Submit a bug report</a></li>
+                    <li><a href="https://us8.list-manage.com/subscribe?u=7bbb7409e86c85970f6150c5e&id=1d45a226d0" class="welcome-icon welcome-add-page">Get on the mailing list</a></li>
                 </ul>
             </div>
         </div>

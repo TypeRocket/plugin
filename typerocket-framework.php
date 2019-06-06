@@ -56,7 +56,7 @@ class TypeRocket_Framework {
                 'menu' => 'TypeRocket',
                 'capability' => 'activate_plugins'
             ];
-            (new \TypeRocket\Register\Page('settings', __('TypeRocket'), __('TypeRocket'), $settings))
+            (new \TypeRocket\Register\Page('settings', __('TypeRocket'), __('TypeRocket Settings'), $settings))
                 ->addToRegistry();
         }
     }
@@ -111,6 +111,136 @@ if(!function_exists('tr_plugin_gutenberg')) {
         }
 
         return $value;
+    }
+}
+
+if(!function_exists('tr_plugin_config_paths')) {
+    function tr_plugin_config_paths() {
+        $temp_uri = get_template_directory_uri();
+        $temp_dir = get_template_directory();
+
+        return [
+            /*
+            |--------------------------------------------------------------------------
+            | Assets URL
+            |--------------------------------------------------------------------------
+            |
+            | The URL where TypeRocket assets can be found.
+            |
+            */
+            'urls' => [
+                'assets' => plugins_url( '/typerocket/wordpress/assets/', TR_PATH ),
+                'components' => $temp_uri . '/wordpress/assets/components',
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | TypeRocket Root
+            |--------------------------------------------------------------------------
+            |
+            | The URL where TypeRocket assets can be found.
+            |
+            */
+            'base'  => TR_PATH,
+
+            /*
+            |--------------------------------------------------------------------------
+            | Resources
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were resources can be found.
+            |
+            */
+            'resources'  => $temp_dir . '/resources',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Views
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were front-end views can be found.
+            |
+            */
+            'views'  => $temp_dir . '/resources/views',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Pages
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were admin pages can be found.
+            |
+            */
+            'pages'  => $temp_dir . '/resources/pages',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Visuals
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were component visuals can be found.
+            |
+            */
+            'visuals'  => $temp_dir . '/resources/visuals',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Components
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were components can be found.
+            |
+            */
+            'components'  => $temp_dir . '/resources/components',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Plugins
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were plugins can be found.
+            |
+            */
+            'plugins' => $temp_dir . '/plugins',
+
+            /*
+            |--------------------------------------------------------------------------
+            | App
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were the main app can be found.
+            |
+            */
+            'app'  => $temp_dir . '/app',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Themes
+            |--------------------------------------------------------------------------
+            |
+            | The PATH were theme templates can be found. Used if you install
+            | TypeRocket as root.
+            |
+            */
+            'themes'  => $temp_dir . '/resources/themes',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Migrations
+            |--------------------------------------------------------------------------
+            |
+            | The PATHs for migrations and run migrations. Drivers include: file
+            |
+            */
+            'migrate'  => [
+                'driver' => 'file',
+                'migrations' => [
+                    TR_PATH . '/sql/migrations',
+                ],
+                'run' => TR_PATH . '/sql/run',
+            ]
+
+        ];
     }
 }
 
