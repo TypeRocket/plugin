@@ -89,10 +89,25 @@ $configure = function() {
 };
 
 $rules = function() {
-    echo '<h3><i class="tr-icon-link"></i> ' . __('Rewrite Rules') . '</h3>';
+    echo '<h3><i class="tr-icon-link"></i> ' . __('Rewrite Rules & Routes') . '</h3>';
     $rules = get_option('rewrite_rules');
+    $routes = \TypeRocket\Http\Routes::$routes;
+    if($routes && $rules) {
+        echo "<p><strong>TypeRocket Routes</strong>. TypeRocket loads custom routes at run time.</p>";
+        echo '<table class="wp-list-table widefat fixed striped">';
+        echo "<thead><tr><th>" . __('Match') . "</th><th>" . __('Vars') . "</th><th>" . __('Trailing Slash') . "</th><th>" . __('Request') . "</th></tr></thead>";
+        foreach ($routes as $route) {
+            /** @var \TypeRocket\Http\Route $route */
+            $methods = json_encode($route->methods);
+            $vars = json_encode($route->match[1]);
+            $slash = $route->addTrailingSlash ? 'yes' : '';
+            echo "<tr><td>{$route->match[0]}</td><td>{$vars}</td><td>{$slash}</td><td>{$methods}</td></tr>";
+        }
+        echo '</table>';
+    }
+
     if(!empty($rules)) {
-        echo "<p>If you are using TypeRocket custom routes they will not appear in this list. TypeRocket detects custom routes on the fly.</p>";
+        echo "<p><strong>WordPress Rewrite Rules</strong>. WordPress rewrite rules are loaded from the database.</p>";
         echo '<table class="wp-list-table widefat fixed striped">';
         echo "<thead><tr><th>" . __('Rewrite Rule') . "</th><th>" . __('Match') . "</th></tr></thead>";
         foreach ($rules as $rule => $match) {
@@ -106,6 +121,6 @@ $rules = function() {
 
 $tabs = tr_tabs();
 $tabs->addTab(__('Icons'), $icons)
-    ->addTab(__('Rewrite Rules'), $rules)
+    ->addTab(__('Rewrites & Routes'), $rules)
     ->addTab(__('Configure'), $configure)
     ->render('box');

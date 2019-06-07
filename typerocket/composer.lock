@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6802fdae25f34c80608cf8fa77c02ea4",
+    "content-hash": "eabc08d8647ef2f43fd3ed137aabd344",
     "packages": [
         {
             "name": "psr/log",
@@ -242,16 +242,16 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v4.0.32",
+            "version": "v4.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "a3513f69e2b0c449a905f612ba6927e4c41c8e2e"
+                "reference": "93d6a7d1400b7477b602209003702a991ed97332"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/a3513f69e2b0c449a905f612ba6927e4c41c8e2e",
-                "reference": "a3513f69e2b0c449a905f612ba6927e4c41c8e2e",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/93d6a7d1400b7477b602209003702a991ed97332",
+                "reference": "93d6a7d1400b7477b602209003702a991ed97332",
                 "shasum": ""
             },
             "require": {
@@ -289,7 +289,7 @@
                 "typerocket",
                 "wordpress"
             ],
-            "time": "2019-06-05T18:43:22+00:00"
+            "time": "2019-06-07T17:36:35+00:00"
         },
         {
             "name": "typerocket/plugin-builder",
@@ -332,48 +332,6 @@
                 "typerocket"
             ],
             "time": "2019-04-24T15:51:30+00:00"
-        },
-        {
-            "name": "typerocket/plugin-dev",
-            "version": "v4.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TypeRocket/plugin-dev.git",
-                "reference": "b153d33fd24a60b71ddb23fc184504d949f023ec"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/plugin-dev/zipball/b153d33fd24a60b71ddb23fc184504d949f023ec",
-                "reference": "b153d33fd24a60b71ddb23fc184504d949f023ec",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7"
-            },
-            "type": "extension",
-            "autoload": {
-                "psr-4": {
-                    "TypeRocketDev\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Kevin Dees",
-                    "homepage": "https://kevdees.com",
-                    "role": "Creator"
-                }
-            ],
-            "description": "Dev TypeRocket Plugin",
-            "homepage": "https://typerocket.com",
-            "keywords": [
-                "plugin",
-                "typerocket"
-            ],
-            "time": "2019-06-05T20:43:31+00:00"
         },
         {
             "name": "typerocket/plugin-seo",
