@@ -20,8 +20,15 @@ class TypeRocket_Framework {
 
     function __construct()
     {
+        tr_auto_loader();
+
+        new \TypeRocket\Updates\PluginUpdater([
+            'slug' => 'typerocket-framework',
+            'api_url' =>  'https://typerocket.com/plugins/typerocket-framework/'
+        ]);
+
         $this->path = plugin_dir_path(__FILE__);
-        define('TR_AUTO_LOADER', 'tr_auto_loader');
+        define('TR_AUTO_LOADER', '__return_false');
         register_activation_hook( __FILE__, array($this, 'activation') );
         add_action('admin_notices',  array($this, 'activation_notice') );
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
