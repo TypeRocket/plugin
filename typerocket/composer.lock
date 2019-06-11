@@ -335,16 +335,16 @@
         },
         {
             "name": "typerocket/plugin-seo",
-            "version": "v4.0.0",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/plugin-seo.git",
-                "reference": "08f873074409e0ce1fe71aefbc59af7777431f27"
+                "reference": "f50b5d41abc425d3831eb269880c3143dbd7e03d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/plugin-seo/zipball/08f873074409e0ce1fe71aefbc59af7777431f27",
-                "reference": "08f873074409e0ce1fe71aefbc59af7777431f27",
+                "url": "https://api.github.com/repos/TypeRocket/plugin-seo/zipball/f50b5d41abc425d3831eb269880c3143dbd7e03d",
+                "reference": "f50b5d41abc425d3831eb269880c3143dbd7e03d",
                 "shasum": ""
             },
             "require": {
@@ -373,7 +373,7 @@
                 "plugin",
                 "typerocket"
             ],
-            "time": "2019-04-24T05:06:03+00:00"
+            "time": "2019-06-10T21:11:23+00:00"
         },
         {
             "name": "typerocket/plugin-theme-options",
