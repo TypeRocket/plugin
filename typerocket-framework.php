@@ -3,7 +3,7 @@
 Plugin Name: TypeRocket Framework 4
 Plugin URI: https://typerocket.com/
 Description: TypeRocket Framework - A WordPress Framework To Empower Your Development
-Version: 4.0.0
+Version: 4.0.1
 Author: Robojuice
 Author URI: https://robojuice.com/
 License: GPLv3 or later
