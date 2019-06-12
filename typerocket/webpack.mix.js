@@ -1,5 +1,4 @@
 let mix = require('laravel-mix');
-const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 
 /*
  |--------------------------------------------------------------------------

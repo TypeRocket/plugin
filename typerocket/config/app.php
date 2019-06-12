@@ -83,6 +83,6 @@ return [
     | browser caches.
     |
     */
-    'assets' => immutable('TR_PLUGIN_VERSION', '4.0.8')
+    'assets' => immutable('TR_PLUGIN_VERSION', '4.0.0')
 
 ];
