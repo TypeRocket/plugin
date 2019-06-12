@@ -23,8 +23,8 @@ if(empty($rules)) {
         <div class="welcome-panel-column-container">
             <div class="welcome-panel-column">
                 <h3>Get Started</h3>
-                <a class="button button-primary button-hero" href=" https://typerocket.com/getting-started/">Learn The Basics</a>
-                <p class="hide-if-no-customize">or, <a href="https://plugin.tr/wp-admin/customize.php?autofocus[panel]=themes">read the documentation</a></p>
+                <a class="button button-primary button-hero" href="https://typerocket.com/getting-started/">Learn The Basics</a>
+                <p class="hide-if-no-customize">or, <a href="https://typerocket.com/docs/v4/">read the documentation</a></p>
             </div>
             <div class="welcome-panel-column">
                 <h3>Next Steps</h3>
