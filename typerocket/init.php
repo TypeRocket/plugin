@@ -30,7 +30,14 @@ if(!defined('TR_AUTO_LOADER')) {
 
 // Define Config
 if(!defined('TR_CORE_CONFIG_PATH')) {
-    define('TR_CORE_CONFIG_PATH', __DIR__ . '/config' );
+
+    $temp_dir = get_template_directory();
+
+    if( file_exists($temp_dir . '/config/typerocket.php') ) {
+        define('TR_CORE_CONFIG_PATH', $temp_dir . '/config' );
+    } else {
+        define('TR_CORE_CONFIG_PATH', __DIR__ . '/config' );
+    }
 }
 
 new \TypeRocket\Core\Config( TR_CORE_CONFIG_PATH );

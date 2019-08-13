@@ -29,7 +29,7 @@ class TypeRocket_Framework {
 
         $this->path = plugin_dir_path(__FILE__);
         define('TR_AUTO_LOADER', '__return_false');
-        define('TR_PLUGIN_VERSION', '4.0.3');
+        define('TR_PLUGIN_VERSION', '4.0.4');
         register_activation_hook( __FILE__, array($this, 'activation') );
         add_action('admin_notices',  array($this, 'activation_notice') );
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
