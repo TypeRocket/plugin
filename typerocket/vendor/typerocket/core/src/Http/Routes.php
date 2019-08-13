@@ -68,7 +68,7 @@ class Routes
     /**
      * Spoof Rewrite Rules
      *
-     * @param $value
+     * @param string $value
      *
      * @return array
      */
@@ -152,7 +152,7 @@ class Routes
      *
      * Return a model or result object as json.
      *
-     * @param $returned
+     * @param string $returned
      */
     public static function resultsToJson($returned)
     {
@@ -192,6 +192,7 @@ class Routes
     {
         $path = self::$request->getPath();
         $requestPath = ltrim($path, '/');
+        $requestPath = apply_filters('tr_routes_path', $requestPath );
         $routesRegistered = $this->getRegisteredRoutes();
 
         list($match, $args) = $this->matchRoute(rtrim($requestPath, '/'), $routesRegistered);

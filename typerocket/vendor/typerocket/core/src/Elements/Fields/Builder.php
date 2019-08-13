@@ -118,7 +118,12 @@ class Builder extends Matrix
         $folder = $this->getComponentFolder();
         $options = $this->getOptions();
         $options = $options ? $options : $this->setOptionsFromFolder()->getOptions();
+        $options = array_merge($options, $this->staticOptions);
         $options = apply_filters('tr_component_select_list', $options, $folder, $name);
+
+        if($this->sort) {
+            ksort($options);
+        }
 
         if ($options) {
             $generator = new Generator();
@@ -129,6 +134,14 @@ class Builder extends Matrix
             ) );
 
             foreach ($options as $name => $value) {
+
+                if($value == null) {
+                    $li = new Generator();
+                    $li->newElement('li', ['class' => 'builder-select-divider'], '<div>' . __($name) . '</div>');
+
+                    $generator->appendInside( $li );
+                    continue;
+                }
 
                 $attr['data-value'] = $value;
                 $attr['data-thumbnail'] = $this->getComponentThumbnail($folder, $value, null);
@@ -160,10 +173,10 @@ class Builder extends Matrix
     /**
      * Get the component thumbnail
      *
-     * @param $name
-     * @param $type
+     * @param string $name
+     * @param string $type
      *
-     * @param $value
+     * @param string $value
      * @return string
      */
     private function getComponentThumbnail($name, $type, $value) {

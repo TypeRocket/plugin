@@ -20,6 +20,7 @@ class PostType extends Registrable
     protected $icon = null;
     protected $resource = null;
     protected $existing = null;
+    protected $hooksAttached = false;
 
     /**
      * Make or Modify Post Type.
@@ -42,7 +43,11 @@ class PostType extends Registrable
             if($this->existing) {
                 $this->id = $this->existing->name;
                 $this->args = (array) $this->existing;
-                $this->resource = Registry::getPostTypeResource($this->id);
+
+                $singular = Sanitize::underscore( $singular );
+                $plural  = Sanitize::underscore( $plural );
+
+                $this->resource = Registry::getPostTypeResource($this->id) ?? [$singular, $plural, null, null];
                 $this->args['supports'] = array_keys(get_all_post_type_supports($this->id));
                 $this->args = array_merge($this->args, $settings);
 
@@ -150,7 +155,7 @@ class PostType extends Registrable
      *
      * Add the CSS needed to create the icon for the menu
      *
-     * @param $name
+     * @param string $name
      *
      * @return PostType $this
      */
@@ -207,7 +212,7 @@ class PostType extends Registrable
     /**
      * Set the placeholder title for the title field
      *
-     * @param $text
+     * @param string $text
      *
      * @return PostType $this
      */
@@ -221,7 +226,7 @@ class PostType extends Registrable
     /**
      * Get the form hook value by key
      *
-     * @param $key
+     * @param string $key
      *
      * @return mixed
      */
@@ -319,7 +324,7 @@ class PostType extends Registrable
     /**
      * Set the rewrite slug for the post type
      *
-     * @param $slug
+     * @param string $slug
      *
      * @return PostType $this
      */
@@ -370,8 +375,8 @@ class PostType extends Registrable
     /**
      * Set Archive Query Key
      *
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param string $value
      *
      * @return PostType $this
      */
@@ -395,7 +400,7 @@ class PostType extends Registrable
     /**
      * Remove Archive Query Key
      *
-     * @param $key
+     * @param string $key
      *
      * @return PostType $this
      */
@@ -428,7 +433,7 @@ class PostType extends Registrable
      * @param string|null $field the name of the field
      * @param bool $sort make column sortable
      * @param string|null $label the label for the table header
-     * @param callback|null $callback the function used to display the field data
+     * @param callable|null $callback the function used to display the field data
      * @param string $order_by is the column a string or number
      *
      * @return PostType $this
@@ -456,7 +461,7 @@ class PostType extends Registrable
     /**
      * Remove Column
      *
-     * @param $field
+     * @param string $field
      *
      * @return PostType $this
      */
@@ -479,7 +484,7 @@ class PostType extends Registrable
 	/**
 	 * Set Primary Column that will contain the "Edit | Quick Edit | Trash | View" controls
 	 *
-	 * @param $field
+	 * @param string $field
 	 *
 	 * @return PostType $this
 	 */
@@ -530,6 +535,7 @@ class PostType extends Registrable
         do_action('tr_post_type_register_' . $this->id, $this);
         register_post_type( $this->id, $this->args );
         Registry::addPostTypeResource($this->id, $this->resource);
+        $this->attachHooks();
 
         return $this;
     }
@@ -581,6 +587,17 @@ class PostType extends Registrable
 
         return $this;
 
+    }
+
+    /**
+     * Attach Hooks
+     */
+    public function attachHooks()
+    {
+        if(!$this->hooksAttached) {
+            Registry::postTypeHooks($this);
+            $this->hooksAttached = true;
+        }
     }
 
 }
