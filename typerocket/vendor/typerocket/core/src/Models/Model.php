@@ -1703,6 +1703,16 @@ class Model implements Formable
     }
 
     /**
+     * Get Relationships
+     *
+     * @return array
+     */
+    public function getRelationships()
+    {
+        return $this->relationships;
+    }
+
+    /**
      * Get a relationship.
      *
      * If the "attribute" exists as a method on the model, we will just assume
@@ -1823,12 +1833,18 @@ class Model implements Formable
     /**
      * Eager Load With
      *
-     * @param string $name
+     * @param string|array $name
      * @return $this
      */
     public function with($name)
     {
-        $this->with = $name;
+        $with = func_get_args();
+
+        if(is_array($name)) {
+            $with = $name;
+        }
+
+        $this->with = $with;
 
         return $this;
     }
@@ -1858,6 +1874,25 @@ class Model implements Formable
             $rel = $rel->relationships[$name];
         }
         return $rel;
+    }
+
+    /**
+     * To Array
+     *
+     * Get array of model and loaded relationships
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $relationships = [];
+
+        foreach($this->relationships as $key => $rel) {
+            $value = $rel ? $rel->toArray() : null;
+            $relationships[$key] = $value;
+        }
+
+        return array_merge($this->properties, $relationships);
     }
 
 }
