@@ -1070,8 +1070,14 @@ class Model implements Formable
                 $withList = $this->with ?? [];
             }
 
+            $compiledWithList = [];
+
             foreach ($withList as $withArg) {
                 list($name, $with) = array_pad(explode('.', $withArg, 2), 2, null);
+                $compiledWithList[$name][] = $with;
+            }
+
+            foreach ($compiledWithList as $name => $with) {
                 $loader = new EagerLoader();
                 $relation = $this->{$name}();
                 $result = $loader->load([
@@ -1844,7 +1850,7 @@ class Model implements Formable
             $with = $name;
         }
 
-        $this->with = $with;
+        $this->with = array_filter($with);
 
         return $this;
     }
