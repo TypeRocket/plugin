@@ -13,6 +13,28 @@ class Query
     public $run = true;
     protected $columnPattern = "/[^a-zA-Z0-9\\\\_]+/";
     protected $query = [];
+    protected $selectTable = null;
+    protected $joinAs = null;
+
+    /**
+     * Query constructor.
+     *
+     * @param null $table
+     * @param bool|null|string $selectTable
+     * @param null|string $idColumn
+     */
+    public function __construct($table = null, $selectTable = null, $idColumn = null)
+    {
+        if(is_string($table)) {
+            $this->query['table'] = $table;
+        }
+
+        $this->setSelectTable($selectTable);
+
+        if($idColumn) {
+            $this->idColumn = $idColumn;
+        }
+    }
 
     /**
      * Get Date Time
@@ -63,6 +85,29 @@ class Query
     }
 
     /**
+     * Set Select Table
+     *
+     * @param string|null|true $table
+     * @return $this
+     */
+    public function setSelectTable($table = true)
+    {
+        $this->selectTable = $table === true ? $this->query['table'] : $table;
+
+        return $this;
+    }
+
+    /**
+     * Get Select Table
+     *
+     * @return null|string
+     */
+    public function getSelectTable()
+    {
+        return $this->selectTable;
+    }
+
+    /**
      * Find all
      *
      * @param array|\ArrayObject $ids
@@ -83,7 +128,7 @@ class Query
     /**
      * Get results from find methods
      *
-     * @return array|null|object
+     * @return array|null|object|Results
      */
     public function get() {
         $this->setQueryType();
@@ -93,15 +138,26 @@ class Query
     /**
      * Where
      *
-     * @param string $column
-     * @param string $arg1
+     * @param string|array $column
+     * @param string|null $arg1
      * @param null|string $arg2
      * @param string $condition
      *
      * @return $this
      */
-    public function where($column, $arg1, $arg2 = null, $condition = 'AND')
+    public function where($column, $arg1 = null, $arg2 = null, $condition = 'AND')
     {
+        if(is_array($column)) {
+
+            if( !empty($this->query['where']) ) {
+                $this->query['where'][] = $arg1 ? strtoupper($arg1) : 'AND';
+            }
+
+            $this->query['where'][] = $column;
+
+            return $this;
+        }
+
         $whereQuery = [];
 
         if( !empty($this->query['where']) ) {
@@ -482,9 +538,33 @@ class Query
     }
 
     /**
+     * Join As
+     *
+     * @param $as
+     *
+     * @return $this;
+     */
+    public function setJoinAs($as)
+    {
+        $this->joinAs = $as;
+
+        return $this;
+    }
+
+    /**
+     * Get Join As
+     *
+     * @return null|string
+     */
+    public function getJoinAs()
+    {
+        return $this->joinAs;
+    }
+
+    /**
      * Join
      *
-     * @param string $table
+     * @param string|callable|Query $table
      * @param string $column
      * @param string $arg1 column or operator
      * @param null|string $arg2 column if arg1 is set to operator
@@ -557,6 +637,35 @@ class Query
     }
 
     /**
+     * Paginate
+     *
+     * @param int $number
+     * @param int|null $page automatically set to $_GET['paged'] or $_GET['page']
+     * @param callable|null $callback
+     * @return ResultsPaged|null
+     */
+    public function paginate($number = 25, $page = null, $callback = null)
+    {
+        $count_clone = clone $this;
+        $page = $page ?? $_GET['paged'] ?? $_GET['page'];
+
+        $this->take($number, $page < 2 ? 0 : $number * ( $page - 1) );
+        $this->returnOne = false;
+
+        $results = $this->get();
+
+        if(is_callable($callback, true)) {
+            $results = $callback($results);
+        }
+
+        if($results) {
+            return new ResultsPaged($results, $page < 2 ? 1 : $page, $count_clone->count());
+        }
+
+        return null;
+    }
+
+    /**
      * Set Query Type
      *
      * @param string|null $type
@@ -591,7 +700,7 @@ class Query
      *
      * @param array|\ArrayObject $query
      *
-     * @return array|bool|false|int|null|object
+     * @return array|bool|false|int|null|Results|object
      */
     protected function runQuery( $query = [] ) {
         /** @var \wpdb $wpdb */
@@ -695,8 +804,20 @@ class Query
         global $wpdb;
         $query = $this->query;
         $sql = '*';
+        $selectTable = $this->selectTable;
+
+        if($selectTable) {
+            $sql = "`{$selectTable}`.*";
+        }
 
         if( !empty($query['select']) && is_array($query['select']) ) {
+
+            if($selectTable) {
+                $query['select'] = array_map(function($value) use ($selectTable) {
+                   return "`{$selectTable}`.{$value}";
+                }, $query['select']);
+            }
+
             $sql = implode(',',$query['select']);
         }
 
@@ -880,8 +1001,8 @@ class Query
     /**
      * Setup the Inserts
      *
-     * @param string $data
-     * @param string $inserts
+     * @param string|array|object $data
+     * @param array $inserts
      *
      * @return $this
      */
@@ -893,7 +1014,7 @@ class Query
     /**
      * Prepare Value
      *
-     * @param string $value
+     * @param string|array|object $value
      *
      * @return int|null|string
      */
@@ -921,34 +1042,63 @@ class Query
     }
 
     /**
+     * Compose Where SQL
+     *
+     * @param array|null $query
+     * @return string
+     */
+    public function composeWhereSql($query = null)
+    {
+        $sql = '';
+
+        if( !empty($query) ) {
+            foreach( $query as $where ) {
+                if( is_array($where) && ( isset($where[0]['column']) || isset($where[0][0]) ) )
+                {
+                    $sql .= ' ( ' . $this->composeWhereSql($where) . ' ) ';
+                }
+                elseif( is_array($where) )
+                {
+                    $where = [
+                        'condition' => $where['condition'] ?? null,
+                        'column' => $where['column'],
+                        'operator' => $where['operator'] ?? '=',
+                        'value' => $where['value'] ?? null,
+                    ];
+
+                    if( is_array($where['value']) ) {
+                        $where['value'] = array_map(\Closure::bind(function($value) {
+                            return $this->prepareValue($value);
+                        }, $this), $where['value']);
+
+                        $where['value'] = '(' . implode(',', $where['value']) . ')';
+                    } else {
+                        $where['value'] = $this->prepareValue($where['value']);
+                    }
+
+                    if(array_key_exists('condition', $where) && $where['condition'] === null) {
+                        unset($where['condition']);
+                    }
+
+                    $sql .= ' ' . implode(' ', $where);
+                }
+                elseif (in_array($where, ['AND', 'OR', '&&', '||']))
+                {
+                    $sql .= ' ' . $where;
+                }
+            }
+        }
+
+        return $sql;
+    }
+
+    /**
      * Compile Where
      *
      * @return string
      */
     protected function compileWhere() {
-        $query = $this->query;
-        $sql = '';
-
-        if( !empty($query['where']) ) {
-            foreach( $query['where'] as $where ) {
-
-                if( is_array($where['value']) ) {
-                    $where['value'] = array_map(\Closure::bind(function($value) {
-                        return $this->prepareValue($value);
-                    }, $this), $where['value']);
-
-                    $where['value'] = '(' . implode(',', $where['value']) . ')';
-                } else {
-                    $where['value'] = $this->prepareValue($where['value']);
-                }
-
-                if($where['condition'] === null) {
-                    unset($where['condition']);
-                }
-
-                $sql .= ' ' . implode(' ', $where);
-            }
-        }
+        $sql = $this->composeWhereSql($this->query['where'] ?? null);
 
         if(!empty($this->query['raw']['where']) && is_array($this->query['raw']['where'])) {
 
@@ -975,7 +1125,8 @@ class Query
         $sql = '';
 
         if( !empty($query['joins']) ) {
-            foreach( $query['joins'] as $join ) {
+            $joins = array_unique($query['joins'], SORT_REGULAR);
+            foreach( $joins as $join ) {
 
                 if( is_callable($join['table']) ) {
                     $joinQuery = new static();
@@ -983,6 +1134,9 @@ class Query
                     $as = '';
                     $join['table'] = call_user_func_array( $join['table'], [$joinQuery, &$as]);
                     $join['table'] = trim('( ' . $joinQuery->compileFullQuery() . ' ) ' . $as);
+                } elseif ($join['table'] instanceof Query) {
+                    $as = $join['table']->getJoinAs();
+                    $join['table'] = trim('( ' . $join['table'] . ' ) `' . $as . '`' );
                 }
 
                 $sql .= ' ' . implode(' ', $join);
@@ -990,6 +1144,16 @@ class Query
         }
 
         return $sql;
+    }
+
+    /**
+     * To String
+     *
+     * @return string|null
+     */
+    public function __toString()
+    {
+        return $this->compileFullQuery();
     }
 
 }

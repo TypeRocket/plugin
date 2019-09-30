@@ -11,6 +11,7 @@ class WPPost extends Model
     protected $idColumn = 'ID';
     protected $resource = 'posts';
     protected $postType = 'post';
+    protected $searchColumn = 'post_title';
 
     protected $builtin = [
         'post_author',
@@ -61,10 +62,71 @@ class WPPost extends Model
         $meta = $this->hasMany( WPPostMeta::class, 'post_id' );
 
         if( ! $withPrivate ) {
-            $meta->where('meta_key', 'NOT LIKE', '\_%');
+            $meta->notPrivate();
         }
 
         return $meta;
+    }
+
+    /**
+     * Where Meta
+     *
+     * @param string|array $key
+     * @param string $operator
+     * @param string|int|null|bool $value
+     * @param string $condition
+     * @return WPPost
+     */
+    public function whereMeta($key, $operator = '!=', $value = null, $condition = 'AND')
+    {
+        $table = $this->getTable();
+        $meta_table = (new WPPostMeta())->getTable();
+
+        if(is_array($key)) {
+            $operator = strtoupper($operator);
+            $condition = in_array($operator, ['AND', 'OR', '||', '&&']) ? $operator : 'AND';
+            $where = array_map(function($value) use ($meta_table) {
+
+                if(is_string($value)) {
+                    return strtoupper($value);
+                }
+
+                $key = $value['column'];
+                $operator = $value['operator'];
+                $value = $value['value'];
+
+                return [
+                    [
+                        'column' => "`{$meta_table}`.`{$key}`",
+                        'operator' => '=',
+                        'value' => 'meta_key',
+                    ],
+                    'AND',
+                    [
+                        'column' => "`{$meta_table}`.`meta_value`",
+                        'operator' => $operator,
+                        'value' => $value,
+                    ]
+                ];
+            }, $key);
+        } else {
+            $where = [
+                [
+                    'column' => "`{$meta_table}`.`{$key}`",
+                    'operator' => '=',
+                    'value' => 'meta_key',
+                ],
+                'AND',
+                [
+                    'column' => "`{$meta_table}`.`meta_value`",
+                    'operator' => $operator,
+                    'value' => $value,
+                ]
+            ];
+        }
+
+        return $this->where($where, $condition)
+            ->join($meta_table, "`{$table}`.`ID`", "`{$meta_table}`.`post_id`");
     }
 
     /**
@@ -327,7 +389,7 @@ class WPPost extends Model
     /**
      * Slash Builtin Fields
      *
-     * @param string $builtin
+     * @param array $builtin
      * @return mixed
      */
     public function slashBuiltinFields( $builtin ) {

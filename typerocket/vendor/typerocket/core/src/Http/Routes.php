@@ -2,11 +2,13 @@
 
 namespace TypeRocket\Http;
 
+use Closure;
+use TypeRocket\Core\Injector;
 use TypeRocket\Database\Results;
 use TypeRocket\Http\Responders\ResourceResponder;
 use TypeRocket\Models\Model;
-use TypeRocket\Template\View;
 use TypeRocket\Utility\Str;
+use WP_Query;
 
 /**
  * Class Routes
@@ -17,17 +19,24 @@ use TypeRocket\Utility\Str;
  */
 class Routes
 {
-    public static $routes = [];
+    /** @var array $vars */
     public $vars = [];
-    public static $request;
+    public $config = [];
+    public $request;
+    public $routes;
     public $match = [];
 
     /**
      * Routes constructor.
+     * @param Request $request
+     * @param null|array $config
+     * @param RouteCollection $routes
      */
-    public function __construct()
+    public function __construct($request, $config, RouteCollection $routes)
     {
-        self::$request = new Request();
+        $this->request = $request;
+        $this->config = $config;
+        $this->routes = $routes;
     }
 
     /**
@@ -38,12 +47,13 @@ class Routes
     public function initHooks()
     {
         if( ! is_admin() ) {
-            add_filter('template_include', \Closure::bind(function( $template ) {
+            add_filter('template_include', Closure::bind(function( $template ) {
                 $this->route();
                 return $template;
             }, $this) );
 
             add_filter( 'posts_request', function($sql, $q) {
+                /** @var WP_Query $q */
                 if ( $q->is_main_query() && !empty($q->query['tr_route_var']) ) {
                     // disable row count
                     $q->query_vars['no_found_rows'] = true;
@@ -58,7 +68,7 @@ class Routes
             }, 10, 3 );
         }
 
-        add_action('option_rewrite_rules', \Closure::bind(function($value) {
+        add_action('option_rewrite_rules', Closure::bind(function($value) {
             return $this->spoofRewrite($value);
         }, $this));
 
@@ -68,11 +78,11 @@ class Routes
     /**
      * Spoof Rewrite Rules
      *
-     * @param string $value
+     * @param string|array $value
      *
      * @return array
      */
-    public function spoofRewrite( $value)
+    public function spoofRewrite( $value )
     {
         $match = $this->match;
         $add = [];
@@ -93,16 +103,6 @@ class Routes
     }
 
     /**
-     * Add Route
-     *
-     * @param \TypeRocket\Http\Route $route
-     */
-    public static function addRoute( $route )
-    {
-        self::$routes[] = $route;
-    }
-
-    /**
      * Run route if there is a callback
      *
      * If the callback is not a controller pass in the Response
@@ -114,16 +114,16 @@ class Routes
      */
     private function runRoute($path = null, $handle = null, $wilds = null)
     {
-        $args = [$path, self::$request, $wilds];
+        $args = [$path, $this->request, $wilds];
         $this->vars = $wilds;
         $addSlash = $this->match[1]->addTrailingSlash ?? true;
-        $path = self::$request->getPath();
+        $path = $this->request->getPath();
         $endsInSlash = Str::ends('/', $path );
 
-        if( $addSlash && ! $endsInSlash && self::$request->isGet() ) {
+        if( $addSlash && ! $endsInSlash && $this->request->isGet() ) {
             wp_redirect( $path . '/' );
             die();
-        } elseif( ! $addSlash && $endsInSlash && self::$request->isGet() ) {
+        } elseif( ! $addSlash && $endsInSlash && $this->request->isGet() ) {
             wp_redirect( rtrim($path, '/') );
             die();
         }
@@ -156,17 +156,12 @@ class Routes
      */
     public static function resultsToJson($returned)
     {
-        $result = [];
-
         if( $returned instanceof Model ) {
-            wp_send_json( $returned->getProperties() );
+            wp_send_json( $returned->toArray() );
         }
 
         if( $returned instanceof Results ) {
-            foreach ($returned as $record) {
-                $result[] = $record->getProperties();
-            }
-            wp_send_json($result);
+            wp_send_json($returned->toArray());
         }
 
         if( is_array($returned) ) {
@@ -187,15 +182,30 @@ class Routes
 
     /**
      * Route request through registered routes if these is a match
+     * @param null|string $root
+     * @return Routes
      */
     public function detectRoute()
     {
-        $path = self::$request->getPath();
-        $requestPath = ltrim($path, '/');
-        $requestPath = apply_filters('tr_routes_path', $requestPath );
-        $routesRegistered = $this->getRegisteredRoutes();
+        $request = $this->request;
+        $root = $this->config['root'] ?? null;
 
-        list($match, $args) = $this->matchRoute(rtrim($requestPath, '/'), $routesRegistered);
+        $path = $request->getPath();
+        $routesRegistered = $this->routes->getRegisteredRoutes($this->request->getFormMethod());
+
+        $requestPath = $toMatchUrl = ltrim($path, '/');
+
+        /**
+         * Match routes with the site sub folder removed from the URL
+         */
+        if( $root || (!empty($this->config['match']) && $this->config['match'] == 'site_url') ) {
+            $site_path =  trim(parse_url($root ?? get_site_url(), PHP_URL_PATH), '/');
+            $toMatchUrl = ltrim( Str::trimStart($requestPath, $site_path), '/');
+        }
+
+        $toMatchUrl = apply_filters('tr_routes_path', $toMatchUrl );
+
+        list($match, $args) = $this->matchRoute($toMatchUrl, $routesRegistered);
 
         if($match) {
             $this->match = [$requestPath, $match[2], $args];
@@ -211,6 +221,9 @@ class Routes
      * Custom routes always add a trailing slash unless otherwise
      * defined in route declaration. We do not need WP to handle
      * this functionality for us.
+     *
+     * @param $redirect_url
+     * @param $requested_url
      *
      * @return $this
      */
@@ -249,26 +262,6 @@ class Routes
             $args[$arg] = $m[$i + 1];
         }
         return [$r, $args];
-    }
-
-    /**
-     * Get Registered Routes
-     *
-     * @return array
-     */
-    public function getRegisteredRoutes()
-    {
-        $method = strtoupper(self::$request->getFormMethod());
-        $routesRegistered = [];
-
-        /** @var \TypeRocket\Http\Route $route */
-        foreach (self::$routes as $route) {
-            if (in_array($method, $route->methods)) {
-                $routesRegistered[] = $route->match;
-            }
-        }
-
-        return $routesRegistered;
     }
 
 }

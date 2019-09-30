@@ -58,6 +58,18 @@ return [
         'form' => '\TypeRocket\Elements\Form'
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Template Engine
+    |--------------------------------------------------------------------------
+    |
+    | The template engine used to build views for the front-end and admin.
+    |
+    */
+    'template_engine' => [
+        'front' => '\TypeRocket\Template\TemplateEngine',
+        'admin' => '\TypeRocket\Template\TemplateEngine',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -72,6 +84,22 @@ return [
     'root' => [
         'use_root' => false,
         'theme' => 'templates',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | TypeRocket Routing
+    |--------------------------------------------------------------------------
+    |
+    | Routing rules and configurations. Updating these settings can effect
+    | third-party and official plugins or extensions. Only update these
+    | settings if you are sure it will not break your site.
+    |
+    | Match options: null or 'site_url'
+    |
+    */
+    'routes' => [
+        'match' => immutable('TR_ROUTE_MATCH', 'site_url'),
     ],
 
     /*

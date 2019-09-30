@@ -24,11 +24,12 @@ class Request
      * @param string $method the method PUT, POST, GET, DELETE
      * @param bool $hook
      * @param bool $rest
+     * @param bool $custom
      * @internal param int $id the resource ID
      */
     public function __construct( $method = null, $hook = false, $rest = false, $custom = false )
     {
-        $this->method = $method ? $method : $this->getFormMethod();
+        $this->method = is_string($method) ? $method : $this->getFormMethod();
         $this->protocol = get_http_protocol();
         $this->post = !empty ($_POST) ? wp_unslash($_POST) : null;
         $this->fields = !empty ($this->post['tr']) ? $this->post['tr'] : [];
@@ -47,7 +48,7 @@ class Request
     }
 
     /**
-     * Get the HTTP protocall
+     * Get the HTTP protocol
      *
      * @return string
      */
@@ -197,6 +198,18 @@ class Request
     public function getDataFiles()
     {
         return $this->files;
+    }
+
+    /**
+     * Get URI Query as Array
+     *
+     * @return mixed
+     */
+    public function getQueryAsArray()
+    {
+        parse_str(parse_url($this->uri, PHP_URL_QUERY), $request_params);
+
+        return $request_params;
     }
 
     /**

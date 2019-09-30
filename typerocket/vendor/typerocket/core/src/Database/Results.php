@@ -92,6 +92,14 @@ class Results extends \ArrayObject implements Formable
         $results = [];
         $items = $this->getArrayCopy();
 
+        if(property_exists($this, 'storedValues')) {
+            $this->initKeyStore();
+
+            if($this->loadStoredValues) {
+                return $this->storedValues;
+            }
+        }
+
         foreach ($items as $item) {
             if( $item instanceof Model) {
                 $results[] = $item->toArray();
@@ -101,5 +109,23 @@ class Results extends \ArrayObject implements Formable
         }
 
         return $results;
+    }
+
+    /**
+     * To JSON
+     */
+    public function toJson()
+    {
+        return json_encode($this->toArray());
+    }
+
+    /**
+     * Convert the model to its string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
     }
 }

@@ -3,6 +3,7 @@ namespace TypeRocket\Models;
 
 use ArrayObject;
 use ReflectionClass;
+use ReflectionException;
 use TypeRocket\Database\EagerLoader;
 use TypeRocket\Database\Query;
 use TypeRocket\Database\Results;
@@ -10,12 +11,15 @@ use TypeRocket\Elements\Fields\Field;
 use TypeRocket\Http\Cookie;
 use TypeRocket\Http\Fields;
 use TypeRocket\Models\Contract\Formable;
+use TypeRocket\Models\Traits\Searchable;
 use TypeRocket\Utility\Inflect;
 use TypeRocket\Utility\Str;
 use wpdb;
 
 class Model implements Formable
 {
+    use Searchable;
+
     protected $fillable = [];
     protected $closed = false;
     protected $guard = ['id'];
@@ -57,8 +61,8 @@ class Model implements Formable
 
         try {
             $type = (new ReflectionClass( $this ))->getShortName();
-        } catch (\ReflectionException $e) {
-            wp_die('Model failed');
+        } catch (ReflectionException $e) {
+            wp_die('Model failed: ' . $e->getMessage());
         }
 
         if( ! $this->resource && $type ) {
@@ -749,6 +753,23 @@ class Model implements Formable
     }
 
     /**
+     * Find by ID or IDs
+     *
+     * @param mixed ...$ids
+     * @return mixed|Model
+     */
+    public function find(...$ids)
+    {
+        $ids = is_array($ids[0]) ? $ids[0] : $ids;
+
+        if(count($ids) > 1) {
+            return $this->findAll($ids);
+        }
+
+        return $this->findById($ids[0]);
+    }
+
+    /**
      * Find all
      *
      * @param array|ArrayObject $ids
@@ -775,14 +796,14 @@ class Model implements Formable
     /**
      * Where
      *
-     * @param string $column
-     * @param string $arg1
+     * @param string|array $column
+     * @param string|null $arg1
      * @param null|string $arg2
      * @param string $condition
      *
      * @return $this
      */
-    public function where($column, $arg1, $arg2 = null, $condition = 'AND')
+    public function where($column, $arg1 = null, $arg2 = null, $condition = 'AND')
     {
         $this->query->where($column, $arg1, $arg2, $condition);
 
@@ -960,6 +981,27 @@ class Model implements Formable
     }
 
     /**
+     * Join
+     *
+     * Only selects distinctly the current model's table columns
+     *
+     * @param string $table
+     * @param string $column
+     * @param string $arg1 column or operator
+     * @param null|string $arg2 column if arg1 is set to operator
+     * @param string $type INNER (default), LEFT, RIGHT
+     *
+     * @return $this
+     */
+    public function join($table, $column, $arg1, $arg2 = null, $type = 'INNER')
+    {
+        $this->query->setSelectTable()->distinct();
+        $this->query->join($table, $column, $arg1, $arg2 = null, $type = 'INNER');
+
+        return $this;
+    }
+
+    /**
      * Find by ID or die
      *
      * @param string $id
@@ -1054,7 +1096,7 @@ class Model implements Formable
         // Cast Results
         if( $result instanceof Results ) {
             if( $result->class == null ) {
-               $result->class = static::class;
+                $result->class = static::class;
             }
             $result->castResults();
         } else {
@@ -1064,22 +1106,19 @@ class Model implements Formable
         // Eager Loader
         if(!empty($this->with)) {
 
-            if(is_string($this->with)) {
-                $withList = [$this->with];
-            } else {
-                $withList = $this->with ?? [];
-            }
-
-            $compiledWithList = [];
-
-            foreach ($withList as $withArg) {
-                list($name, $with) = array_pad(explode('.', $withArg, 2), 2, null);
-                $compiledWithList[$name][] = $with;
-            }
+            $compiledWithList = $this->getWithCompiled();
 
             foreach ($compiledWithList as $name => $with) {
                 $loader = new EagerLoader();
-                $relation = $this->{$name}();
+                $relation = $this->{$name}()->removeTake()->removeWhere();
+
+                foreach ($with as $index => $value) {
+                    if(is_callable($value)) {
+                        $value($relation);
+                        unset($with[$index]);
+                    }
+                }
+
                 $result = $loader->load([
                     'name' => $name,
                     'relation' => $relation,
@@ -1239,7 +1278,7 @@ class Model implements Formable
     /**
      * Cast Properties
      *
-     * @param string $properties
+     * @param array $properties
      *
      * @return $this
      */
@@ -1856,6 +1895,42 @@ class Model implements Formable
     }
 
     /**
+     * Get With Compiled
+     *
+     * @return array
+     */
+    public function getWithCompiled()
+    {
+        if(is_string($this->with)) {
+            $withList = [$this->with];
+        } else {
+            $withList = $this->with ?? [];
+        }
+
+        $compiledWithList = [];
+
+        foreach ($withList as $withName => $withArg) {
+
+            if(is_callable($withArg)) {
+                list($name, $with) = array_pad(explode('.', $withName, 2), 2, null);
+
+                if($with) {
+                    $compiledWithList[$name][$with] = $withArg;
+                } else {
+                    $compiledWithList[$name][] = $withArg;
+                }
+
+            } else {
+                list($name, $with) = array_pad(explode('.', $withArg, 2), 2, null);
+                $compiledWithList[$name][] = $with;
+            }
+
+        }
+
+        return $compiledWithList;
+    }
+
+    /**
      * Set Relationship
      *
      * @param string $name
@@ -1883,6 +1958,22 @@ class Model implements Formable
     }
 
     /**
+     * Paginate
+     *
+     * @param int $number
+     * @param null|int $page
+     * @return \TypeRocket\Database\ResultsPaged|null
+     */
+    public function paginate($number = 25, $page = null)
+    {
+        $obj = $this;
+
+        return $this->query->paginate($number, $page, function($results) use ($obj) {
+            return $obj->getQueryResult($results);
+        });
+    }
+
+    /**
      * To Array
      *
      * Get array of model and loaded relationships
@@ -1898,7 +1989,25 @@ class Model implements Formable
             $relationships[$key] = $value;
         }
 
-        return array_merge($this->properties, $relationships);
+        return array_merge($this->getProperties(), $relationships);
+    }
+
+    /**
+     * To JSON
+     */
+    public function toJson()
+    {
+        return json_encode($this->toArray());
+    }
+
+    /**
+     * Convert the model to its string representation.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
     }
 
 }

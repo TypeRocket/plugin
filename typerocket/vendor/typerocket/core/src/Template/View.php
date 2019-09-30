@@ -3,6 +3,7 @@
 namespace TypeRocket\Template;
 
 use TypeRocket\Core\Config;
+use TypeRocket\Register\Page;
 
 class View
 {
@@ -94,6 +95,21 @@ class View
     }
 
     /**
+     * View Is Ready
+     * @param string $context
+     *
+     * @return bool
+     */
+    public static function isReady($context = 'front')
+    {
+        if($context == 'front' && file_exists( self::$view ) ) {
+            return true;
+        }
+
+        return $context == 'admin' && file_exists( View::$page );
+    }
+
+    /**
      *  Load the template for the front-end without globals
      */
     public static function load() {
@@ -107,15 +123,22 @@ class View
             return $title;
         });
 
-        extract( self::$data );
-
         if(is_admin()) {
             // not yet
             return;
-        } else {
-            /** @noinspection PhpIncludeInspection */
-            include ( self::$view );
         }
+
+        $templateEngine = Config::locate('app.template_engine.front') ?? TemplateEngine::class;
+        (new $templateEngine(self::$view, self::$data))->load();
+    }
+
+    /**
+     * Load Page
+     */
+    public static function loadPage()
+    {
+        $templateEngine = Config::locate('app.template_engine.admin') ??  TemplateEngine::class;
+        (new $templateEngine(self::$page, self::$data))->load();
     }
 
 }
