@@ -91,12 +91,13 @@ $configure = function() {
 $rules = function() {
     echo '<h3><i class="tr-icon-link"></i> ' . __('Rewrite Rules & Routes') . '</h3>';
     $rules = get_option('rewrite_rules');
-    $routes = \TypeRocket\Http\Routes::$routes;
-    if($routes && $rules) {
+    /** @var \TypeRocket\Http\ApplicationRoutes $routes */
+    $routes = \TypeRocket\Core\Injector::resolve(\TypeRocket\Http\RouteCollection::class);
+    if($routes->routes && $rules) {
         echo "<p><strong>TypeRocket Routes</strong>. TypeRocket loads custom routes at run time.</p>";
         echo '<table class="wp-list-table widefat fixed striped">';
         echo "<thead><tr><th>" . __('Match') . "</th><th>" . __('Vars') . "</th><th>" . __('Trailing Slash') . "</th><th>" . __('Request') . "</th></tr></thead>";
-        foreach ($routes as $route) {
+        foreach ($routes->routes as $route) {
             /** @var \TypeRocket\Http\Route $route */
             $methods = json_encode($route->methods);
             $vars = json_encode($route->match[1]);

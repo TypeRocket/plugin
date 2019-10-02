@@ -21,6 +21,8 @@ class PostType extends Registrable
     protected $resource = null;
     protected $existing = null;
     protected $hooksAttached = false;
+    protected $rootSlug = false;
+    protected $forceDisableGutenberg = false;
 
     /**
      * Make or Modify Post Type.
@@ -83,6 +85,7 @@ class PostType extends Registrable
             'public'      => true,
             'supports'    => [ 'title', 'editor' ],
             'has_archive' => true,
+            'show_in_rest' => false,
             'taxonomies'  => [ ]
         ];
 
@@ -322,6 +325,46 @@ class PostType extends Registrable
     }
 
     /**
+     * Set Supports
+     *
+     * Options include: 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks',
+     * 'custom-fields', 'comments', 'revisions', 'page-attributes', 'post-formats'
+     *
+     * @param array $args
+     */
+    public function setSupports(array $args)
+    {
+        $this->args['supports'] = $args;
+    }
+
+    /**
+     * Add Support
+     *
+     * Options include: 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks',
+     * 'custom-fields', 'comments', 'revisions', 'page-attributes', 'post-formats'
+     *
+     * @param string $type support option
+     * @return $this
+     */
+    public function addSupport($type)
+    {
+        $this->args['supports'][] = $type;
+        $this->args['supports'] = array_unique($this->args['supports']);
+
+        return $this;
+    }
+
+    /**
+     * Get Supports
+     *
+     * @return array|bool
+     */
+    public function getSupports()
+    {
+        return $this->args['supports'];
+    }
+
+    /**
      * Set the rewrite slug for the post type
      *
      * @param string $slug
@@ -346,16 +389,88 @@ class PostType extends Registrable
     }
 
     /**
-     * @param bool|string $rest_base the REST API base path
+     * Set Root Slug
+     *
+     * Force slug to use the base URL instead of the archive page.
+     * This will not disabled the archive page for the post type.
      *
      * @return PostType $this
      */
-    public function setRest( $rest_base = false )
+    public function setRootSlugNoConflict()
+    {
+        $this->args['rewrite']['with_front'] = false;
+        $this->rootSlug = true;
+
+        return $this;
+    }
+
+    /**
+     * Get Root Slug
+     *
+     * @return bool
+     */
+    public function getRootSlug()
+    {
+        return $this->rootSlug;
+    }
+
+    /**
+     * @param bool|string $rest_base the REST API base path
+     * @param null|string $controller the REST controller default is \WP_REST_Posts_Controller::class
+     * @return PostType $this
+     */
+    public function setRest( $rest_base = false, $controller = null )
     {
         $this->args['rest_base'] = $rest_base ? $rest_base : $this->id;
         $this->args['show_in_rest'] = true;
+        $controller ? $this->args['rest_controller_class'] = $controller : null;
 
         return $this;
+    }
+
+    /**
+     * Disable the Archive Page
+     *
+     * @return PostType $this
+     */
+    public function disableArchivePage()
+    {
+        $this->args['has_archive'] = false;
+
+        return $this;
+    }
+
+    /**
+     * Enable Gutenberg
+     *
+     * @return PostType
+     */
+    public function enableGutenberg()
+    {
+        $this->forceDisableGutenberg = false;
+        return $this->addSupport('editor')->setArgument('show_in_rest', true);
+    }
+
+    /**
+     * Force Disable Gutenberg
+     *
+     * @return PostType
+     */
+    public function forceDisableGutenberg()
+    {
+        $this->forceDisableGutenberg = true;
+
+        return $this;
+    }
+
+    /**
+     * Get Force Disable Gutenberg
+     *
+     * @return bool
+     */
+    public function getForgeDisableGutenberg()
+    {
+        return $this->forceDisableGutenberg;
     }
 
     /**
@@ -514,6 +629,19 @@ class PostType extends Registrable
         $this->args['show_ui'] = true;
 
         return $this;
+    }
+
+    /**
+     * Set As Root
+     *
+     * This will make the post type use the root URL for
+     * single posts and disable the archive page.
+     *
+     * @return PostType
+     */
+    public function setRootOnly()
+    {
+        return $this->setRootSlugNoConflict()->disableArchivePage();
     }
 
     /**

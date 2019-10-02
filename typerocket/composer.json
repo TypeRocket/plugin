@@ -19,7 +19,8 @@
         "typerocket/core": "4.0.*",
         "typerocket/plugin-seo": "4.0.*",
         "typerocket/plugin-theme-options": "4.0.*",
-        "typerocket/plugin-builder": "4.0.*"
+        "typerocket/plugin-builder": "4.0.*",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
