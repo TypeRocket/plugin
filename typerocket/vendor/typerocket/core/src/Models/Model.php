@@ -7,6 +7,7 @@ use ReflectionException;
 use TypeRocket\Database\EagerLoader;
 use TypeRocket\Database\Query;
 use TypeRocket\Database\Results;
+use TypeRocket\Database\ResultsMeta;
 use TypeRocket\Elements\Fields\Field;
 use TypeRocket\Http\Cookie;
 use TypeRocket\Http\Fields;
@@ -46,6 +47,9 @@ class Model implements Formable
     protected $relationships = [];
     protected $junction = null;
     protected $with = null;
+
+    /** @var array use this for your own custom caching at the model level */
+    protected $dataCache = [];
 
     /**
      * Construct Model based on resource
@@ -1099,6 +1103,10 @@ class Model implements Formable
                 $result->class = static::class;
             }
             $result->castResults();
+
+            if($result instanceof ResultsMeta) {
+                $result->initKeyStore();
+            }
         } else {
             $result = $this->castProperties( (array) $result );
         }
@@ -1382,7 +1390,8 @@ class Model implements Formable
             'query' => [
                 'caller' => $this,
                 'class' => $modelClass,
-                'id_foreign' => $id_foreign
+                'id_foreign' => $id_foreign,
+                'scope' => $scope
             ]
         ];
 
@@ -1394,10 +1403,11 @@ class Model implements Formable
      *
      * @param string $modelClass
      * @param null|string $id_local
+     * @param null|callable $scope
      *
      * @return $this|null
      */
-    public function belongsTo($modelClass, $id_local = null)
+    public function belongsTo($modelClass, $id_local = null, $scope = null)
     {
         /** @var Model $relationship */
         $relationship = new $modelClass;
@@ -1407,7 +1417,8 @@ class Model implements Formable
             'query' => [
                 'caller' => $this,
                 'class' => $modelClass,
-                'local_id' => $id_local
+                'local_id' => $id_local,
+                'scope' => $scope
             ]
         ];
 
@@ -1424,10 +1435,11 @@ class Model implements Formable
      *
      * @param string $modelClass
      * @param null|string $id_foreign
+     * @param null|callable $scope
      *
      * @return null|Model
      */
-    public function hasMany($modelClass, $id_foreign = null)
+    public function hasMany($modelClass, $id_foreign = null, $scope = null)
     {
         $id = $this->getID();
 
@@ -1439,12 +1451,17 @@ class Model implements Formable
             'query' => [
                 'caller' => $this,
                 'class' => $modelClass,
-                'id_foreign' => $id_foreign
+                'id_foreign' => $id_foreign,
+                'scope' => $scope
             ]
         ];
 
         if( ! $id_foreign && $this->resource ) {
             $id_foreign = $this->resource . '_id';
+        }
+
+        if(is_callable($scope)) {
+            $scope($relationship);
         }
 
         return $relationship->findAll()->where( $id_foreign, $id );
@@ -1459,10 +1476,11 @@ class Model implements Formable
      * @param string $junction_table
      * @param null|string $id_column
      * @param null|string $id_foreign
+     * @param null|callable $scope
      *
      * @return null|Model
      */
-    public function belongsToMany( $modelClass, $junction_table, $id_column = null, $id_foreign = null )
+    public function belongsToMany( $modelClass, $junction_table, $id_column = null, $id_foreign = null, $scope = null )
     {
         $id = $this->getID();
 
@@ -1504,8 +1522,13 @@ class Model implements Formable
                 'id_column' => $id_column,
                 'id_foreign' => $id_foreign,
                 'where_column' => $where_column,
+                'scope' => $scope
             ]
         ];
+
+        if(is_callable($scope)) {
+            $scope($relationship);
+        }
 
         return  $relationship->reselect($rel_table.'.*')
                              ->where($where_column, $id)

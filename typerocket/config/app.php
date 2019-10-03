@@ -88,22 +88,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | TypeRocket Routing
-    |--------------------------------------------------------------------------
-    |
-    | Routing rules and configurations. Updating these settings can effect
-    | third-party and official plugins or extensions. Only update these
-    | settings if you are sure it will not break your site.
-    |
-    | Match options: null or 'site_url'
-    |
-    */
-    'routes' => [
-        'match' => immutable('TR_ROUTE_MATCH', 'site_url'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Assets Version
     |--------------------------------------------------------------------------
     |

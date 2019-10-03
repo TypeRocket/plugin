@@ -82,19 +82,52 @@ class WPPost extends Model
     /**
      * Posts Meta Fields
      *
-     * @param bool $withPrivate
+     * @param bool $withoutPrivate
      *
      * @return null|\TypeRocket\Models\Model
      */
-    public function meta( $withPrivate = false )
+    public function meta( $withoutPrivate = false )
     {
-        $meta = $this->hasMany( WPPostMeta::class, 'post_id' );
-
-        if( ! $withPrivate ) {
-            $meta->notPrivate();
-        }
+        $meta = $this->hasMany( WPPostMeta::class, 'post_id', function($rel) use ($withoutPrivate) {
+            if( $withoutPrivate ) {
+                $rel->notPrivate();
+            }
+        } );
 
         return $meta;
+    }
+
+    /**
+     * Posts Meta Fields Without Private
+     *
+     * @return null|\TypeRocket\Models\Model
+     */
+    public function metaWithoutPrivate()
+    {
+        return $this->meta( true );
+    }
+
+    /**
+     * Belongs To Taxonomy
+     *
+     * @param string $modelClass
+     * @param string $taxonomy_id the registered taxonomy id: category, post_tag, etc.
+     * @param null|callable $scope
+     *
+     * @return Model|null
+     */
+    public function belongsToTaxonomy($modelClass, $taxonomy_id, $scope = null)
+    {
+        global $wpdb;
+
+        return $this->belongsToMany($modelClass, $wpdb->term_relationships, 'object_id', 'term_taxonomy_id', function($rel) use ($scope, $taxonomy_id) {
+            global $wpdb;
+            $rel->where($wpdb->term_taxonomy .'.taxonomy', $taxonomy_id);
+
+            if(is_callable($scope)) {
+                $scope($rel);
+            }
+        });
     }
 
     /**
