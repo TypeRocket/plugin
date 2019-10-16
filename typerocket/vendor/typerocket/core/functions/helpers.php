@@ -12,6 +12,17 @@ if( ! function_exists('tr_app') ) {
     }
 }
 
+if( ! function_exists('tr_response') ) {
+    /**
+     * Get Main Response
+     *
+     * @return \TypeRocket\Http\Response
+     */
+    function tr_response() {
+        return \TypeRocket\Core\Injector::findOrNewSingleton(\TypeRocket\Http\Response::class);;
+    }
+}
+
 if( ! function_exists('tr_assets_url') ) {
     /**
      * Get Assets URL
@@ -813,6 +824,45 @@ if ( ! function_exists('tr_route')) {
     }
 }
 
+if ( ! function_exists('tr_routes_repo')) {
+    /**
+     * Get Routes Repo
+     *
+     * @return \TypeRocket\Http\RouteCollection
+     */
+    function tr_routes_repo()
+    {
+        return \TypeRocket\Core\Injector::resolve(\TypeRocket\Http\RouteCollection::class);
+    }
+}
+
+if ( ! function_exists('tr_route_lookup')) {
+    /**
+     * Get Routes Repo
+     * @param string $name
+     * @return null|\TypeRocket\Http\Route
+     */
+    function tr_route_lookup($name)
+    {
+        return tr_routes_repo()->getNamedRoute($name);
+    }
+}
+
+if ( ! function_exists('tr_route_url_lookup')) {
+    /**
+     * Get Routes Repo
+     * @param string $name
+     * @param array $values
+     * @param bool $site
+     *
+     * @return null|string
+     */
+    function tr_route_url_lookup($name, $values = [], $site = true)
+    {
+        return tr_route_lookup($name)->buildUrlFromPattern($values, $site);
+    }
+}
+
 if ( ! function_exists('tr_query')) {
     /**
      * Database Query
@@ -830,7 +880,7 @@ if ( ! function_exists('tr_http_response')) {
      * Http Response
      *
      * @param string $returned the constant variable name
-     * @param null|mixed $response The default value
+     * @param null|\TypeRocket\Http\Response $response The default value
      *
      * @return mixed
      */

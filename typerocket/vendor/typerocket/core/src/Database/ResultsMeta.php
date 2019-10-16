@@ -4,6 +4,8 @@
 namespace TypeRocket\Database;
 
 
+use TypeRocket\Models\Contract\Formable;
+
 class ResultsMeta extends Results
 {
     protected $storedValues = [];
@@ -44,6 +46,14 @@ class ResultsMeta extends Results
             $this->storedValues[$meta->meta_key] = maybe_unserialize($meta->meta_value);
         }
 
+        return $this->storedValues;
+    }
+
+    /**
+     * Get Form Fields
+     */
+    public function getFormFields()
+    {
         return $this->storedValues;
     }
 

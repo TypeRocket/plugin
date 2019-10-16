@@ -7,6 +7,9 @@ use TypeRocket\Core\Injector;
 class Route
 {
     public $match;
+    public $name;
+    public $pattern;
+    public $registeredNamedRoute = false;
     public $do;
     public $middleware;
     public $methods;
@@ -144,6 +147,59 @@ class Route
     {
         $this->methods = ['PUT', 'POST', 'GET', 'DELETE', 'PATCH', 'OPTIONS'];
         return $this;
+    }
+
+    /**
+     * Name Route
+     *
+     * @param string $name my.custom.route.name
+     * @param string $pattern url-path/:id/create
+     * @param null|RouteCollection $routes
+     * @return $this
+     */
+    public function name($name, $pattern = null, $routes = null)
+    {
+        if(!$this->registeredNamedRoute) {
+            $this->name = $name;
+            $this->pattern = $pattern;
+
+            /** @var RouteCollection $routes */
+            $routes = $routes instanceof RouteCollection ? $routes : Injector::resolve(RouteCollection::class);
+            $routes->registerNamedRoute($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Build Url From Pattern
+     *
+     * @param array $values
+     * @param bool $site
+     * @return mixed
+     */
+    public function buildUrlFromPattern(array $values = [], $site = true)
+    {
+        $pattern = $this->pattern;
+
+        if(!$pattern) {
+            $keys = array_map(function($value) {
+                return strtolower($value[0] == ':' ? $value : ':' . $value);
+            }, $this->match[1]);
+
+            $match = array_map(function($v) { return '/\(.+\)/U'; }, $keys);
+            $pattern = preg_replace($match, $keys, $this->match[0] ?? null, 1);
+        }
+
+        $keys = array_keys($values);
+
+        $keys = array_map(function($value) {
+            return strtolower($value[0] == ':' ? $value : ':' . $value);
+        }, $keys);
+
+        $built = str_replace($keys, $values, $pattern);
+
+        return $site ? site_url( ltrim($built, '/') ) : $built;
     }
 
     /**

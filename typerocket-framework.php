@@ -3,7 +3,7 @@
 Plugin Name: TypeRocket Framework 4
 Plugin URI: https://typerocket.com/
 Description: TypeRocket Framework - A WordPress Framework To Empower Your Development
-Version: 4.0.14
+Version: 4.0.15
 Author: Robojuice
 Author URI: https://robojuice.com/
 License: GPLv3 or later
@@ -21,17 +21,22 @@ class TypeRocket_Framework {
     function __construct()
     {
         tr_auto_loader();
+        $updates_off = false;
 
-        if( !defined('TR_UPDATES_OFF') ) {
+        if( defined('TR_UPDATES_OFF') ) {
+            $updates_off = TR_UPDATES_OFF;
+        }
+
+        if( !$updates_off ) {
             new \TypeRocket\Updates\PluginUpdater([
                 'slug' => 'typerocket-framework',
-                'api_url' =>  'https://typerocket.com/plugins/typerocket-framework/'
+                'api_url' => 'https://typerocket.com/plugins/typerocket-framework/'
             ]);
         }
 
         $this->path = plugin_dir_path(__FILE__);
         define('TR_AUTO_LOADER', '__return_false');
-        define('TR_PLUGIN_VERSION', '4.0.14');
+        define('TR_PLUGIN_VERSION', '4.0.15');
         register_activation_hook( __FILE__, array($this, 'activation') );
         add_action('admin_notices',  array($this, 'activation_notice') );
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
