@@ -11,7 +11,7 @@ return [
     | Example of root installation: TR_PATH . '/wordpress'
     |
     */
-    'wordpress' => tr_plugin_galaxy_wp(),
+    'wordpress' => TR_WP_ROOT,
 
     /*
     |--------------------------------------------------------------------------

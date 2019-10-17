@@ -199,12 +199,6 @@ if(!function_exists('tr_plugin_autoload_app')) {
     }
 }
 
-if(!function_exists('tr_plugin_galaxy_wp')) {
-    function tr_plugin_galaxy_wp() {
-        return ABSPATH;
-    }
-}
-
 function tr_auto_loader() {
 
     include "typerocket/vendor/typerocket/core/functions/functions.php";
@@ -241,6 +235,10 @@ function tr_auto_loader() {
         'folder' => __DIR__ . '/typerocket/vendor/typerocket/plugin-seo/src/',
     ];
     tr_autoload_psr4($map_seo);
+}
+
+if(!defined('TR_WP_ROOT')) {
+    define('TR_WP_ROOT', ABSPATH);
 }
 
 new TypeRocket_Framework();
