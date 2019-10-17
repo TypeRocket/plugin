@@ -242,16 +242,16 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v4.0.72",
+            "version": "v4.0.73",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "c98e1d8337b55057c9e50392413161169f0b39d4"
+                "reference": "c5a952ff0c5941f9ab5fe720ccef29be584af1b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/c98e1d8337b55057c9e50392413161169f0b39d4",
-                "reference": "c98e1d8337b55057c9e50392413161169f0b39d4",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/c5a952ff0c5941f9ab5fe720ccef29be584af1b6",
+                "reference": "c5a952ff0c5941f9ab5fe720ccef29be584af1b6",
                 "shasum": ""
             },
             "require": {
@@ -289,7 +289,7 @@
                 "typerocket",
                 "wordpress"
             ],
-            "time": "2019-10-17T13:16:13+00:00"
+            "time": "2019-10-17T14:07:30+00:00"
         },
         {
             "name": "typerocket/plugin-builder",
