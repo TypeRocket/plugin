@@ -199,6 +199,12 @@ if(!function_exists('tr_plugin_autoload_app')) {
     }
 }
 
+if(!function_exists('tr_plugin_galaxy_wp')) {
+    function tr_plugin_galaxy_wp() {
+        return ABSPATH;
+    }
+}
+
 function tr_auto_loader() {
 
     include "typerocket/vendor/typerocket/core/functions/functions.php";

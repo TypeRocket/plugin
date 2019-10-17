@@ -3,6 +3,7 @@
 <ul>
     <li>To disable this page add: <code>define('TR_PLUGIN_ADMIN', false);</code></li>
     <li>To disable auto updates: <code>define('TR_UPDATES_OFF', true);</code></li>
+    <li>To use composer auto loading: <code>define('TR_COMPOSER_AUTOLOAD', true);</code></li>
     <li>You can define your enabled TypeRocket plugins by overriding the <code>tr_plugin_plugins()</code> function.</li>
     <li>You can enable the page builder plugin using the <code>define('TR_PLUGIN_PAGE_BUILDER', true);</code> constant.</li>
 </ul>
