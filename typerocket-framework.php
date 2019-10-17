@@ -3,7 +3,7 @@
 Plugin Name: TypeRocket Framework 4
 Plugin URI: https://typerocket.com/
 Description: TypeRocket Framework - A WordPress Framework To Empower Your Development
-Version: 4.0.15
+Version: 4.0.16
 Author: Robojuice
 Author URI: https://robojuice.com/
 License: GPLv3 or later
@@ -20,8 +20,18 @@ class TypeRocket_Framework {
 
     function __construct()
     {
-        tr_auto_loader();
-        $updates_off = false;
+        $updates_off = $composer_autoload = false;
+
+        if( defined('TR_COMPOSER_AUTOLOAD') ) {
+            $composer_autoload = TR_COMPOSER_AUTOLOAD;
+        }
+
+        if(!$composer_autoload) {
+            tr_auto_loader();
+        } else {
+            require_once __DIR__ . '/typerocket/vendor/autoload.php';
+            tr_plugin_autoload_app();
+        }
 
         if( defined('TR_UPDATES_OFF') ) {
             $updates_off = TR_UPDATES_OFF;
@@ -36,7 +46,7 @@ class TypeRocket_Framework {
 
         $this->path = plugin_dir_path(__FILE__);
         define('TR_AUTO_LOADER', '__return_false');
-        define('TR_PLUGIN_VERSION', '4.0.15');
+        define('TR_PLUGIN_VERSION', '4.0.16');
         register_activation_hook( __FILE__, array($this, 'activation') );
         add_action('admin_notices',  array($this, 'activation_notice') );
         add_action('plugins_loaded', array($this, 'plugins_loaded'));
@@ -145,6 +155,7 @@ if(!function_exists('tr_plugin_config_paths')) {
                 'components' => $temp_uri . '/wordpress/assets/components',
             ],
             'base'  => TR_PATH,
+            'cache'  => TR_PATH . '/storage/cache',
             'resources'  => $temp_dir . '/resources',
             'views'  => $temp_dir . '/resources/views',
             'pages'  => $temp_dir . '/resources/pages',
@@ -165,29 +176,35 @@ if(!function_exists('tr_plugin_config_paths')) {
     }
 }
 
+if(!function_exists('tr_plugin_autoload_app')) {
+    function tr_plugin_autoload_app() {
+        if(!defined('TR_WP_PLUGIN_APP_MAP')) {
+
+            $temp_dir = get_template_directory();
+            $app_path = __DIR__ . '/typerocket/app/';
+
+            if(file_exists( $temp_dir . '/app/Http/Kernel.php')) {
+                $app_path = $temp_dir . '/app/';
+            }
+
+            $map_app = [
+                'prefix' => 'App\\',
+                'folder' => $app_path,
+            ];
+        } else {
+            $map_app = TR_WP_PLUGIN_APP_MAP;
+        }
+
+        tr_autoload_psr4($map_app);
+    }
+}
+
 function tr_auto_loader() {
 
     include "typerocket/vendor/typerocket/core/functions/functions.php";
     include "typerocket/vendor/typerocket/core/functions/helpers.php";
 
-    if(!defined('TR_WP_PLUGIN_APP_MAP')) {
-
-        $temp_dir = get_template_directory();
-        $app_path = __DIR__ . '/typerocket/app/';
-
-        if(file_exists( $temp_dir . '/app/Http/Kernel.php')) {
-            $app_path = $temp_dir . '/app/';
-        }
-
-        $map_app = [
-            'prefix' => 'App\\',
-            'folder' => $app_path,
-        ];
-    } else {
-        $map_app = TR_WP_PLUGIN_APP_MAP;
-    }
-
-    tr_autoload_psr4($map_app);
+    tr_plugin_autoload_app();
 
     $map_core = [
         'prefix' => 'TypeRocket\\',

@@ -21,10 +21,8 @@ class Launcher
         $commands = new CommandCollection();
         $commands->enableCustom();
         $wp_root = Config::locate('galaxy.wordpress');
-
         if( !empty($wp_root) ) {
             $is_file = is_file( $wp_root . '/wp-load.php' );
-
             if(!$is_file) {
                 throw new Exception('WP root path is not correct:' . realpath($wp_root) );
             }
