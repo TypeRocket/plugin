@@ -1339,8 +1339,12 @@ class Model implements Formable
 
             // Integer
             if ( $handle == 'int' || $handle == 'integer' ) {
-
                 $value = (int) $value;
+            }
+
+            // Bool
+            if ( $handle == 'bool' || $handle == 'boolean' ) {
+                $value = (bool) $value;
             }
 
             // Priority Array
@@ -1375,10 +1379,11 @@ class Model implements Formable
      *
      * @param string $modelClass
      * @param null|string $id_foreign
+     * @param null $scope
      *
      * @return mixed|null
      */
-    public function hasOne($modelClass, $id_foreign = null)
+    public function hasOne($modelClass, $id_foreign = null, $scope = null)
     {
         $id = $this->getID();
 

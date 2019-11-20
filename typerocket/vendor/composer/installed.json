@@ -1,27 +1,27 @@
 [
     {
         "name": "psr/log",
-        "version": "1.1.0",
-        "version_normalized": "1.1.0.0",
+        "version": "1.1.2",
+        "version_normalized": "1.1.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-fig/log.git",
-            "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
+            "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
-            "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/446d54b4cb6bf489fc9d75f55843658e6f25d801",
+            "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2018-11-20T15:27:04+00:00",
+        "time": "2019-11-01T11:05:21+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.0.x-dev"
+                "dev-master": "1.1.x-dev"
             }
         },
         "installation-source": "dist",
@@ -50,17 +50,17 @@
     },
     {
         "name": "symfony/console",
-        "version": "v3.4.32",
-        "version_normalized": "3.4.32.0",
+        "version": "v3.4.35",
+        "version_normalized": "3.4.35.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/console.git",
-            "reference": "4727d7f3c99b9dea0ae70ed4f34645728aa90453"
+            "reference": "17b154f932c5874cdbda6d05796b6490eec9f9f7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/4727d7f3c99b9dea0ae70ed4f34645728aa90453",
-            "reference": "4727d7f3c99b9dea0ae70ed4f34645728aa90453",
+            "url": "https://api.github.com/repos/symfony/console/zipball/17b154f932c5874cdbda6d05796b6490eec9f9f7",
+            "reference": "17b154f932c5874cdbda6d05796b6490eec9f9f7",
             "shasum": ""
         },
         "require": {
@@ -89,7 +89,7 @@
             "symfony/lock": "",
             "symfony/process": ""
         },
-        "time": "2019-10-06T19:52:09+00:00",
+        "time": "2019-11-13T07:12:39+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -124,17 +124,17 @@
     },
     {
         "name": "symfony/debug",
-        "version": "v4.3.5",
-        "version_normalized": "4.3.5.0",
+        "version": "v4.3.8",
+        "version_normalized": "4.3.8.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/debug.git",
-            "reference": "cc5c1efd0edfcfd10b354750594a46b3dd2afbbe"
+            "reference": "5ea9c3e01989a86ceaa0283f21234b12deadf5e2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/debug/zipball/cc5c1efd0edfcfd10b354750594a46b3dd2afbbe",
-            "reference": "cc5c1efd0edfcfd10b354750594a46b3dd2afbbe",
+            "url": "https://api.github.com/repos/symfony/debug/zipball/5ea9c3e01989a86ceaa0283f21234b12deadf5e2",
+            "reference": "5ea9c3e01989a86ceaa0283f21234b12deadf5e2",
             "shasum": ""
         },
         "require": {
@@ -147,7 +147,7 @@
         "require-dev": {
             "symfony/http-kernel": "~3.4|~4.0"
         },
-        "time": "2019-09-19T15:51:53+00:00",
+        "time": "2019-10-28T17:07:32+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -243,17 +243,17 @@
     },
     {
         "name": "typerocket/core",
-        "version": "v4.0.73",
-        "version_normalized": "4.0.73.0",
+        "version": "v4.0.75",
+        "version_normalized": "4.0.75.0",
         "source": {
             "type": "git",
             "url": "https://github.com/TypeRocket/core.git",
-            "reference": "c5a952ff0c5941f9ab5fe720ccef29be584af1b6"
+            "reference": "33971c0cef1899c0b8880c13f268cb47df98e311"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/TypeRocket/core/zipball/c5a952ff0c5941f9ab5fe720ccef29be584af1b6",
-            "reference": "c5a952ff0c5941f9ab5fe720ccef29be584af1b6",
+            "url": "https://api.github.com/repos/TypeRocket/core/zipball/33971c0cef1899c0b8880c13f268cb47df98e311",
+            "reference": "33971c0cef1899c0b8880c13f268cb47df98e311",
             "shasum": ""
         },
         "require": {
@@ -263,7 +263,7 @@
         "require-dev": {
             "phpunit/phpunit": "7.4.*"
         },
-        "time": "2019-10-17T14:07:30+00:00",
+        "time": "2019-11-20T14:38:31+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
