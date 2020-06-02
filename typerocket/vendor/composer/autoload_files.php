@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'a4a119a56e50fbb293281d9a48007e0e' => $vendorDir . '/symfony/polyfill-php80/bootstrap.php',
     '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
     '2bf7fd0087ff13c2aa5e673ea4ea7303' => $vendorDir . '/typerocket/core/functions/functions.php',
     '18b840c6eff6cb7ed2b94475f3f1a95a' => $vendorDir . '/typerocket/core/functions/helpers.php',

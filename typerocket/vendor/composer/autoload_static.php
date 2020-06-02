@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitbba67f953cb39d5f2b0ecb93b1b3ae96
 {
     public static $files = array (
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '2bf7fd0087ff13c2aa5e673ea4ea7303' => __DIR__ . '/..' . '/typerocket/core/functions/functions.php',
         '18b840c6eff6cb7ed2b94475f3f1a95a' => __DIR__ . '/..' . '/typerocket/core/functions/helpers.php',
@@ -22,6 +23,7 @@ class ComposerStaticInitbba67f953cb39d5f2b0ecb93b1b3ae96
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
@@ -48,6 +50,10 @@ class ComposerStaticInitbba67f953cb39d5f2b0ecb93b1b3ae96
         'TypeRocketPageBuilder\\' => 
         array (
             0 => __DIR__ . '/..' . '/typerocket/plugin-builder/src',
+        ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -79,6 +85,7 @@ class ComposerStaticInitbba67f953cb39d5f2b0ecb93b1b3ae96
         'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/DummyTest.php',
         'Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'Psr\\Log\\Test\\TestLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/TestLogger.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
         'Symfony\\Component\\Console\\CommandLoader\\CommandLoaderInterface' => __DIR__ . '/..' . '/symfony/console/CommandLoader/CommandLoaderInterface.php',
         'Symfony\\Component\\Console\\CommandLoader\\ContainerCommandLoader' => __DIR__ . '/..' . '/symfony/console/CommandLoader/ContainerCommandLoader.php',
@@ -174,6 +181,7 @@ class ComposerStaticInitbba67f953cb39d5f2b0ecb93b1b3ae96
         'Symfony\\Component\\Debug\\FatalErrorHandler\\UndefinedFunctionFatalErrorHandler' => __DIR__ . '/..' . '/symfony/debug/FatalErrorHandler/UndefinedFunctionFatalErrorHandler.php',
         'Symfony\\Component\\Debug\\FatalErrorHandler\\UndefinedMethodFatalErrorHandler' => __DIR__ . '/..' . '/symfony/debug/FatalErrorHandler/UndefinedMethodFatalErrorHandler.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
+        'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
         'TypeRocketPageBuilder\\Plugin' => __DIR__ . '/..' . '/typerocket/plugin-builder/src/Plugin.php',
         'TypeRocketSEO\\Plugin' => __DIR__ . '/..' . '/typerocket/plugin-seo/src/Plugin.php',
         'TypeRocketThemeOptions\\Plugin' => __DIR__ . '/..' . '/typerocket/plugin-theme-options/src/Plugin.php',
@@ -321,10 +329,13 @@ class ComposerStaticInitbba67f953cb39d5f2b0ecb93b1b3ae96
         'TypeRocket\\Utility\\Http' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Http.php',
         'TypeRocket\\Utility\\ImageSizer' => __DIR__ . '/..' . '/typerocket/core/src/Utility/ImageSizer.php',
         'TypeRocket\\Utility\\Inflect' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Inflect.php',
+        'TypeRocket\\Utility\\Nil' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Nil.php',
         'TypeRocket\\Utility\\Sanitize' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Sanitize.php',
         'TypeRocket\\Utility\\Str' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Str.php',
         'TypeRocket\\Utility\\Url' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Url.php',
         'TypeRocket\\Utility\\Validator' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Validator.php',
+        'TypeRocket\\Utility\\Value' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Value.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

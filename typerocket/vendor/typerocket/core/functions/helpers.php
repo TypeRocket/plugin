@@ -170,8 +170,8 @@ if ( ! function_exists('tr_resource_pages')) {
 
         $menu_id = 'add_resource_' . \TypeRocket\Utility\Sanitize::underscore($singular);
 
-        $add = tr_page($resource, 'add', __('Add ' . $singular))
-            ->setArgument('menu', __('Add New'))
+        $add = tr_page($resource, 'add', 'Add ' . $singular)
+            ->setArgument('menu', __('Add New', 'typerocket-domain'))
             ->adminBar($menu_id, $singular, 'new-content')
             ->mapActions([
                 'GET' => 'add',
@@ -192,7 +192,7 @@ if ( ! function_exists('tr_resource_pages')) {
                 'GET' => 'show'
             ]);
 
-        $edit = tr_page($resource, 'edit', __('Edit ' . $singular))
+        $edit = tr_page($resource, 'edit', 'Edit ' . $singular)
             ->addNewButton()
             ->removeMenu()
             ->mapActions([
@@ -381,7 +381,7 @@ if ( ! function_exists('tr_posts_components_field')) {
         if (is_array($builder_data)) {
             $i = 0;
             $len = count($builder_data);
-            foreach ($builder_data as $data) {
+            foreach ($builder_data as $hash => $data) {
                 $first_item = $last_item = false;
 
                 if ($i == 0) {
@@ -395,11 +395,11 @@ if ( ! function_exists('tr_posts_components_field')) {
                 $paths     = \TypeRocket\Core\Config::locate('paths');
                 $file      = $paths['visuals'] . '/' . $name . '/' . $component . '.php';
                 if (file_exists($file)) {
-                    $fn = function ($file, $data, $name, $item_id, $model, $first_item, $last_item) {
+                    $fn = function ($file, $data, $name, $item_id, $model, $first_item, $last_item, $component_id, $hash) {
                         /** @noinspection PhpIncludeInspection */
                         include($file);
                     };
-                    $fn($file, $data[$key], $name, $item_id, $model, $first_item, $last_item);
+                    $fn($file, $data[$key], $name, $item_id, $model, $first_item, $last_item, $key, $hash);
                 } else {
                     echo "<div class=\"tr-dev-alert-helper\"><i class=\"icon tr-icon-bug\"></i> Add builder visual here by creating: <code>{$file}</code></div>";
                 }
@@ -483,7 +483,7 @@ if( ! function_exists('tr_components_loop')) {
         extract($other);
         $i = 0;
         $len = count($builder_data);
-        foreach ($builder_data as $data) {
+        foreach ($builder_data as $hash => $data) {
             $first_item = $last_item = false;
 
             if ($i == 0) {
@@ -498,11 +498,11 @@ if( ! function_exists('tr_components_loop')) {
             $file      = $paths['visuals'] . '/' . $name . '/' . $component . '.php';
             $file = apply_filters('tr_component_file', $file, ['folder' => $name, 'name' => $component, 'view' => 'visual']);
             if (file_exists($file)) {
-                $fn = function ($file, $data, $name, $item_id, $model, $first_item, $last_item) {
+                $fn = function ($file, $data, $name, $item_id, $model, $first_item, $last_item, $component_id, $hash) {
                     /** @noinspection PhpIncludeInspection */
                     include($file);
                 };
-                $fn($file, $data[$key], $name, $item_id, $model, $first_item, $last_item);
+                $fn($file, $data[$key], $name, $item_id, $model, $first_item, $last_item, $key, $hash);
             } else {
                 echo "<div class=\"tr-dev-alert-helper\"><i class=\"icon tr-icon-bug\"></i> Add builder visual here by creating: <code>{$file}</code></div>";
             }
@@ -1007,6 +1007,118 @@ if ( ! function_exists('tr_config')) {
      */
     function tr_config($dots, $default = null) {
         return \TypeRocket\Core\Config::locate($dots, $default);
+    }
+}
+
+if ( ! function_exists('tr_nils')) {
+    /**
+     * @param array|object|\ArrayObject $value
+     *
+     * @return \TypeRocket\Utility\Nil
+     */
+    function tr_nils($value)
+    {
+        return \TypeRocket\Utility\Value::nils($value);
+    }
+}
+
+if ( ! function_exists('tr_cast')) {
+    /**
+     * @param mixed $value
+     * @param string|callable $type
+     *
+     * @return bool|float|int|mixed|string
+     */
+    function tr_cast($value, $type)
+    {
+        // Integer
+        if ($type == 'int' || $type == 'integer') {
+            return is_object($value) || is_array($value) ? null : (int) $value;
+        }
+
+        // Float
+        if ($type == 'float' || $type == 'double' || $type == 'real') {
+            return is_object($value) || is_array($value) ? null : (float) $value;
+        }
+
+        // JSON
+        if ($type == 'json') {
+
+            if(is_serialized($value)) {
+                $value = unserialize($value);
+            } if(tr_is_json($value)) {
+                return $value;
+            }
+
+            return json_encode($value);
+        }
+
+        // Serialize
+        if ($type == 'serialize' || $type == 'serial') {
+
+            if(tr_is_json($value)) {
+                $value = json_decode((string) $value, true);
+            } if(is_serialized($value)) {
+                return $value;
+            }
+
+            return serialize($value);
+        }
+
+        // String
+        if ($type == 'str' || $type == 'string') {
+            if(is_object($value) || is_array($value)) {
+                $value = json_encode($value);
+            } else {
+                $value = (string) $value;
+            }
+
+            return $value;
+        }
+
+        // Bool
+        if ($type == 'bool' || $type == 'boolean') {
+            return (bool) $value;
+        }
+
+        // Array
+        if ($type == 'array') {
+            if(is_numeric($value)) {
+                return $value;
+            } elseif (is_string($value) && tr_is_json($value)) {
+                $value = json_decode($value, true);
+            } elseif (is_string($value) && is_serialized($value)) {
+                $value = unserialize($value);
+            } elseif(!is_string($value)) {
+                $value = (array) $value;
+            }
+
+            return $value;
+        }
+
+        // Object
+        if ($type == 'object' || $type == 'obj') {
+            if(is_numeric($value)) {
+                return $value;
+            } elseif (is_string($value) && tr_is_json($value)) {
+                $value = (object) json_decode($value);
+            } elseif (is_string($value) && is_serialized($value)) {
+                $value = (object) unserialize($value);
+            } elseif(!is_string($value)) {
+                $value = (object) $value;
+            } elseif (is_array($value)) {
+                $value = (object) $value;
+            }
+
+            return $value;
+        }
+
+        // Callback
+        if (is_callable($type)) {
+            return call_user_func($type, $value);
+        }
+
+        return $value;
     }
 }
 
