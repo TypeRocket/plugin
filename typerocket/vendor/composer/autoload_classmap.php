@@ -165,7 +165,6 @@ return array(
     'TypeRocket\\Core\\ApplicationKernel' => $vendorDir . '/typerocket/core/src/Core/ApplicationKernel.php',
     'TypeRocket\\Core\\Config' => $vendorDir . '/typerocket/core/src/Core/Config.php',
     'TypeRocket\\Core\\Container' => $vendorDir . '/typerocket/core/src/Core/Container.php',
-    'TypeRocket\\Core\\Pro' => $vendorDir . '/typerocket/core/src/Core/Pro.php',
     'TypeRocket\\Core\\Resolver' => $vendorDir . '/typerocket/core/src/Core/Resolver.php',
     'TypeRocket\\Core\\Rooter' => $vendorDir . '/typerocket/core/src/Core/Rooter.php',
     'TypeRocket\\Core\\System' => $vendorDir . '/typerocket/core/src/Core/System.php',

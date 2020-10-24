@@ -252,7 +252,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Core\\ApplicationKernel' => __DIR__ . '/..' . '/typerocket/core/src/Core/ApplicationKernel.php',
         'TypeRocket\\Core\\Config' => __DIR__ . '/..' . '/typerocket/core/src/Core/Config.php',
         'TypeRocket\\Core\\Container' => __DIR__ . '/..' . '/typerocket/core/src/Core/Container.php',
-        'TypeRocket\\Core\\Pro' => __DIR__ . '/..' . '/typerocket/core/src/Core/Pro.php',
         'TypeRocket\\Core\\Resolver' => __DIR__ . '/..' . '/typerocket/core/src/Core/Resolver.php',
         'TypeRocket\\Core\\Rooter' => __DIR__ . '/..' . '/typerocket/core/src/Core/Rooter.php',
         'TypeRocket\\Core\\System' => __DIR__ . '/..' . '/typerocket/core/src/Core/System.php',
