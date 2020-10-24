@@ -93,7 +93,7 @@ return [
     |
     */
     'templates' => [
-        'views' => '\TypeRocketPro\Template\TachyonTemplateEngine',
+        'views' => '\TypeRocket\Template\TemplateEngine',
     ],
 
     /*

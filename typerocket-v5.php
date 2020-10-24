@@ -68,6 +68,7 @@ final class TypeRocketPlugin
         if( $found = strpos(__FILE__, $plugin_file) ) {
             $url = menu_page_url($this->id, false);
             $actions['settings'] = '<a href="'.$url.'" aria-label="TypeRocket Settings">Settings</a>';
+            $actions['pro'] = '<a target="_blank" href="https://typerocket.com/pro/" aria-label="TypeRocket Pro">Get Pro</a>';
         }
 
         return $actions;
