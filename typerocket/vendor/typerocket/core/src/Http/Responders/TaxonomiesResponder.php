@@ -2,17 +2,14 @@
 namespace TypeRocket\Http\Responders;
 
 use TypeRocket\Controllers\WPTermController;
-use TypeRocket\Http\Handler;
-use \TypeRocket\Http\Request;
-use \TypeRocket\Http\Response;
-use TypeRocket\Models\WPTerm;
-use \TypeRocket\Register\Registry;
+use TypeRocket\Http\Request;
+use TypeRocket\Register\Registry;
 use TypeRocket\Utility\Str;
 
 class TaxonomiesResponder extends Responder
 {
 
-    public $taxonomy = null;
+    protected $taxonomy = null;
 
     /**
      * Respond to posts hook
@@ -21,39 +18,45 @@ class TaxonomiesResponder extends Responder
      * against that resource.
      *
      * @param array $args
+     *
+     * @throws \Exception
      */
     public function respond( $args )
     {
         $registered = Registry::getTaxonomyResource($this->taxonomy);
-        $prefix = Str::camelize( $registered[0] );
+        $controller = null;
 
-        $controller = $registered[3] ?? tr_app("Controllers\\{$prefix}Controller");
-        $controller  = apply_filters('tr_taxonomies_responder_controller', $controller);
-
-        $resource = $registered[0] ?? 'category';
-        $response = tr_response()->blockFlash();
-        $request = new Request( 'PUT', $this->hook );
-        $middlewareGroup = [$resource, 'term', 'category', 'tag'];
-
-        if (! class_exists( $controller ) ) {
-            $model = $registered[2] ?? tr_app("Models\\{$prefix}");
-
-            if(! class_exists( $model )) {
-                $model = new WPTerm($this->taxonomy);
-            }
-
-            $controller = new WPTermController($request, $response, $model);
+        if($singular = $registered['singular'] ?? null) {
+            $prefix = Str::camelize( $singular );
+            $controller = $registered['controller'] ?? \TypeRocket\Utility\Helper::appNamespace("Controllers\\{$prefix}Controller");
         }
 
-        $handler = (new Handler())
-            ->setAction('update')
+        $controller  = apply_filters('typerocket_taxonomies_responder_controller', $controller);
+
+        $resource = $registered['singular'] ?? 'category';
+        $response = \TypeRocket\Http\Response::getFromContainer()->blockFlash();
+        $middlewareGroup = [$resource, 'term'];
+
+        if (! class_exists( $controller ) ) {
+            $controller = WPTermController::class;
+        }
+
+        $this->handler
             ->setArgs($args)
-            ->setHandler($controller)
-            ->setHook($this->hook)
-            ->setResource($resource)
+            ->setController([new $controller, 'update'])
             ->setMiddlewareGroups($middlewareGroup);
 
-        $this->runKernel($request, $response, $handler);
+        $this->runKernel(new Request, $response, $this->handler);
+    }
+
+    /**
+     * Taxonomy
+     *
+     * @param string $taxonomy
+     */
+    public function setTaxonomy($taxonomy)
+    {
+        $this->taxonomy = $taxonomy;
     }
 
 }

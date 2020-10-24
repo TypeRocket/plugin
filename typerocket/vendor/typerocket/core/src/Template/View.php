@@ -1,16 +1,20 @@
 <?php
-
 namespace TypeRocket\Template;
 
 use TypeRocket\Core\Config;
-use TypeRocket\Register\Page;
+use TypeRocket\Http\Request;
+use TypeRocket\Utility\PersistentCache;
 
 class View
 {
-    static public $data = [];
-    static public $title = null;
-    static public $page = null;
-    static public $view = null;
+    protected $data = [];
+    protected $title = null;
+    protected $ext = null;
+    protected $file = null;
+    protected $location = null;
+    protected $views = null;
+    protected $viewsEngine = null;
+    protected $context = null;
 
     /**
      * View constructor.
@@ -19,43 +23,52 @@ class View
      *
      * @param string $dots dot syntax or specific file path
      * @param array $data
+     * @param string $ext file extension
+     * @param null|string $path
      */
-    public function __construct( $dots , array $data = [] )
+    public function __construct( $dots , array $data = [], $ext = '.php', $path = null )
     {
         if( file_exists( $dots ) ) {
-            self::$page = $dots;
-            self::$view = $dots;
+            $this->file = $dots;
         } else {
-            $location = implode('/', explode('.', $dots) );
-            self::$page = Config::locate('paths.pages') . '/' . $location . '.php';
-            self::$view =  Config::locate('paths.views') . '/' . $location . '.php';
+            $this->ext = $ext;
+            $this->location = str_replace('.', '/', $dots) . $ext;
         }
 
         if( !empty( $data ) ) {
-            self::$data = $data;
+            $this->data = $data;
         }
+
+        $this->views = $path ?? $this->views ?? Config::get('paths.views');
+    }
+
+    /**
+     * @param mixed ...$args
+     *
+     * @return static
+     */
+    public static function new(...$args)
+    {
+        return new static(...$args);
     }
 
     /**
      * Get the file
      *
-     * This is used for admin pages
-     *
      * @return null|string
      */
-    public function getPage() {
-        return self::$page;
+    public function getFile() {
+        return $this->file;
     }
 
     /**
-     * Get the template
-     *
-     * This is used for front-end views
+     * Get the Location
      *
      * @return null|string
      */
-    public function getView() {
-        return self::$view;
+    public function getLocation()
+    {
+        return $this->location;
     }
 
     /**
@@ -65,13 +78,24 @@ class View
      */
     public function getData()
     {
-        return self::$data;
+        return $this->data;
+    }
+
+    /**
+     * Get file extension
+     *
+     * @return string|null
+     */
+    public function getExtension()
+    {
+        return $this->ext;
     }
 
     /**
      * Set the title attached to a view.
      *
-     * Requires https://codex.wordpress.org/Title_Tag support
+     * Requires https://codex.wordpress.org/Title_Tag support AND
+     * override SEO Meta when used on a template.
      *
      * @param string $title
      *
@@ -79,7 +103,7 @@ class View
      */
     public function setTitle( $title )
     {
-        self::$title = $title;
+        $this->title = $title;
 
         return $this;
     }
@@ -91,53 +115,151 @@ class View
      */
     public function getTitle()
     {
-        return self::$title;
+        return $this->title;
     }
 
     /**
-     * View Is Ready
+     * Set SEO Meta Data
+     *
+     * Requires SEO plugin
+     *
+     * @param array $meta
+     * @param null|string $url URL for the current page
+     *
+     * @return View
+     * @throws \Exception
+     */
+    public function setSeoMeta(array $meta, $url = null)
+    {
+        if(!defined('TYPEROCKET_SEO_EXTENSION')) {
+            throw new \Exception('TypeRocket SEO Extension required for the `setMeta()` view method.');
+        }
+
+        add_filter('typerocket_seo_meta', function($old_meta) use ($meta) {
+            return $meta;
+        });
+
+        add_filter('typerocket_seo_url', function($old_url) use ($url) {
+            return $url ?? (new Request)->getUriFull();
+        });
+
+        return $this;
+    }
+
+    /**
+     * Set Templating Engine
+     *
+     * @param $engine_class
+     *
+     * @return View
+     */
+    public function setEngine($engine_class)
+    {
+        return $this->setViewsEngine($engine_class);
+    }
+
+    /**
+     * Set Views Templating Engine
+     *
+     * @param $engine_class
+     *
+     * @return View
+     */
+    public function setViewsEngine($engine_class)
+    {
+        $this->viewsEngine = $engine_class;
+
+        return $this;
+    }
+
+    /**
+     * Load Other Context
+     *
+     * @param null $context
+     */
+    protected function load($context)
+    {
+        $view_title = $this->getTitle();
+
+        if($view_title) {
+            add_filter('document_title_parts', function( $title ) use ($view_title) {
+                if( is_string($view_title) ) {
+                    $title = [];
+                    $title['title'] = $view_title;
+                } elseif ( is_array($view_title) ) {
+                    $title = $view_title;
+                }
+                return $title;
+            }, 101);
+        }
+
+        $location = $this->getFile() ?? Config::get('paths.' . $context) . '/' . $this->getLocation();
+        $templateEngine = $this->viewsEngine ?? Config::get('app.templates.' . $context) ?? Config::get('app.templates.views');
+        (new $templateEngine($location, $this->getData(), $context, $this))->load();
+    }
+
+    /**
+     * Render View
+     *
+     * @param string|null $context the views context to use
+     */
+    public function render($context = null)
+    {
+        $context = $type ?? $this->getContext() ?? 'views';
+
+        $this->load($context);
+    }
+
+    /**
      * @param string $context
      *
-     * @return bool
+     * @return $this
      */
-    public static function isReady($context = 'front')
+    public function setContext($context)
     {
-        if($context == 'front' && file_exists( self::$view ) ) {
-            return true;
-        }
+        $this->context = $context;
 
-        return $context == 'admin' && file_exists( View::$page );
+        return $this;
     }
 
     /**
-     *  Load the template for the front-end without globals
+     * @return null|string
      */
-    public static function load() {
-        add_filter('document_title_parts', function( $title ) {
-            if( is_string(self::$title) ) {
-                $title = [];
-                $title['title'] = self::$title;
-            } elseif ( is_array(self::$title) ) {
-                $title = self::$title;
-            }
-            return $title;
-        }, 101);
-
-        if(is_admin()) {
-            // not yet
-            return;
-        }
-
-        $templateEngine = Config::locate('app.template_engine.front') ?? TemplateEngine::class;
-        (new $templateEngine(self::$view, self::$data))->load();
+    public function getContext()
+    {
+        return $this->context;
     }
 
     /**
-     * Load Page
+     * @param string $key
+     * @param int $time cache forever by default
+     * @param string $folder
+     *
+     * @return string|null
      */
-    public static function loadPage()
+    public function cache($key, $time = 9999999999, $folder = 'app')
     {
-        $templateEngine = Config::locate('app.template_engine.admin') ??  TemplateEngine::class;
-        (new $templateEngine(self::$page, self::$data, 'admin'))->load();
+        return PersistentCache::new($folder)->getOtherwisePut($key, function() {
+            return $this->toString();
+        }, $time);
     }
+
+    /**
+     * @return false|string
+     */
+    public function __toString()
+    {
+        return $this->toString();
+    }
+
+    /**
+     * @return false|string
+     */
+    public function toString()
+    {
+        ob_start();
+        $this->render();
+        return ob_get_clean();
+    }
+
 }

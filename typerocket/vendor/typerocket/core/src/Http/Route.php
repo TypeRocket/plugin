@@ -1,8 +1,7 @@
 <?php
-
 namespace TypeRocket\Http;
 
-use TypeRocket\Core\Injector;
+use TypeRocket\Core\Container;
 
 class Route
 {
@@ -16,6 +15,17 @@ class Route
     public $addTrailingSlash = true;
 
     /**
+     * @param mixed ...$args
+     *
+     * @return static
+     */
+    public static function new(...$args)
+    {
+        $route = new static(...$args);
+        return $route->register();
+    }
+
+    /**
      * Match URL Path
      *
      * @param string $regex regular expression to match URL path
@@ -25,7 +35,7 @@ class Route
      */
     public function match($regex, $map = [], $clean = true)
     {
-        $this->match = [$clean ? trim($regex, '/') : $regex, $map, $this];
+        $this->match = [ 'regex' => $clean ? trim($regex, '/') : $regex, 'args' => $map, 'route' => $this];
         return $this;
     }
 
@@ -34,7 +44,7 @@ class Route
      *
      * This method does not accept middleware groups.
      *
-     * @param array|string $middleware list of middleware classes to use for the route or string name of group
+     * @param array|string $middleware array of middleware classes to use for the route or string name of group
      * @return $this
      */
     public function middleware($middleware)
@@ -44,18 +54,30 @@ class Route
     }
 
     /**
-     * Handler
+     * Controller
      *
-     * This takes a callable or a quick route decoration.
-     *
-     * @link https://typerocket.com/docs/v4/routes/#section-quick-route-declarations
-     *
-     * @param mixed $handle
+     * @param mixed $controller
      * @return $this
      */
-    public function do($handle)
+    public function do($controller)
     {
-        $this->do = $handle;
+        $this->do = $controller;
+        return $this;
+    }
+
+    /**
+     * Quick Match & Controller
+     *
+     * @param string $match
+     * @param mixed $controller
+     *
+     * @return $this
+     */
+    public function on($match, $controller)
+    {
+        $this->match(str_replace('*', '([^\/]+)',$match));
+        $this->do($controller);
+
         return $this;
     }
 
@@ -164,7 +186,7 @@ class Route
             $this->pattern = $pattern;
 
             /** @var RouteCollection $routes */
-            $routes = $routes instanceof RouteCollection ? $routes : Injector::resolve(RouteCollection::class);
+            $routes = $routes instanceof RouteCollection ? $routes : Container::resolve(RouteCollection::class);
             $routes->registerNamedRoute($this);
         }
 
@@ -185,10 +207,10 @@ class Route
         if(!$pattern) {
             $keys = array_map(function($value) {
                 return strtolower($value[0] == ':' ? $value : ':' . $value);
-            }, $this->match[1]);
+            }, $this->match['args']);
 
             $match = array_map(function($v) { return '/\(.+\)/U'; }, $keys);
-            $pattern = preg_replace($match, $keys, $this->match[0] ?? null, 1);
+            $pattern = preg_replace($match, $keys, $this->match['regex'] ?? null, 1);
         }
 
         $keys = array_keys($values);
@@ -198,8 +220,13 @@ class Route
         }, $keys);
 
         $built = str_replace($keys, $values, $pattern);
+        $url = $site ? site_url( ltrim($built, '/') ) : $built;
 
-        return $site ? site_url( ltrim($built, '/') ) : $built;
+        if($this->addTrailingSlash) {
+            $url = trailingslashit($url);
+        }
+
+        return $url;
     }
 
     /**
@@ -209,11 +236,26 @@ class Route
      * @return $this
      */
     public function register($routes = null) {
-        /** @var RouteCollection $routes */
-        $routes = $routes instanceof RouteCollection ? $routes : Injector::resolve(RouteCollection::class);
+        $routes = $routes instanceof RouteCollection ? $routes : RouteCollection::getFromContainer();
         $routes->addRoute($this);
 
         return $this;
+    }
+
+    /**
+     * Get Routes Repo
+     *
+     * @param string $name
+     * @param array $values
+     * @param bool $site
+     * @param null|RouteCollection $routes
+     *
+     * @return null|string
+     */
+    public static function buildUrl($name, $values = [], $site = true, $routes = null)
+    {
+        $routes = $routes instanceof RouteCollection ? $routes : \TypeRocket\Http\RouteCollection::getFromContainer();
+        return $routes->getNamedRoute($name)->buildUrlFromPattern($values, $site);
     }
 
 }

@@ -5,123 +5,50 @@ if ( !function_exists( 'add_action' ) ) {
 }
 
 delete_transient( 'typerocket-admin-notice' );
-$rules = get_option('rewrite_rules');
 
-if(empty($rules)) {
+if(empty(get_option('rewrite_rules'))) {
+    $url = admin_url('options-permalink.php');
     ?>
     <div class="notice notice-error is-dismissible">
-        <p>Enable pretty permalinks under your <a href="/wp-admin/options-permalink.php">admin "Permalink Settings" page</a>. <a href="https://wordpress.org/support/article/using-permalinks/">Pretty Permalinks</a> are required for TypeRocket to work.</p>
+        <?php _e('<p>Enable pretty permalinks under your <a href="'.$url.'">admin "Permalink Settings" page</a>. Not sure what permalinks are? <a href="https://wordpress.org/support/article/using-permalinks/">Learn about pretty permalinks</a>.</p>', 'typerocket-domain'); ?>
     </div>
     <?php
 }
-?>
 
-<div id="welcome-panel" class="welcome-panel">
-    <div class="welcome-panel-content">
-        <h2>Welcome to TypeRocket 4!</h2>
-        <p class="about-description">We’ve assembled some links to get you started:</p>
-        <div class="welcome-panel-column-container">
-            <div class="welcome-panel-column">
-                <h3>Get Started</h3>
-                <a class="button button-primary button-hero" href="https://typerocket.com/getting-started/">Learn The Basics</a>
-                <p class="hide-if-no-customize">or, <a href="https://typerocket.com/docs/v4/">read the documentation</a></p>
-            </div>
-            <div class="welcome-panel-column">
-                <h3>Next Steps</h3>
-                <ul>
-                    <li><a href="https://typerocket.com/docs/v4/post-types-making/" class="welcome-icon welcome-add-page">Add your first post type</a></li>
-                    <li><a href="https://typerocket.com/docs/v4/theme-options/" class="welcome-icon welcome-add-page">Edit your theme options</a></li>
-                    <li><a href="https://typerocket.com/docs/v4/builder/" class="welcome-icon welcome-add-page">Use the page builder</a></li>
-                    <li><a href="https://github.com/TypeRocket/typerocket-skeleton-theme" class="welcome-icon welcome-add-page">Try our skeleton theme</a></li>
-                </ul>
-            </div>
-            <div class="welcome-panel-column welcome-panel-last">
-                <h3>More Actions</h3>
-                <ul>
-                    <li><a href="https://www.youtube.com/channel/UCsuLPuiwCYpZRrD1yoDUajQ/playlists" class="welcome-icon welcome-add-page">Explore our videos</a></li>
-                    <li><a href="https://github.com/TypeRocket/typerocket/issues" class="welcome-icon welcome-add-page">Submit a bug report</a></li>
-                    <li><a href="https://us8.list-manage.com/subscribe?u=7bbb7409e86c85970f6150c5e&id=1d45a226d0" class="welcome-icon welcome-add-page">Get on the mailing list</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<?php
-
-$icons = function()
-{
-    $icons = \TypeRocket\Core\Config::locate('app.class.icons');
-    $icons = new $icons;
-    $generator = new \TypeRocket\Html\Generator();
-
-    echo '<h3><i class="tr-icon-droplet"></i> ' . __('Icons') . '</h3>';
-    echo '<p>' . __('These can be used with custom post types and admin pages.');
-    echo '</p><p><input onkeyup="trDevIconSearch()" placeholder="' . __('Enter text to search list...') . '" id="dev-icon-search" /></p><ol id="debug-icon-list">';
-    foreach ($icons as $k => $v) {
-        echo $generator->newElement( 'li', ['class' => 'tr-icon-' . $k, 'id' => $k],
-            '<strong>' . $k . '</strong><em>.tr-icon-' . $k . '</em>' )->getString();
-    }
-    echo '</ol>';
+$tabs = tr_tabs()->layoutLeft();
+$tabs->tab('About', 'rocket', function() {
     ?>
-    <script language="JavaScript">
-        function trDevIconSearch() {
-            var input, filter, ul, li, a, i;
-            input = document.getElementById("dev-icon-search");
-            filter = input.value.toUpperCase();
-            ul = document.getElementById("debug-icon-list");
-            li = ul.getElementsByTagName("li");
-            for (i = 0; i < li.length; i++) {
-                a = li[i];
-                if (a.id.toUpperCase().indexOf(filter) > -1) {
-                    li[i].style.display = "";
-                } else {
-                    li[i].style.display = "none";
-                }
-            }
-        }
-    </script>
+    <div class="tr-p-20">
+        <?php echo \TypeRocket\Html\Element::title('TypeRocket Pro'); ?>
+        <a class="button button-primary button-hero" target="_blank" href="https://typerocket.com/getting-started/">Learn The Basics</a>
+        <p class="hide-if-no-customize">or, <a target="_blank" href="https://typerocket.com/docs/v1/">read the full documentation</a></p>
+        <h3>First Steps</h3>
+        <p><?php _e('We’ve assembled some links to get you started:'); ?></p>
+        <ul>
+            <li><i class="dashicons dashicons-admin-post"></i> <a target="_blank" href="https://typerocket.com/docs/v1/post-types-making/">Add your first post type.</a></li>
+            <li><i class="dashicons dashicons-admin-appearance"></i> <a target="_blank" href="https://typerocket.com/docs/v1/theme-options/">Edit your theme options.</a></li>
+            <li><i class="dashicons dashicons-admin-page"></i> <a target="_blank" href="https://typerocket.com/docs/v1/builder/">Working with the page builder.</a></li>
+            <li><i class="dashicons dashicons-edit"></i> <a target="_blank" href="https://typerocket.com/docs/v1/custom-resources/">Making an MVC powered resource.</a></li>
+        </ul>
+    </div>
+<?php
+})->setDescription('Getting started');
+
+$tabs->tab('Configure', 'gear', function() {
+    ?>
+    <div class="tr-p-20">
+        <?php echo \TypeRocket\Html\Element::title('Configuration'); ?>
+        <p>The <strong>TypeRocket Pro</strong> WordPress plugin can be further configured in your <code>wp-config.php</code> file.</p>
+        <ul>
+            <li>To disable auto updates: <code>define('TYPEROCKET_UPDATES', false);</code></li>
+            <li>To disable dev mode: <code>define('TYPEROCKET_DEV', false );</code></li>
+            <li>To disable page builder: <code>define('TYPEROCKET_PAGE_BUILDER', false);</code></li>
+            <li>To disable theme options: <code>define('TYPEROCKET_THEME_OPTIONS', false);</code></li>
+            <li>To disable seo: <code>define('TYPEROCKET_SEO', false);</code></li>
+            <li>To disable post types UI: <code>define('TYPEROCKET_UI', false);</code></li>
+        </ul>
+    </div>
     <?php
-};
+})->setDescription('Config settings');
 
-$configure = function() {
-    include __DIR__ . '/admin-configure.php';
-};
-
-$rules = function() {
-    echo '<h3><i class="tr-icon-link"></i> ' . __('Rewrite Rules & Routes') . '</h3>';
-    $rules = get_option('rewrite_rules');
-    /** @var \TypeRocket\Http\ApplicationRoutes $routes */
-    $routes = \TypeRocket\Core\Injector::resolve(\TypeRocket\Http\RouteCollection::class);
-    if($routes->routes && $rules) {
-        echo "<p><strong>TypeRocket Routes</strong>. TypeRocket loads custom routes at run time.</p>";
-        echo '<table class="wp-list-table widefat fixed striped">';
-        echo "<thead><tr><th>" . __('Match') . "</th><th>" . __('Vars') . "</th><th>" . __('Trailing Slash') . "</th><th>" . __('Request') . "</th></tr></thead>";
-        foreach ($routes->routes as $route) {
-            /** @var \TypeRocket\Http\Route $route */
-            $methods = json_encode($route->methods);
-            $vars = json_encode($route->match[1]);
-            $slash = $route->addTrailingSlash ? 'yes' : '';
-            echo "<tr><td>{$route->match[0]}</td><td>{$vars}</td><td>{$slash}</td><td>{$methods}</td></tr>";
-        }
-        echo '</table>';
-    }
-
-    if(!empty($rules)) {
-        echo "<p><strong>WordPress Rewrite Rules</strong>. WordPress rewrite rules are loaded from the database.</p>";
-        echo '<table class="wp-list-table widefat fixed striped">';
-        echo "<thead><tr><th>" . __('Rewrite Rule') . "</th><th>" . __('Match') . "</th></tr></thead>";
-        foreach ($rules as $rule => $match) {
-            echo "<tr><td>$rule</td><td>$match</td></tr>";
-        }
-        echo '</table>';
-    } else {
-        echo '<p>Enable "Pretty Permalinks" under <a href="/wp-admin/options-permalink.php">Permalink Settings</a>.</p>';
-    }
-};
-
-$tabs = tr_tabs();
-$tabs->addTab(__('Icons'), $icons)
-    ->addTab(__('Rewrites & Routes'), $rules)
-    ->addTab(__('Configure'), $configure)
-    ->render('box');
+echo $tabs;

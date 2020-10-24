@@ -1,24 +1,25 @@
 <?php
 namespace TypeRocket\Core;
 
+use TypeRocket\Utility\Data;
+
 class Config
 {
+    public const ALIAS = 'config';
 
-    static private $root;
-    static private $config = [];
+    protected $root;
+    protected $config = [];
 
     /**
      * Set initial values
      *
      * @param string $root
+     * @param array $overrides
      */
-    public function __construct( $root )
+    public function __construct( $root, $overrides = [] )
     {
-        if(self::$root) {
-            return;
-        }
-
-        self::$root = $root;
+        $this->root = $root;
+        $this->config = $overrides;
     }
 
     /**
@@ -26,9 +27,9 @@ class Config
      *
      * @return mixed
      */
-    public static function getRoot()
+    public function getRoot()
     {
-        return self::$root;
+        return $this->root;
     }
 
     /**
@@ -39,17 +40,18 @@ class Config
      *
      * @return array|mixed|null
      */
-    private static function jitLocate($dots, $default = null)
+    private function jitLocate($dots, $default = null)
     {
-        list($root, $rest) = array_pad(explode('.', $dots, 2), 2, null);
-        if(!isset(self::$config[$root]) && is_file(self::$root . '/' . $root . '.php')) {
-            self::$config[$root] = require( self::$root . '/' . $root . '.php' );
+        [$root, $rest] = array_pad(explode('.', $dots, 2), 2, null);
+        if(!isset($this->config[$root]) && is_file($this->root . '/' . $root . '.php')) {
+            /** @noinspection PhpIncludeInspection */
+            $this->config[$root] = require( $this->root . '/' . $root . '.php' );
 
             if(!$rest) {
-                return self::$config[$root];
+                return $this->config[$root];
             }
 
-            return dots_walk($rest, self::$config[$root], $default);
+            return Data::walk($rest, $this->config[$root], $default);
         }
 
         return $default;
@@ -65,13 +67,48 @@ class Config
      *
      * @return array|mixed|null
      */
-    public static function locate($dots, $default = null)
+    public function locate($dots, $default = null)
     {
-        $value = dots_walk($dots, self::$config);
+        $value = Data::walk($dots, $this->config);
         if( isset($dots) && is_null($value) ) {
             return self::jitLocate($dots, $default);
         }
 
         return $value ?? $default;
+    }
+
+    /**
+     * Get Constant Variable
+     *
+     * @param string $name the constant variable name
+     * @param null|mixed $default The default value
+     *
+     * @return mixed
+     */
+    public static function env($name, $default = null)
+    {
+        return defined($name) ? constant($name) : $default;
+    }
+
+    /**
+     * @return static
+     */
+    public static function getFromContainer()
+    {
+        return Container::resolve(static::ALIAS);
+    }
+
+    /**
+     * Locate Config Setting
+     *
+     * Traverse array with dot notation.
+     *
+     * @param string $dots dot notation key.next.final
+     * @param null|mixed $default default value to return if null
+     *
+     * @return array|mixed|null
+     */
+    public static function get($dots, $default = null) {
+        return static::getFromContainer()->locate($dots, $default);
     }
 }

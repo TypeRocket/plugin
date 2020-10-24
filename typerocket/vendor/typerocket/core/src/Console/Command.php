@@ -1,8 +1,13 @@
 <?php
 namespace TypeRocket\Console;
 
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Class Command
@@ -11,11 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package TypeRocket\Console
  */
-class Command extends \Symfony\Component\Console\Command\Command
+class Command extends SymfonyCommand
 {
-    const REQUIRED = 1;
-    const OPTIONAL = 2;
-    const IS_ARRAY = 4;
+    const REQUIRED = InputArgument::REQUIRED;
+    const OPTIONAL = InputArgument::OPTIONAL;
+    const IS_ARRAY = InputArgument::IS_ARRAY;
 
     /** @var InputInterface $input */
     protected $input;
@@ -29,30 +34,81 @@ class Command extends \Symfony\Component\Console\Command\Command
         'help',
     ];
 
+    protected $printedError = false;
+    protected $success;
+
     /**
      * Configure
      */
     protected function configure()
     {
-        $this->setName($this->command[0])
+
+        $signature = explode(' ', $this->command[0], 2);
+        $name = array_shift($signature);
+
+        $this->setName($name)
              ->setDescription($this->command[1])
              ->setHelp($this->command[2]);
+
+        if($signature) {
+            // Match Laravel style: name:command {?user*} {?name=kevin} {?--option=some value}
+            preg_match_all('/(\{.+\})/mU', $signature[0], $matches, PREG_SET_ORDER, 0);
+            foreach ($matches as [$arg, $other]) {
+                $arg = substr($arg, 1, -1);
+                $mode = static::REQUIRED;
+                $shortcut = null;
+                $is_option = false;
+
+                [$arg, $default] = array_pad(explode('=', $arg, 2), 2, null);
+
+                if(trim($arg, '?') !== $arg) {
+                    $mode = static::OPTIONAL;
+                    $arg = trim($arg, '?');
+                }
+
+                if($arg[0] == '-') {
+                    $arg = ltrim($arg, '-');
+                    [$shortcut, $arg] = array_pad(explode('|', $arg, 2), 2, null);
+
+                    if(is_null($arg)) {
+                        $arg = $shortcut;
+                        $shortcut = $arg[0];
+                    }
+
+                    $is_option = true;
+                }
+
+                if(trim($arg, '*') !== $arg || ($default == '*' && $is_option)) {
+                    $mode = $mode + static::IS_ARRAY;
+                    $arg = trim($arg, '*');
+                    $default = null;
+                }
+
+                if($is_option) {
+                    $bitWiseDiff = InputOption::VALUE_REQUIRED / static::REQUIRED;
+                    $this->addOption($arg, $shortcut, $mode * $bitWiseDiff, '', $default);
+                } else {
+                    $this->addArgument($arg, $mode, '', $default);
+                }
+            }
+        }
+
         $this->config();
     }
 
     /**
-     * Execute
+     * @param InputInterface $input
+     * @param OutputInterface $output
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     *
-     * @return void
+     * @return int|null
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;
         $this->output = $output;
         $this->exec();
+
+        return $this->success ?? Command::SUCCESS;
     }
 
     /**
@@ -76,6 +132,7 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function error( $content )
     {
+        $this->printedError = true;
         $this->output->writeln('<fg=red>'.$content.'</>');
     }
 
@@ -100,6 +157,16 @@ class Command extends \Symfony\Component\Console\Command\Command
     }
 
     /**
+     * Output info line
+     *
+     * @param string $content
+     */
+    protected function info($content)
+    {
+        $this->output->writeln('<fg=cyan>'.$content.'</>');
+    }
+
+    /**
      * Output line
      *
      * @param string $content
@@ -107,6 +174,23 @@ class Command extends \Symfony\Component\Console\Command\Command
     protected function line($content)
     {
         $this->output->writeln($content);
+    }
+
+    /**
+     * Confirm
+     *
+     * https://symfony.com/doc/3.4/components/console/helpers/questionhelper.html
+     *
+     * @param string|null $question        The question to ask to the user
+     * @param bool   $default         The default answer to return, true or false
+     * @param string $trueAnswerRegex A regex to match the "yes" answer
+     */
+    protected function confirm($question = null, $default = false, $trueAnswerRegex = '/^y/i') {
+        $question = new ConfirmationQuestion(($question ?? 'Continue with this action? (y|n)') . ' ', $default, $trueAnswerRegex);
+
+        if (!$this->getHelper('question')->ask($this->input, $this->output, $question)) {
+            die();
+        }
     }
 
     /**
@@ -121,6 +205,18 @@ class Command extends \Symfony\Component\Console\Command\Command
     }
 
     /**
+     * @param string $name
+     * @param array $args
+     *
+     * @throws \Exception
+     */
+    protected function runCommand($name, array $args = []) {
+        $command = $this->getApplication()->find($name);
+        $input = new ArrayInput( $args );
+        $command->run($input, $this->output);
+    }
+
+    /**
      * Get Option
      *
      * @param string $name
@@ -129,6 +225,21 @@ class Command extends \Symfony\Component\Console\Command\Command
      */
     protected function getOption( $name ) {
         return $this->input->getOption($name);
+    }
+
+    /**
+     * Get Class Arg
+     *
+     * @param $arg
+     *
+     * @return mixed|string|string[]|null
+     */
+    public function getClassArgument($arg) {
+        $arg = $this->getArgument($arg);
+        $arg = str_replace("/",'\\', $arg);
+        $arg = preg_replace('/(\\\\+)/m','\\', $arg);
+
+        return $arg;
     }
 
 }

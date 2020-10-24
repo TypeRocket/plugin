@@ -1,18 +1,44 @@
 <?php
-
 namespace TypeRocket\Utility;
 
-use TypeRocket\Database\Query;
+use TypeRocket\Exceptions\RedirectError;
+use TypeRocket\Http\Request;
 use TypeRocket\Http\Response;
+use TypeRocket\Utility\Validators\ValidatorRule;
+use TypeRocket\Utility\Validators\CallbackValidator;
+use TypeRocket\Utility\Validators\EmailValidator;
+use TypeRocket\Utility\Validators\KeyValidator;
+use TypeRocket\Utility\Validators\MaxLengthValidator;
+use TypeRocket\Utility\Validators\MinLengthValidator;
+use TypeRocket\Utility\Validators\NumericValidator;
+use TypeRocket\Utility\Validators\RequiredValidator;
+use TypeRocket\Utility\Validators\SizeValidator;
+use TypeRocket\Utility\Validators\UniqueModelValidator;
+use TypeRocket\Utility\Validators\UrlValidator;
 
 class Validator
 {
-    public $errors = [];
-    public $errorMessages = ['messages' => [], 'regex' => false];
-    public $passes = [];
-    public $rules = [];
-    public $fields = [];
-    public $modelClass = [];
+    protected $rules = [];
+    protected $fields = [];
+    protected $passes = [];
+    protected $errors = [];
+    protected $errorFields = [];
+    protected $modelClass;
+    protected $respondWithErrors;
+    protected $errorMessages = ['messages' => [], 'regex' => false];
+    protected $ran = false;
+    protected $validatorMap = [
+        CallbackValidator::KEY => CallbackValidator::class,
+        EmailValidator::KEY => EmailValidator::class,
+        KeyValidator::KEY => KeyValidator::class,
+        MaxLengthValidator::KEY => MaxLengthValidator::class,
+        MinLengthValidator::KEY => MinLengthValidator::class,
+        NumericValidator::KEY => NumericValidator::class,
+        RequiredValidator::KEY => RequiredValidator::class,
+        SizeValidator::KEY => SizeValidator::class,
+        UniqueModelValidator::KEY => UniqueModelValidator::class,
+        UrlValidator::KEY => UrlValidator::class,
+    ];
 
     /**
      * Validator
@@ -24,11 +50,12 @@ class Validator
      * @param null $modelClass must be a class of Model
      * @param bool $run run validation on new
      */
-    public function __construct($rules, $fields, $modelClass = null, $run = true)
+    public function __construct($rules, $fields = null, $modelClass = null, $run = false)
     {
         $this->modelClass = $modelClass;
-        $this->fields = $fields ?? [];
+        $this->fields = $fields ?? (new Request)->getFields();
         $this->rules = $rules;
+        $this->validatorMap = apply_filters('typerocket_validator_map', $this->validatorMap);
 
         if($run) {
             $this->mapFieldsToValidation();
@@ -36,11 +63,79 @@ class Validator
     }
 
     /**
-     * Run Validation
+     * @param mixed ...$args
+     *
+     * @return static
      */
-    public function validate()
+    public static function new(...$args)
+    {
+        return new static(...$args);
+    }
+
+    /**
+     * Run Validation
+     *
+     * @param bool $returnSelf
+     *
+     * @return bool|$this
+     */
+    public function validate($returnSelf = false)
     {
         $this->mapFieldsToValidation();
+
+        return $returnSelf ? $this : $this->passed();
+    }
+
+    /**
+     * @param null|callable $callback
+     * @param bool $flash flash errors to page
+     * @param string $key
+     *
+     * @return $this
+     * @throws RedirectError
+     */
+    public function redirectWithErrorsIfFailed($callback = null, $flash = true, $key = 'fields')
+    {
+        if($this->failed()) {
+            if($flash) {
+                $this->flashErrors(\TypeRocket\Http\Response::getFromContainer());
+            }
+
+            $redirect = \TypeRocket\Http\Redirect::new()->withOldFields()->withErrors([$key => $this->getErrorFields()])->back();
+
+            if(is_callable($callback)) {
+                call_user_func($callback, $redirect);
+            }
+
+            throw (new RedirectError(__('Validation failed', 'typerocket-domain')))->redirect( $redirect );
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param null $callback
+     * @param bool $flash flash errors to page
+     * @param string $key
+     *
+     * @return $this
+     */
+    public function respondWithErrors($callback = null, $flash = true, $key = 'fields')
+    {
+        if( $this->failed() && $this->ran) {
+
+            $response = \TypeRocket\Http\Response::getFromContainer()->withOldFields()->withRedirectErrors([$key => $this->getErrorFields()]);
+
+            if($flash) {
+                $this->flashErrors($response->allowFlash());
+            }
+
+            if(is_callable($callback)) {
+                call_user_func($callback, $response);
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -63,6 +158,14 @@ class Validator
     }
 
     /**
+     * @return array
+     */
+    public function getErrorFields()
+    {
+        return $this->errorFields;
+    }
+
+    /**
      * Set Error Messages
      *
      * @param array $messages
@@ -81,7 +184,7 @@ class Validator
      * @return bool
      */
     public function passed() {
-        return empty($this->errors);
+        return empty($this->errors) && $this->ran;
     }
 
     /**
@@ -97,18 +200,24 @@ class Validator
      * Flash validator errors on next request
      *
      * @param \TypeRocket\Http\Response $response
+     *
+     * @return $this
      */
     public function flashErrors( Response $response )
     {
         $errors = '<ul>';
 
-        foreach ($this->errors as $error ) {
+        $list = array_unique($this->errors);
+
+        foreach ($list as $error ) {
             $errors .= "<li>$error</li>";
         }
 
         $errors .= '</ul>';
 
         $response->flashNext($errors, 'error');
+
+        return $this;
     }
 
     /**
@@ -118,6 +227,18 @@ class Validator
         foreach ($this->rules as $path => $handle) {
             $this->walk($this->fields, $path, $handle, $path);
         }
+
+        $this->ran = true;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getModelClass()
+    {
+        return $this->modelClass;
     }
 
     /**
@@ -131,22 +252,25 @@ class Validator
      * @return array|null
      * @throws \Exception
      */
-    private function walk(array &$arr, $path, $handle, $fullPath) {
+    protected function walk(array &$arr, $path, $handle, $fullPath) {
         $loc = &$arr;
         $dots = explode('.', $path);
         foreach($dots as $step)
         {
             array_shift($dots);
-            if($step === '*' && is_array($loc)) {
+            if(in_array($step, ['*', '?']) && is_array($loc)) {
                 $new_loc = &$loc;
                 $indies = array_keys($new_loc);
                 foreach($indies as $index) {
                     if(isset($new_loc[$index])) {
-                        $newFullPath = preg_replace('(\*)', "{$index}", $fullPath, 1);
+                        $newFullPath = preg_replace('(\*|\?)', "{$index}", $fullPath, 1);
                         $this->walk($new_loc[$index], implode('.', $dots), $handle, $newFullPath);
                     }
                 }
-            } elseif( isset($loc[$step] ) ) {
+            } elseif( $step === '?' && empty($loc) ) {
+                $this->passes[substr($fullPath, 0, strpos($fullPath, '.?'))] = $loc;
+                return null;
+            } elseif( isset($loc[$step]) ) {
                 $loc = &$loc[$step];
             } else {
                 if( !empty($handle) && !isset($indies) ) {
@@ -166,20 +290,47 @@ class Validator
     }
 
     /**
+     * @param $message
+     *
+     * @return $this
+     */
+    public function appendToFlashErrorMessage($message)
+    {
+        $this->errors[] = $message;
+
+        return $this;
+    }
+
+    /**
+     * @param $message
+     *
+     * @return $this
+     */
+    public function prependToFlashErrorMessage($message)
+    {
+        array_unshift($this->errors, $message);
+
+        return $this;
+    }
+
+    /**
      * Set Error Message
      *
      * Pulls message override from $errorMessages
      *
      * @param string $name
-     * @param string $type
-     * @param string $message
+     * @param string $field_name
+     * @param ValidatorRule $class
      */
-    protected function setErrorMessage($name, $type, $message) {
-        $this->errors[$name] = $message;
+    protected function setErrorMessage($name, $field_name, $class) {
+        $message = __($class->getError(), 'typerocket-domain');
+        $this->errors[$name] = $field_name . ' ' .  $message;
+        $this->errorFields[$name] = trim($message);
+        $type = $class::KEY;
         $index = $name.':'.$type;
         $validate = $value = $match = $matches = false;
 
-        if($this->errorMessages['regex']) {
+        if($this->errorMessages['regex'] && !empty($this->errorMessages['messages'])) {
             foreach ($this->errorMessages['messages'] as $key => $value) {
                 $match = preg_match_all("/{$key}/", $index, $matches, PREG_SET_ORDER, 0);
                 if($match) {
@@ -187,132 +338,111 @@ class Validator
                     break;
                 }
             }
-        } else {
+        }
+        else {
             $validate = !empty($this->errorMessages['messages'][$index]);
 
             if($validate) {
                 $value = $this->errorMessages['messages'][$index];
             }
-
         }
-
 
         if($validate) {
             if(is_callable($value)) {
-                $this->errors[$name] = call_user_func($value, $name, $type, $message, $matches);
+                $this->errors[$name] = call_user_func($value, $name, $type, $this->errors[$name], $matches);
+                $this->errorFields[$name] = $this->errors[$name];
             } else {
-                $this->errors[$name] = $value;
+                $error_message = $class->getError();
+                $error_message = isset($value) ? str_replace('{error}', $error_message, $value) : $error_message;
+                $this->errors[$name] = $error_message;
+                $this->errorFields[$name] = $error_message;
             }
-
         }
     }
 
     /**
      * Validate the Field
      *
-     * @param string $handle
+     * @param string|ValidatorRule $handle
      * @param string $value
-     * @param string $name
+     * @param string $fullName
+     *
      * @throws \Exception
      */
-    protected function validateField( $handle, $value, $name ) {
-        $list = explode('|', $handle);
+    protected function validateField($handle, $value, $fullName) {
+        $field_name = '<strong>"' . Str::uppercaseWords(preg_replace('/\_|\./', ' ', $fullName)) . '"</strong>';
+
+        $args = [
+            'validator' => $this,
+            'value' => $value,
+            'full_name' => $fullName,
+            'field_name' => $field_name,
+        ];
+
+        if($handle instanceof ValidatorRule) {
+            $handle->setArgs($args);
+            $this->runValidatorRule($handle, $fullName, $field_name, $value);
+            return;
+        }
+
+        $list = [];
+
+        if(is_string($handle)) {
+            $handle = explode('|', (string) $handle);
+        }
+
+        if(is_array($handle)) {
+            $list = $handle;
+        }
+
         foreach( $list as $validation) {
-            list( $type, $option, $option2, $option3 ) = array_pad(explode(':', $validation, 4), 4, null);
-            $field_name = '"<strong>' . ucwords(preg_replace('/\_|\./', ' ', $name)) . '</strong>"';
-            switch($type) {
-                case 'required' :
-                    if( empty( $value ) ) {
-                        $this->setErrorMessage($name, $type, $field_name . ' is required.');
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'callback' :
-                    $callback_value = call_user_func_array($option, [ $this, $value, $field_name, $option2 ]);
-                    if( isset($callback_value['error']) ) {
-                        $this->setErrorMessage($name, $type, $callback_value['error']);
-                    } else {
-                        $this->passes[$name] = $callback_value['success'];
-                    }
-                    break;
-                case 'min' :
-                    $option = (int) $option;
-                    if( mb_strlen($value) < $option ) {
-                        $this->setErrorMessage($name, $type, $field_name . " must be at least $option characters.");
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'max' :
-                    $option = (int) $option;
-                    if( mb_strlen($value) > $option ) {
-                        $this->setErrorMessage($name, $type, $field_name . " must be less than $option characters.");
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'size' :
-                    $option = (int) $option;
-                    if( mb_strlen($value) !== (int) $option ) {
-                        $this->setErrorMessage($name, $type, $field_name . " must be $option characters.");
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'email' :
-                    if( ! filter_var($value, FILTER_VALIDATE_EMAIL) ) {
-                        $this->setErrorMessage($name, $type, $field_name . " must be at an email address.");
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'numeric' :
-                    if( ! is_numeric($value) ) {
-                        $this->setErrorMessage($name, $type, $field_name . " must be a numeric value.");
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'url' :
-                    if( ! filter_var($value, FILTER_VALIDATE_URL) ) {
-                        $this->setErrorMessage($name, $type, $field_name . " must be at a URL.");
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-                    break;
-                case 'unique' :
-                    $result = null;
 
-                    if( $this->modelClass && ! $option3) {
-                        /** @var \TypeRocket\Models\Model $model */
-                        $model = new $this->modelClass;
-                        $model->where($option, $value);
+            if(is_string($validation)) {
+                [ $type, $option, $option2, $option3 ] = array_pad(explode(':', $validation, 4), 4, null);
 
-                        if($option2) {
-                            $model->where($model->idColumn, '!=', $option2);
-                        }
+                if(array_key_exists($type, $this->validatorMap)) {
+                    $class = $this->validatorMap[$type];
+                } else {
+                    $class = $type;
+                }
 
-                        $result = $model->first();
-                    } elseif( $option3 || ( ! $this->modelClass && $option2 ) ) {
-                        list($table, $idColumn) = array_pad(explode('@', $option2, 2), 2, null);
-                        $query = (new Query())->table($table)->where($option, $value);
+                if(class_exists($class)) {
+                    $args = array_merge($args, [
+                        'option' => $option,
+                        'option2' => $option2,
+                        'option3' => $option3,
+                    ]);
 
-                        if($idColumn && $option3) {
-                            $query->where($idColumn, '!=', $option3);
-                        }
-
-                        $result = $query->first();
-                    }
-
-                    if($result) {
-                        $this->setErrorMessage($name, $type, $field_name . ' is taken.');
-                    } else {
-                        $this->passes[$name] = $value;
-                    }
-
-                    break;
+                    $class = new $class;
+                }
             }
+            elseif ($validation instanceof ValidatorRule) {
+                $class = $validation;
+            }
+
+            if($class instanceof ValidatorRule) {
+                $class->setArgs($args);
+                $this->runValidatorRule($class, $fullName, $field_name, $value);
+                continue;
+            }
+
+            throw new \Exception('Unknown validation option: ' . $type);
+        }
+    }
+
+    /**
+     * @param ValidatorRule $class
+     * @param $fullName
+     * @param $field_name
+     * @param $value
+     */
+    protected function runValidatorRule(ValidatorRule $class, $fullName, $field_name, $value) {
+        $pass = $class->validate();
+
+        if( !$pass ) {
+            $this->setErrorMessage($fullName, $field_name, $class);
+        } else {
+            $this->passes[$fullName . ':' . $class::KEY] = $value;
         }
     }
 }

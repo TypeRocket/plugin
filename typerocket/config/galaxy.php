@@ -8,10 +8,10 @@ return [
     | Set to the WordPress root directory. This will enable new WP specific
     | Galaxy commands like: SQL, Migrations, and Flushing Permalinks
     |
-    | Example of root installation: TR_PATH . '/wordpress'
+    | Example of root installation: TYPEROCKET_PATH . '/wordpress'
     |
     */
-    'wordpress' => TR_WP_ROOT,
+    'wordpress' => \TypeRocket\Utility\Helper::wordPressRootPath(),
 
     /*
     |--------------------------------------------------------------------------
@@ -22,5 +22,6 @@ return [
     | framework see http://symfony.com/doc/current/console.html
     |
     */
-    'commands' => []
+    'commands' => [
+    ]
 ];

@@ -1,8 +1,5 @@
 <?php
-
-
 namespace TypeRocket\Database;
-
 
 use TypeRocket\Models\Model;
 
@@ -11,7 +8,6 @@ class EagerLoader
 
     protected $load = [];
     protected $with = null;
-
 
     /**
      * Eager Load
@@ -259,13 +255,18 @@ class EagerLoader
         $query = $relation->getRelatedBy()['query'];
         $set = [];
 
+        $relationId = $query['where_column'];
+        if (($pos = strpos($relationId, ".")) !== false) { 
+            $relationId = substr($relationId, $pos + 1); 
+        }
+
         if($result instanceof Results) {
             foreach($result as $model) {
                 /** @var Model $model */
-                $ids[] = $model->getId();
+                $ids[] = $model->$relationId ?? $model->getId();
             }
         } elseif($result instanceof Model) {
-            $ids[] = $result->getId();
+            $ids[] = $result->$relationId ?? $result->getId();
         }
 
         $relation

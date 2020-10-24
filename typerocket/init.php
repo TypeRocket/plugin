@@ -1,43 +1,47 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| TypeRocket by Robojuice
-|--------------------------------------------------------------------------
-|
-| TypeRocket is designed to work with WordPress 5.2+ and PHP 7+. You
-| must initialize it exactly once. We suggest including TypeRocket
-| from your theme and let plugins access TypeRocket from there.
-|
-| Happy coding!
-|
-| http://typerocket.com
-|
-*/
+namespace TypeRocket\Core;
 
-if(!defined('TR_PATH')) {
-    define('TR_PATH', __DIR__ );
-}
+// Run TypeRocket only once
+if( defined('TYPEROCKET_PATH') )
+    return;
+
+// Define TypeRocket root path
+define('TYPEROCKET_PATH', __DIR__ );
+
+// Define TypeRocket alternate path
+if( !defined('TYPEROCKET_ALT_PATH') )
+    define('TYPEROCKET_ALT_PATH', TYPEROCKET_PATH);
+
+// Define TypeRocket alternate path
+if( !defined('TYPEROCKET_APP_ROOT_PATH') )
+    define('TYPEROCKET_APP_ROOT_PATH', TYPEROCKET_ALT_PATH);
 
 // Define App Namespace
-if(!defined('TR_APP_NAMESPACE')) {
-    define('TR_APP_NAMESPACE', 'App');
-}
+if( !defined('TYPEROCKET_APP_NAMESPACE') )
+    define('TYPEROCKET_APP_NAMESPACE', 'App');
 
-// Define Config
-if(!defined('TR_CORE_CONFIG_PATH')) {
+// Define App auto loader
+if( !defined('TYPEROCKET_AUTOLOAD_APP') )
+    define('TYPEROCKET_AUTOLOAD_APP', ['prefix' => TYPEROCKET_APP_NAMESPACE . '\\', 'folder' => __DIR__ . '/app/']);
 
-    $temp_dir = get_template_directory();
+// Run vendor autoloader
+if( !defined('TYPEROCKET_AUTO_LOADER') )
+    require __DIR__ . '/vendor/autoload.php';
+else
+    call_user_func(TYPEROCKET_AUTO_LOADER);
 
-    if( file_exists($temp_dir . '/config/typerocket.php') ) {
-        define('TR_CORE_CONFIG_PATH', $temp_dir . '/config' );
-    } else {
-        define('TR_CORE_CONFIG_PATH', __DIR__ . '/config' );
-    }
-}
+// Run app autoloader
+$tr_autoload_map = TYPEROCKET_AUTOLOAD_APP;
+ApplicationKernel::autoloadPsr4($tr_autoload_map);
 
-new \TypeRocket\Core\Config( TR_CORE_CONFIG_PATH );
+// Define configuration path
+if( !defined('TYPEROCKET_CORE_CONFIG_PATH') )
+    define('TYPEROCKET_CORE_CONFIG_PATH', __DIR__ . '/config' );
+
+// Boot application kernel
+( new ApplicationKernel )->boot();
 
 // Load TypeRocket
-if( defined('WPINC') ) {
-    ( new \TypeRocket\Core\Launcher() )->initCore();
+if (defined('WPINC')) {
+    (new System)->boot();
 }

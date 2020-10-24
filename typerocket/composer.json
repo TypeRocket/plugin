@@ -4,27 +4,44 @@
     "keywords": ["framework", "typerocket", "wordpress"],
     "license": "GPL-3.0-or-later",
     "homepage": "https://typerocket.com",
+    "repositories": {
+        "wpackagist": {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    },
     "authors": [
         {
-            "name": "Kevin Dees",
-            "homepage": "https://kevdees.com",
+            "name": "Robojuice",
+            "homepage": "https://robojuice.com",
             "role": "Creator"
         }
     ],
     "support": {
-        "docs": "https://typerocket.com/docs/v4/"
+        "docs": "https://typerocket.com/docs/v5/"
     },
     "require": {
-        "php": ">=7",
-        "typerocket/core": "4.1.*",
-        "typerocket/plugin-seo": "4.0.*",
-        "typerocket/plugin-theme-options": "4.0.*",
-        "typerocket/plugin-builder": "4.0.*",
+        "php": ">=7.2.5",
+        "typerocket/core": "5.0.*",
         "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "8.5.*"
+    },
+    "autoload": {
+        "files": [
+            "helpers.php"
+        ],
+        "psr-4": {
+            "TypeRocketPlugin\\": "plugin/"
+        }
     },
     "scripts": {
         "post-create-project-cmd": [
             "php galaxy config:seed"
+        ],
+        "post-update-cmd": [
+            "php galaxy core:update"
         ]
     },
     "minimum-stability": "stable"

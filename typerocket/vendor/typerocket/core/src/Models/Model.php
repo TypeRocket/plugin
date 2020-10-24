@@ -5,24 +5,31 @@ use ArrayObject;
 use JsonSerializable;
 use ReflectionClass;
 use ReflectionException;
+use TypeRocket\Core\Container;
 use TypeRocket\Database\EagerLoader;
 use TypeRocket\Database\Query;
 use TypeRocket\Database\Results;
 use TypeRocket\Database\ResultsMeta;
 use TypeRocket\Elements\Fields\Field;
-use TypeRocket\Http\Cookie;
+use TypeRocket\Http\Auth;
 use TypeRocket\Http\Fields;
-use TypeRocket\Models\Contract\Formable;
+use TypeRocket\Http\Request;
+use TypeRocket\Interfaces\Formable;
+use TypeRocket\Models\Traits\FieldValue;
 use TypeRocket\Models\Traits\Searchable;
+use TypeRocket\Services\AuthorizerService;
+use TypeRocket\Utility\Arr;
+use TypeRocket\Utility\Data;
 use TypeRocket\Utility\Inflect;
 use TypeRocket\Utility\Str;
 use wpdb;
 
-class Model implements JsonSerializable, Formable
+class Model implements Formable, JsonSerializable
 {
-    use Searchable;
+    use Searchable, FieldValue;
 
     protected $fillable = [];
+    protected $restMetaFields = [];
     protected $closed = false;
     protected $guard = ['id'];
     protected $format = [];
@@ -37,9 +44,6 @@ class Model implements JsonSerializable, Formable
     protected $errors = null;
     /** @var mixed|Query  */
     protected $query;
-    protected $old = null;
-    protected $onlyOld = false;
-    protected $dataOverride = null;
     protected $properties = [];
     protected $propertiesUnaltered = null;
     protected $explicitProperties = [];
@@ -50,6 +54,7 @@ class Model implements JsonSerializable, Formable
     protected $relationships = [];
     protected $junction = null;
     protected $with = null;
+    protected $cache = true;
     protected $fieldOptions = [
         'key' => null,
         'value' => null,
@@ -64,7 +69,6 @@ class Model implements JsonSerializable, Formable
      */
     public function __construct()
     {
-        $this->init();
         /** @var wpdb $wpdb */
         global $wpdb;
 
@@ -86,16 +90,9 @@ class Model implements JsonSerializable, Formable
         $this->query->table($this->getTable());
         $this->query->setIdColumn($this->idColumn);
 
-        $suffix  = '';
+        do_action('typerocket_model', $this );
 
-        if ( ! empty( $type ) ) {
-            $suffix = '_' . $type;
-        }
-
-        $this->fillable = apply_filters( 'tr_model_fillable' . $suffix, $this->fillable, $this );
-        $this->guard    = apply_filters( 'tr_model_guard' . $suffix, $this->guard, $this );
-        $this->format   = apply_filters( 'tr_model_format' . $suffix, $this->format, $this );
-        do_action( 'tr_model', $this );
+        $this->init();
     }
 
     /**
@@ -105,7 +102,8 @@ class Model implements JsonSerializable, Formable
      *
      * @return mixed
      */
-    protected function initQuery( Query $query) {
+    protected function initQuery( Query $query)
+    {
         return $query;
     }
 
@@ -123,14 +121,27 @@ class Model implements JsonSerializable, Formable
 
     /**
      * Basic initialization
-     *
-     * Used on construction in concrete classes
-     *
-     * @return $this
      */
-    protected function init()
+    protected function init() { }
+
+    /**
+     * User Can
+     *
+     * @param $action
+     * @param null $user
+     * @return mixed
+     * @throws \Exception
+     */
+    public function can($action, $user = null)
     {
-        return $this;
+        /** @var AuthorizerService  $auth */
+        $auth = Container::resolveAlias(Auth::ALIAS);
+
+        if(!$user) {
+            $user = Container::resolveAlias(AuthUser::ALIAS);
+        }
+
+        return $auth->authRegistered($user, $this, $action);
     }
 
     /**
@@ -206,7 +217,7 @@ class Model implements JsonSerializable, Formable
      *
      * @return $this
      */
-    public function appendFillableField( $field_name )
+    public function appendFillableField( string $field_name )
     {
         if ( ! in_array( $field_name, $this->fillable ) && ! in_array( $field_name, $this->guard ) ) {
             $this->fillable[] = $field_name;
@@ -250,7 +261,7 @@ class Model implements JsonSerializable, Formable
      *
      * @return $this
      */
-    public function appendGuardField( $field_name )
+    public function appendGuardField( string $field_name )
     {
         if ( ! in_array( $field_name, $this->fillable ) && ! in_array( $field_name, $this->guard ) ) {
             $this->guard[] = $field_name;
@@ -275,6 +286,45 @@ class Model implements JsonSerializable, Formable
             $this->format[$field_name] = $callback;
         }
 
+        return $this;
+    }
+
+    /**
+     * Extend Fillable
+     *
+     * @param array $fields
+     *
+     * @return $this
+     */
+    public function extendFillableFields(array $fields)
+    {
+        $this->fillable = array_merge($this->fillable, $fields);
+        return $this;
+    }
+
+    /**
+     * Extend Guard
+     *
+     * @param array $fields
+     *
+     * @return $this
+     */
+    public function extendGuardFields(array $fields)
+    {
+        $this->guard = array_merge($this->guard, $fields);
+        return $this;
+    }
+
+    /**
+     * Extend Format
+     *
+     * @param array $fields
+     *
+     * @return $this
+     */
+    public function extendFormatFields(array $fields)
+    {
+        $this->format = array_merge($this->format, $fields);
         return $this;
     }
 
@@ -370,6 +420,55 @@ class Model implements JsonSerializable, Formable
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRestMetaFieldsCompiled()
+    {
+        $fields = $this->getRestMetaFields();
+        $compiled = [];
+
+        foreach ($fields as $field => $args) {
+
+            if(in_array($field, $this->private)) {
+                continue;
+            }
+
+            $compiled[$field] = array_filter( array_merge([
+                'sanitize_callback' => $this->format[$field] ?? null,
+                'object_subtype' => $this->getRestMetaSubtype(),
+                'single' => true,
+                'show_in_rest' => true
+            ], $args) );
+        }
+
+        return $compiled;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRestMetaFields()
+    {
+        return $this->restMetaFields;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRestMetaType()
+    {
+        return $this->resource;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRestMetaSubtype()
+    {
+        return null;
     }
 
     /**
@@ -475,7 +574,7 @@ class Model implements JsonSerializable, Formable
     public function setProperty( $key, $value = null )
     {
         if($this->hasSetMutator($key)) {
-            $value = $this->mutatePropertySet($key, $value);
+             $value = $this->mutatePropertySet($key, $value);
         }
 
         $this->properties[$key] = $value;
@@ -501,11 +600,11 @@ class Model implements JsonSerializable, Formable
     }
 
     /**
-     * Get an attribute from the model.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
+    * Get an attribute from the model.
+    *
+    * @param  string  $key
+    * @return mixed
+    */
     public function getProperty($key)
     {
         if (array_key_exists($key, $this->properties) || $this->hasGetMutator($key)) {
@@ -587,6 +686,36 @@ class Model implements JsonSerializable, Formable
     }
 
     /**
+     * @return $this
+     */
+    public function disableCache()
+    {
+        $this->cache = false;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $bool
+     *
+     * @return $this
+     */
+    public function setCache($bool)
+    {
+        $this->cache = (bool) $bool;
+
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
      * Provision Fields
      *
      * Get fields that have been checked against fillable and guard.
@@ -640,7 +769,7 @@ class Model implements JsonSerializable, Formable
             $fields = $this->formatFields($fields);
         }
 
-        return apply_filters( 'tr_model_provision_fields', $fields, $this );
+        return apply_filters('typerocket_model_provision_fields', $fields, $this );
     }
 
     /**
@@ -656,7 +785,7 @@ class Model implements JsonSerializable, Formable
             $field = $field->getDots();
         }
 
-        if ($this->getID() == null && ! $this->old && empty($this->dataOverride) ) {
+        if ($this->getID() == null && ! $this->old ) {
             return null;
         }
 
@@ -668,8 +797,6 @@ class Model implements JsonSerializable, Formable
             } else {
                 $data = null;
             }
-        } elseif( !empty($this->dataOverride[$keys[0]]) ) {
-            $data = $this->dataOverride[$keys[0]];
         } elseif( !$this->onlyOld ) {
             $data = $this->getBaseFieldValue( $keys[0] );
         } else {
@@ -680,34 +807,6 @@ class Model implements JsonSerializable, Formable
     }
 
     /**
-     * Get old stored fields
-     *
-     * @param bool $load_only_old
-     */
-    public function oldStore( $load_only_old = false) {
-        if( !empty($_COOKIE['tr_old_fields']) ) {
-            $this->old = (new Cookie)->getTransient('tr_old_fields');
-        }
-
-        $this->onlyOld = $load_only_old;
-    }
-
-    /**
-     * Override Data
-     *
-     * Use data override over model data. Used mainly but Form class.
-     *
-     * @param array $data
-     *
-     * @return $this
-     */
-    public function dataOverride(array $data)
-    {
-        $this->dataOverride = $data;
-        return $this;
-    }
-
-    /**
      * Parse data by walking through keys
      *
      * @param string $data
@@ -715,7 +814,7 @@ class Model implements JsonSerializable, Formable
      *
      * @return array|mixed|null|string
      */
-    private function parseValueData( $data, $keys )
+    protected function parseValueData( $data, $keys )
     {
         $mainKey = $keys[0];
         if (isset( $mainKey ) && ! empty( $data )) {
@@ -724,7 +823,7 @@ class Model implements JsonSerializable, Formable
                 $data = $data->getFormFields();
             }
 
-            if ( is_string($data) && tr_is_json($data)  ) {
+            if ( is_string($data) && Data::isJson($data)  ) {
                 $data = json_decode( $data, true );
             }
 
@@ -737,10 +836,13 @@ class Model implements JsonSerializable, Formable
 
             if ( ! empty( $keys ) && is_array( $keys )) {
                 foreach ($keys as $name) {
-                    $data = ( isset( $data[$name] ) && $data[$name] !== '' ) ? $data[$name] : null;
+                    if(is_object($data)) {
+                        $data = ( isset( $data->$name ) && $data->$name !== '' ) ? $data->$name : null;
+                    } else {
+                        $data = ( isset( $data[$name] ) && $data[$name] !== '' ) ? $data[$name] : null;
+                    }
                 }
             }
-
         }
 
         return $data;
@@ -753,66 +855,13 @@ class Model implements JsonSerializable, Formable
      *
      * @return array
      */
-    private function formatFields( $fields) {
+    protected function formatFields($fields) {
 
         foreach ($this->format as $path => $fn) {
-            $this->ArrayDots($fields, $path, $fn);
+            Arr::format($path, $fields, $fn);
         }
 
         return $fields;
-    }
-
-    /**
-     * Used to format fields
-     *
-     * @param array|ArrayObject $arr
-     * @param string $path
-     * @param string $fn
-     *
-     * @return array|null
-     */
-    private function ArrayDots( &$arr, $path, $fn) {
-        $loc = &$arr;
-        $dots = explode('.', $path);
-        foreach($dots as $step)
-        {
-            array_shift($dots);
-            if($step === '*' && is_array($loc)) {
-                $new_loc = &$loc;
-                $indies = array_keys($new_loc);
-                foreach($indies as $index) {
-                    if(isset($new_loc[$index])) {
-                        $this->ArrayDots($new_loc[$index], implode('.', $dots), $fn);
-                    }
-                }
-            } elseif( isset($loc[$step] ) ) {
-                $loc = &$loc[$step];
-            } else {
-                return null;
-            }
-
-        }
-
-        if(!isset($indies)) {
-            if( is_callable($fn) ) {
-                $loc = call_user_func($fn, $loc);
-            } elseif( is_callable('\\TypeRocket\\Sanitize::' . $fn ) ) {
-                $fn = '\\TypeRocket\\Sanitize::' . $fn;
-                $loc = call_user_func($fn, $loc);
-            }
-        }
-
-        return $loc;
-    }
-
-    /**
-     * Get column of router injection
-     *
-     * @return string
-     */
-    public function getRouterInjectionColumn()
-    {
-        return strtolower($this->idColumn);
     }
 
     /**
@@ -822,7 +871,7 @@ class Model implements JsonSerializable, Formable
      *
      * @return mixed
      */
-    private function getDotKeys( $str )
+    protected function getDotKeys( $str )
     {
         return explode('.', $str);
     }
@@ -896,7 +945,7 @@ class Model implements JsonSerializable, Formable
      */
     public function where($column, $arg1 = null, $arg2 = null, $condition = 'AND', $num = null)
     {
-        $this->query->where($column, $arg1, $arg2, $condition, $num ?? func_num_args());
+        $this->query->where(...func_get_args());
 
         return $this;
     }
@@ -913,7 +962,7 @@ class Model implements JsonSerializable, Formable
      */
     public function orWhere($column, $arg1, $arg2 = null, $num = null)
     {
-        $this->query->orWhere($column, $arg1, $arg2, $num ?? func_num_args());
+        $this->query->orWhere(...func_get_args());
 
         return $this;
     }
@@ -982,6 +1031,22 @@ class Model implements JsonSerializable, Formable
     }
 
     /**
+     * Reorder
+     *
+     * @param string $column
+     * @param string $direction
+     *
+     * @return $this
+     */
+    public function reorder($column = 'id', $direction = 'ASC')
+    {
+        $args = func_get_args();
+        $this->query->reorder(...$args);
+
+        return $this;
+    }
+
+    /**
      * Take only a select group
      *
      * @param int $limit limit
@@ -990,7 +1055,8 @@ class Model implements JsonSerializable, Formable
      *
      * @return $this
      */
-    public function take( $limit, $offset = 0, $returnOne = true ) {
+    public function take( $limit, $offset = 0, $returnOne = true )
+    {
         $this->query->take($limit, $offset, $returnOne);
 
         return $this;
@@ -1041,6 +1107,8 @@ class Model implements JsonSerializable, Formable
     {
         $fields = $this->provisionFields( $fields );
 
+        do_action('typerocket_model_create', $this, $fields);
+
         return $this->query->create($fields);
     }
 
@@ -1055,7 +1123,9 @@ class Model implements JsonSerializable, Formable
     {
         $fields = $this->provisionFields( $fields );
 
-        return $this->query->update($fields);
+        do_action('typerocket_model_update', $this, $fields);
+
+        return $this->query->where($this->idColumn, $this->getID())->update($fields);
     }
 
     /**
@@ -1101,7 +1171,8 @@ class Model implements JsonSerializable, Formable
      * @return object
      * @throws \Exception
      */
-    public function findOrDie($id) {
+    public function findOrDie($id)
+    {
         $results = $this->query->findOrDie($id);
         return $this->getQueryResult($results);
     }
@@ -1153,7 +1224,7 @@ class Model implements JsonSerializable, Formable
      */
     public function findFirstWhereOrNew($column, $arg1, $arg2 = null, $condition = 'AND', $num = null)
     {
-        if($item = $this->where($column, $arg1, $arg2, $condition, $num ?? func_num_args())->first()) {
+        if($item = $this->where(...func_get_args())->first()) {
             return $item;
         }
 
@@ -1173,8 +1244,9 @@ class Model implements JsonSerializable, Formable
      * @throws \Exception
      * @internal param $id
      */
-    public function findFirstWhereOrDie($column, $arg1, $arg2 = null, $condition = 'AND', $num = null) {
-        $results = $this->query->findFirstWhereOrDie( $column, $arg1, $arg2, $condition, $num ?? func_num_args());
+    public function findFirstWhereOrDie($column, $arg1, $arg2 = null, $condition = 'AND', $num = null)
+    {
+        $results = $this->query->findFirstWhereOrDie(...func_get_args());
         return $this->fetchResult( $results );
     }
 
@@ -1197,7 +1269,7 @@ class Model implements JsonSerializable, Formable
             if( $result->class == null ) {
                 $result->class = static::class;
             }
-            $result->castResults();
+            $result->setCache($this->getCache())->castResults();
 
             if($result instanceof ResultsMeta) {
                 $result->initKeyStore();
@@ -1253,11 +1325,13 @@ class Model implements JsonSerializable, Formable
      *
      * @return array|false|int|null|object
      */
-    public function delete( $ids = null ) {
-
+    public function delete( $ids = null )
+    {
         if(is_null($ids) && $this->hasProperties()) {
             $ids = $this->getID();
         }
+
+        do_action('typerocket_model_delete', $this, $ids);
 
         return $this->query->delete($ids);
     }
@@ -1367,7 +1441,7 @@ class Model implements JsonSerializable, Formable
             if($decode && is_string($result)) {
                 if(is_serialized($result)) {
                     $result = unserialize($result);
-                } elseif(tr_is_json($result)) {
+                } elseif(Data::isJson($result)) {
                     $result = json_decode($result);
                 }
             }
@@ -1413,11 +1487,24 @@ class Model implements JsonSerializable, Formable
      *
      * @return mixed
      */
-    public function save( $fields = [] ) {
+    public function save( $fields = [] )
+    {
         if( isset( $this->properties[$this->idColumn] ) && $this->findById($this->properties[$this->idColumn]) ) {
             return $this->update($fields);
         }
         return $this->create($fields);
+    }
+
+    /**
+     * @param null|array|Fields $fields
+     *
+     * @return mixed
+     */
+    public function saveFields($fields = null)
+    {
+        $fields = $fields ?? (new Request)->getFields();
+
+        return $this->save($fields);
     }
 
     /**
@@ -1438,7 +1525,7 @@ class Model implements JsonSerializable, Formable
         foreach ($this->properties as $name => $property ) {
             $cast[$name] = $this->getCast($name);
         }
-        $this->properties = apply_filters( 'tr_model_cast_fields', $cast, $this );
+        $this->properties = apply_filters('typerocket_model_cast_fields', $cast, $this );
 
         $this->afterCastProperties();
 
@@ -1450,7 +1537,8 @@ class Model implements JsonSerializable, Formable
      *
      * @return $this
      */
-    protected function afterCastProperties() {
+    protected function afterCastProperties()
+    {
         return $this;
     }
 
@@ -1469,49 +1557,7 @@ class Model implements JsonSerializable, Formable
 
         if ( ! empty( $this->cast[$property] ) ) {
             $handle = $this->cast[$property];
-
-            // Integer
-            if ( $handle == 'int' || $handle == 'integer' ) {
-                $value = (int) $value;
-            }
-
-            // Float
-            if ( $handle == 'float' || $handle == 'double' || $handle == 'real') {
-                $value = (float) $value;
-            }
-
-            // String
-            if ( $handle == 'str' || $handle == 'string' ) {
-                $value = (string) $value;
-            }
-
-            // Bool
-            if ( $handle == 'bool' || $handle == 'boolean' ) {
-                $value = (bool) $value;
-            }
-
-            // Array
-            if ( $handle == 'array' ) {
-                if ( is_string($value) && tr_is_json($value)  ) {
-                    $value = json_decode( $value, true );
-                } elseif ( is_string($value) && is_serialized( $value ) ) {
-                    $value = unserialize( $value );
-                }
-            }
-
-            // Object
-            if ( $handle == 'object' ) {
-                if ( is_string($value) && tr_is_json($value)  ) {
-                    $value = json_decode( $value );
-                } elseif ( is_string($value) && is_serialized( $value ) ) {
-                    $value = unserialize( $value );
-                }
-            }
-
-            // Callback
-            if ( is_callable($handle) ) {
-                $value = call_user_func($this->cast[$property], $value );
-            }
+            $value = Data::cast($value, $handle);
         }
 
         return $this->properties[$property] = $value;
@@ -1522,8 +1568,8 @@ class Model implements JsonSerializable, Formable
      *
      * @param string $modelClass
      * @param null|string $id_foreign
-     * @param null|callable $scope
      *
+     * @param null $scope
      * @return mixed|null
      */
     public function hasOne($modelClass, $id_foreign = null, $scope = null)
@@ -1635,12 +1681,12 @@ class Model implements JsonSerializable, Formable
      */
     public function belongsToMany( $modelClass, $junction_table, $id_column = null, $id_foreign = null, $scope = null, $reselect = true )
     {
-        $id = $this->getID();
-
         // Column ID
         if( ! $id_column && $this->resource ) {
             $id_column =  $this->resource . '_id';
         }
+
+        $id = $this->$id_column ?? $this->getID();
 
         /** @var Model $relationship */
         $relationship = new $modelClass;
@@ -1734,7 +1780,7 @@ class Model implements JsonSerializable, Formable
         $junction = $this->getJunction();
         $id_foreign = $junction['id_foreign'];
 
-        list( $local_column, $foreign_column ) = $junction['columns'];
+        [ $local_column, $foreign_column ] = $junction['columns'];
 
         $query->where($foreign_column, '=', $id_foreign);
 
@@ -1945,7 +1991,7 @@ class Model implements JsonSerializable, Formable
      */
     public function getPropertyValue($key)
     {
-        return $this->getPropertyFromArray($key);
+      return $this->getPropertyFromArray($key);
     }
 
     /**
@@ -2015,7 +2061,7 @@ class Model implements JsonSerializable, Formable
      */
     protected function getRelationshipFromMethod($method)
     {
-        return $this->$method() ? $this->$method()->get() : null;
+      return $this->$method() ? $this->$method()->get() : null;
     }
 
     /**
@@ -2037,7 +2083,7 @@ class Model implements JsonSerializable, Formable
      */
     public function hasGetMutator($key)
     {
-        return method_exists($this, 'get'.Str::camelize($key).'Property');
+      return method_exists($this, 'get'.Str::camelize($key).'Property');
     }
 
     /**
@@ -2061,7 +2107,7 @@ class Model implements JsonSerializable, Formable
      */
     protected function mutatePropertyGet($key, $value)
     {
-        return $this->{'get'.Str::camelize($key).'Property'}($value);
+      return $this->{'get'.Str::camelize($key).'Property'}($value);
     }
 
     /**
@@ -2114,7 +2160,7 @@ class Model implements JsonSerializable, Formable
         foreach ($withList as $withName => $withArg) {
 
             if(is_callable($withArg)) {
-                list($name, $with) = array_pad(explode('.', $withName, 2), 2, null);
+                [$name, $with] = array_pad(explode('.', $withName, 2), 2, null);
 
                 if($with) {
                     $compiledWithList[$name][$with] = $withArg;
@@ -2123,7 +2169,7 @@ class Model implements JsonSerializable, Formable
                 }
 
             } else {
-                list($name, $with) = array_pad(explode('.', $withArg, 2), 2, null);
+                [$name, $with] = array_pad(explode('.', $withArg, 2), 2, null);
                 $compiledWithList[$name][] = $with;
             }
 
@@ -2233,10 +2279,40 @@ class Model implements JsonSerializable, Formable
     }
 
     /**
+     * @param $value
+     *
+     * @return object
+     * @throws \Exception
+     */
+    public function onDependencyInjection($value)
+    {
+        return $this->findFirstWhereOrDie($this->getDependencyInjectionKey(), $value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDependencyInjectionKey()
+    {
+        return $this->getIdColumn();
+    }
+
+    /**
      * @inheritDoc
      */
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @param mixed ...$args
+     *
+     * @return static
+     * @throws \Exception
+     */
+    public static function new(...$args)
+    {
+        return new static(...$args);
     }
 }
