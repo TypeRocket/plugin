@@ -23,7 +23,8 @@ abstract class HttpKernel
      * @param Response $response
      * @param Handler $handler
      */
-    public function __construct(Request $request, Response $response, Handler $handler) {
+    public function __construct(Request $request, Response $response, Handler $handler)
+    {
         $this->response = $response;
         $this->request = $request;
         $this->handler = $handler;
@@ -44,7 +45,8 @@ abstract class HttpKernel
     /**
      * Compile middleware from controller, router and kernel
      */
-    public function compileMiddleware() : array {
+    public function compileMiddleware() : array
+    {
         $stacks = [];
 
         // Route middleware
@@ -58,7 +60,7 @@ abstract class HttpKernel
             $routeMiddleware = [];
             foreach ($route->middleware as $m) {
                 $routeGroup = null;
-                if(is_string($m)) {
+                if(is_string($m) && !empty($this->middleware[$m])) {
                     $routeMiddleware = array_merge($routeMiddleware, $this->middleware[$m] ?? []);
                 } else {
                     $routeMiddleware[] = $m;
@@ -81,11 +83,21 @@ abstract class HttpKernel
         $controllerMiddleware = [];
         $groups = $this->controller->getMiddlewareGroups();
         foreach( $groups as $group ) {
-            $controllerMiddleware[] = $this->middleware[$group];
+            if(!is_array($group)) {
+                $group = [$group];
+            }
+
+            foreach ($group as $g) {
+                if(is_string($g) && !empty($this->middleware[$g])) {
+                    $controllerMiddleware = array_merge($controllerMiddleware, $this->middleware[$g] ?? []);
+                } else {
+                    $controllerMiddleware[] = $g;
+                }
+            }
         }
 
         if( !empty($controllerMiddleware) ) {
-            $stacks[] = call_user_func_array('array_merge', $controllerMiddleware);
+            $stacks[] = $controllerMiddleware;
         }
 
         // Global middleware

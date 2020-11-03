@@ -262,10 +262,49 @@ class Response implements JsonSerializable
      * Last-Modified: <day-name>, <day> <month> <year> <hour>:<minute>:<second> GMT
      *
      * @param int $utc_time UTC unix timestamp
+     *
+     * @return $this
      */
     public function setHeaderLastModified($utc_time)
     {
-        $this->setHeader('Last-Modified', (new \DateTime)->setTimestamp($utc_time)->format('D, d M Y H:i:s') . ' GMT');
+        return $this->setHeader('Last-Modified', (new \DateTime)->setTimestamp($utc_time)->format('D, d M Y H:i:s') . ' GMT');
+    }
+
+    /**
+     * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+     *
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setCacheControl($value)
+    {
+        return $this->setHeader('Cache-Control', $value);
+    }
+
+    /**
+     * Do Not Cache
+     *
+     * Works for HTTP 1.1 only
+     *
+     * @return $this
+     */
+    public function noCache()
+    {
+        return $this->setHeaders([
+            'Cache-Control' => 'no-store, must-revalidate',
+            'Expires' => 0
+        ]);
+    }
+
+    /**
+     * Do not cache with TypeRocket Pro Rapid Pages extension
+     *
+     * @return $this
+     */
+    public function noRapidPagesCache()
+    {
+        return $this->setHeader( 'X-No-Cache', 'yes');
     }
 
     /**
@@ -553,9 +592,16 @@ class Response implements JsonSerializable
     /**
      * Get HTTP status
      *
+     * @param bool $real
+     *
      * @return int|null
      */
-    public function getStatus() {
+    public function getStatus($real = false) {
+
+        if($real) {
+            return http_response_code();
+        }
+
         return $this->status ? (int) $this->status : null;
     }
 
@@ -856,7 +902,7 @@ class Response implements JsonSerializable
     {
         $code = $code ?? $this->getStatus();
         $this->setStatus($code);
-        wp_die($this->getMessage());
+        wp_die($this->getMessage(), '', $code);
     }
 
     /**

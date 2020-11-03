@@ -1,7 +1,6 @@
 <?php
 namespace TypeRocket\Core
 {
-    use TypeRocket\Http\RouteCollection;
     use TypeRocket\Models\AuthUser;
     use TypeRocket\Models\WPUser;
     use TypeRocket\Services\Service;
@@ -9,21 +8,86 @@ namespace TypeRocket\Core
 
     class ApplicationKernel
     {
+        protected $loaded = false;
+
+        /**
+         * Init Application
+         */
+        public static function init()
+        {
+            $app = new static;
+            $app->boot();
+
+            if (defined('WPINC')) {
+                $app->default();
+            }
+            elseif(!defined('TYPEROCKET_GALAXY')) {
+                $app->root();
+            }
+            else {
+                $app->galaxy();
+            }
+        }
+
+        /**
+         * Boot for default setup
+         */
+        public function default()
+        {
+            $this->loadServices();
+            (new System)->boot();
+        }
+
+        /**
+         * Boot for root install
+         */
+        public function root()
+        {
+            if(!defined('TYPEROCKET_ROOT_INSTALL'))
+                define('TYPEROCKET_ROOT_INSTALL', true);
+
+            $this->bootSystemAfterMustUseLoaded();
+        }
+
+        /**
+         * Boot for Galaxy CLI
+         */
+        public function galaxy()
+        {
+            $this->bootSystemAfterMustUseLoaded();
+        }
+
+        /**
+         * Boot after MU plugins loaded
+         */
+        public function bootSystemAfterMustUseLoaded()
+        {
+            static::addFilter('muplugins_loaded', function() {
+                $this->loadServices();
+
+                if( is_file(TYPEROCKET_ALT_PATH . '/rooter.php') ) {
+                    require(TYPEROCKET_ALT_PATH . '/rooter.php');
+                }
+
+                (new System)->boot();
+                (new Rooter)->boot();
+            }, 0, 0);
+        }
+
         /**
          * Boot Container
          */
         public function boot()
         {
-            // Initial singletons
+            if($this->loaded) {
+                return $this;
+            }
+
+            $this->loaded = true;
+
             Container::singleton(Config::class, function() {
                 return new Config(TYPEROCKET_CORE_CONFIG_PATH);
             }, Config::ALIAS);
-
-            if(Config::env('TYPEROCKET_ROUTES', true) ) {
-                Container::singleton(RouteCollection::class, function() {
-                    return new RouteCollection();
-                }, RouteCollection::ALIAS);
-            }
 
             Container::singleton(RuntimeCache::class, function() {
                 return new RuntimeCache();
@@ -44,6 +108,14 @@ namespace TypeRocket\Core
                 return $user;
             }, AuthUser::ALIAS);
 
+            return $this;
+        }
+
+        /**
+         * @throws \ReflectionException
+         */
+        public function loadServices()
+        {
             // Application Services
             $services = Config::get('app.services');
 
@@ -56,8 +128,21 @@ namespace TypeRocket\Core
                     Container::register($service, [$instance, 'register'], $instance->isSingleton(), $instance::ALIAS);
                 }
             }
+        }
 
-            return $this;
+        /**
+         * @param string $tag
+         * @param callable $function
+         * @param int $priority
+         * @param int $accepted_args
+         */
+        public static function addFilter(string $tag, callable $function, $priority = 10, $accepted_args = 1)
+        {
+            if(function_exists('add_filter')) {
+                add_filter(...func_get_args());
+            } else {
+                $GLOBALS['wp_filter'][$tag][$priority]['callbacks'] = ['function' => $function, 'accepted_args' => $accepted_args];
+            }
         }
 
         /**

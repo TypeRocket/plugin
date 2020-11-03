@@ -38,10 +38,9 @@ ApplicationKernel::autoloadPsr4($tr_autoload_map);
 if( !defined('TYPEROCKET_CORE_CONFIG_PATH') )
     define('TYPEROCKET_CORE_CONFIG_PATH', __DIR__ . '/config' );
 
-// Boot application kernel
-( new ApplicationKernel )->boot();
+if( ! defined('TYPEROCKET_SKIP_INIT') )
+    define('TYPEROCKET_SKIP_INIT', false );
 
-// Load TypeRocket
-if (defined('WPINC')) {
-    (new System)->boot();
+if( ! TYPEROCKET_SKIP_INIT ) {
+    ApplicationKernel::init();
 }
