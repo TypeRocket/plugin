@@ -3,7 +3,7 @@
 Plugin Name: TypeRocket - Andromeda
 Plugin URI: https://typerocket.com/
 Description: TypeRocket is a framework that joins refined UI elements and modern programming architecture together.
-Version: 5.0.0
+Version: 5.0.1
 Requires at least: 5.5
 Requires PHP: 7.2
 Author: TypeRocket
@@ -34,7 +34,7 @@ final class TypeRocketPlugin
                 return;
             }
 
-            define('TYPEROCKET_PLUGIN_VERSION', '5.0.0');
+            define('TYPEROCKET_PLUGIN_VERSION', '5.0.1');
             define('TYPEROCKET_PLUGIN_INSTALL', __DIR__);
 
             if(!defined('TYPEROCKET_ROOT_WP'))
@@ -64,7 +64,8 @@ final class TypeRocketPlugin
         register_activation_hook( __FILE__, [$this, 'activation']);
     }
 
-    public function links($actions, $plugin_file) {
+    public function links($actions, $plugin_file)
+    {
         if( $found = strpos(__FILE__, $plugin_file) ) {
             $url = menu_page_url($this->id, false);
             $actions['settings'] = '<a href="'.$url.'" aria-label="TypeRocket Settings">Settings</a>';
@@ -102,13 +103,15 @@ final class TypeRocketPlugin
         }
     }
 
-    public function activation() {
+    public function activation()
+    {
         $this->activating = true;
         flush_rewrite_rules();
         set_transient( 'typerocket-admin-notice' , true );
     }
 
-    public function activation_notice() {
+    public function activation_notice()
+    {
         $page = $_GET['page'] ?? null;
         if( $this->id != $page && get_transient( 'typerocket-admin-notice' ) && ! $this->activating ) {
             $url = menu_page_url($this->id, false);
@@ -121,7 +124,8 @@ final class TypeRocketPlugin
         }
     }
 
-    public function typerocket_loaded() {
+    public function typerocket_loaded()
+    {
         tr_page('settings@TypeRocketPlugin\\SettingsController', 'typerocket', __('TypeRocket Settings'), [
             'menu' => __('TypeRocket'),
             'capability' => 'activate_plugins'
