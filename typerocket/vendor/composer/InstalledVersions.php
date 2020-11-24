@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '67263438b24e5af6a32177bb9d8d10023b7cc536',
+    'reference' => '385eb651b938bff36b042eacf4ef60f28a7fa74b',
     'name' => 'typerocket/typerocket',
   ),
   'versions' => 
@@ -123,12 +123,12 @@ private static $installed = array (
     ),
     'typerocket/core' => 
     array (
-      'pretty_version' => 'v5.0.26',
-      'version' => '5.0.26.0',
+      'pretty_version' => 'v5.0.30',
+      'version' => '5.0.30.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6f9127781910ac4b02304a91a151d7b27f9ab403',
+      'reference' => '27f6113d26f0a00e63e04eb43193a3b4a3fb6245',
     ),
     'typerocket/typerocket' => 
     array (
@@ -137,7 +137,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '67263438b24e5af6a32177bb9d8d10023b7cc536',
+      'reference' => '385eb651b938bff36b042eacf4ef60f28a7fa74b',
     ),
   ),
 );
