@@ -58,17 +58,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.1.8",
-            "version_normalized": "5.1.8.0",
+            "version": "v5.1.9",
+            "version_normalized": "5.1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "e0b2c29c0fa6a69089209bbe8fcff4df2a313d0e"
+                "reference": "037b57ac42cafb64b7b55273fe1786f35d623077"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/e0b2c29c0fa6a69089209bbe8fcff4df2a313d0e",
-                "reference": "e0b2c29c0fa6a69089209bbe8fcff4df2a313d0e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/037b57ac42cafb64b7b55273fe1786f35d623077",
+                "reference": "037b57ac42cafb64b7b55273fe1786f35d623077",
                 "shasum": ""
             },
             "require": {
@@ -104,7 +104,7 @@
                 "symfony/lock": "",
                 "symfony/process": ""
             },
-            "time": "2020-10-24T12:01:57+00:00",
+            "time": "2020-11-28T10:57:20+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -132,7 +132,7 @@
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.1.8"
+                "source": "https://github.com/symfony/console/tree/v5.1.9"
             },
             "funding": [
                 {
@@ -738,17 +738,17 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.1.8",
-            "version_normalized": "5.1.8.0",
+            "version": "v5.2.0",
+            "version_normalized": "5.2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "a97573e960303db71be0dd8fda9be3bca5e0feea"
+                "reference": "40e975edadd4e32cd16f3753b3bad65d9ac48242"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/a97573e960303db71be0dd8fda9be3bca5e0feea",
-                "reference": "a97573e960303db71be0dd8fda9be3bca5e0feea",
+                "url": "https://api.github.com/repos/symfony/string/zipball/40e975edadd4e32cd16f3753b3bad65d9ac48242",
+                "reference": "40e975edadd4e32cd16f3753b3bad65d9ac48242",
                 "shasum": ""
             },
             "require": {
@@ -765,7 +765,7 @@
                 "symfony/translation-contracts": "^1.1|^2",
                 "symfony/var-exporter": "^4.4|^5.0"
             },
-            "time": "2020-10-24T12:01:57+00:00",
+            "time": "2020-10-24T12:08:07+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -804,7 +804,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.1.8"
+                "source": "https://github.com/symfony/string/tree/v5.2.0"
             },
             "funding": [
                 {
@@ -824,17 +824,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.30",
-            "version_normalized": "5.0.30.0",
+            "version": "v5.0.31",
+            "version_normalized": "5.0.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "27f6113d26f0a00e63e04eb43193a3b4a3fb6245"
+                "reference": "f1f9b95c06dbd9afce6912b167a2a0494a598567"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/27f6113d26f0a00e63e04eb43193a3b4a3fb6245",
-                "reference": "27f6113d26f0a00e63e04eb43193a3b4a3fb6245",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/f1f9b95c06dbd9afce6912b167a2a0494a598567",
+                "reference": "f1f9b95c06dbd9afce6912b167a2a0494a598567",
                 "shasum": ""
             },
             "require": {
@@ -845,7 +845,7 @@
             "require-dev": {
                 "phpunit/phpunit": "8.5.*"
             },
-            "time": "2020-11-24T14:56:59+00:00",
+            "time": "2020-12-17T22:04:12+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -874,10 +874,11 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.30"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.31"
             },
             "install-path": "../typerocket/core"
         }
     ],
-    "dev": false
+    "dev": false,
+    "dev-package-names": []
 }

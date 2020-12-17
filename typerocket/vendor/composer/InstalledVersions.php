@@ -1,5 +1,15 @@
 <?php
 
+
+
+
+
+
+
+
+
+
+
 namespace Composer;
 
 use Composer\Semver\VersionParser;
@@ -14,12 +24,12 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
+    'pretty_version' => 'dev-main',
+    'version' => 'dev-main',
     'aliases' => 
     array (
     ),
-    'reference' => '385eb651b938bff36b042eacf4ef60f28a7fa74b',
+    'reference' => '3cad5d93d625abe1fda402d7dae40c45cfbfdad1',
     'name' => 'typerocket/typerocket',
   ),
   'versions' => 
@@ -42,12 +52,12 @@ private static $installed = array (
     ),
     'symfony/console' => 
     array (
-      'pretty_version' => 'v5.1.8',
-      'version' => '5.1.8.0',
+      'pretty_version' => 'v5.1.9',
+      'version' => '5.1.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e0b2c29c0fa6a69089209bbe8fcff4df2a313d0e',
+      'reference' => '037b57ac42cafb64b7b55273fe1786f35d623077',
     ),
     'symfony/polyfill-ctype' => 
     array (
@@ -114,30 +124,30 @@ private static $installed = array (
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v5.1.8',
-      'version' => '5.1.8.0',
+      'pretty_version' => 'v5.2.0',
+      'version' => '5.2.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a97573e960303db71be0dd8fda9be3bca5e0feea',
+      'reference' => '40e975edadd4e32cd16f3753b3bad65d9ac48242',
     ),
     'typerocket/core' => 
     array (
-      'pretty_version' => 'v5.0.30',
-      'version' => '5.0.30.0',
+      'pretty_version' => 'v5.0.31',
+      'version' => '5.0.31.0',
       'aliases' => 
       array (
       ),
-      'reference' => '27f6113d26f0a00e63e04eb43193a3b4a3fb6245',
+      'reference' => 'f1f9b95c06dbd9afce6912b167a2a0494a598567',
     ),
     'typerocket/typerocket' => 
     array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
+      'pretty_version' => 'dev-main',
+      'version' => 'dev-main',
       'aliases' => 
       array (
       ),
-      'reference' => '385eb651b938bff36b042eacf4ef60f28a7fa74b',
+      'reference' => '3cad5d93d625abe1fda402d7dae40c45cfbfdad1',
     ),
   ),
 );
