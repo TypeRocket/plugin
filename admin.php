@@ -25,6 +25,7 @@ $tabs->tab('About', 'rocket', function() {
         <h3>First Steps</h3>
         <p><?php _e('We’ve assembled some links to get you started:'); ?></p>
         <ul>
+            <li><i class="dashicons dashicons-email"></i> <a target="_blank" href="https://us8.list-manage.com/subscribe?u=7bbb7409e86c85970f6150c5e&id=1d45a226d0">Join the TypRocket Mailing List.</a></li>
             <li><i class="dashicons dashicons-admin-post"></i> <a target="_blank" href="https://typerocket.com/docs/v5/post-types-making/">Add your first post type.</a></li>
             <li><i class="dashicons dashicons-admin-page"></i> <a target="_blank" href="https://typerocket.com/docs/v5/builder/">Working with the page builder.</a></li>
         </ul>
