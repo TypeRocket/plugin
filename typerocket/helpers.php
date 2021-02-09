@@ -1,5 +1,23 @@
 <?php
 /**
+ * Dump Die
+ *
+ * @param mixed ...$args
+ */
+function tr_dd(...$args) {
+    \TypeRocket\Utility\Dump::die(...$args);
+}
+
+/**
+ * Dump
+ *
+ * @param mixed ...$args
+ */
+function tr_dump(...$args) {
+    \TypeRocket\Utility\Dump::data(...$args);
+}
+
+/**
  * Dots Walk
  *
  * Traverse array with dot notation.
@@ -234,10 +252,11 @@ function tr_taxonomy($singular, $plural = null, $settings = [])
  * @param string $singular Singular name for post type
  * @param string|null $plural Plural name for post type
  * @param array $settings The settings for the post type
+ * @param string|null $id post type ID
  *
  * @return \TypeRocket\Register\PostType
  */
-function tr_post_type($singular, $plural = null, $settings = [])
+function tr_post_type($singular, $plural = null, $settings = [], $id = null)
 {
     return \TypeRocket\Register\PostType::add(...func_get_args());
 }
@@ -569,14 +588,14 @@ function tr_view($dots, array $data = [], $ext = '.php')
 /**
  * Validate fields
  *
- * @param array $options
+ * @param array $rules
  * @param array|null $fields
  * @param null $modelClass
  * @param bool $run
  *
  * @return \TypeRocket\Utility\Validator
  */
-function tr_validator($options, $fields = null, $modelClass = null, $run = false)
+function tr_validator($rules, $fields = null, $modelClass = null, $run = false)
 {
     return \TypeRocket\Utility\Validator::new(...func_get_args());
 }
