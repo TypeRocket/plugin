@@ -77,7 +77,11 @@ final class TypeRocketPlugin
 
     public function loadConfig()
     {
-        $temp_dir = get_template_directory();
+        if( defined('TYPEROCKET_OVERRIDE_PATH') ) {
+            $temp_dir = TYPEROCKET_OVERRIDE_PATH;
+        } else {
+            $temp_dir = get_template_directory();
+        }
 
         // maybe get config from theme
         if( !defined('TYPEROCKET_CORE_CONFIG_PATH') ) {
