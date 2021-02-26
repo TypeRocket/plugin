@@ -800,16 +800,16 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.35",
+            "version": "v5.0.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "8324c804e59aa09522c906a8d4c73238ec8abfa5"
+                "reference": "5d1d9f87eea9e49e42074463737ecda2f21fb12d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/8324c804e59aa09522c906a8d4c73238ec8abfa5",
-                "reference": "8324c804e59aa09522c906a8d4c73238ec8abfa5",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/5d1d9f87eea9e49e42074463737ecda2f21fb12d",
+                "reference": "5d1d9f87eea9e49e42074463737ecda2f21fb12d",
                 "shasum": ""
             },
             "require": {
@@ -847,9 +847,9 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.35"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.36"
             },
-            "time": "2021-02-22T22:04:09+00:00"
+            "time": "2021-02-26T15:55:46+00:00"
         }
     ],
     "packages-dev": [
@@ -1042,16 +1042,16 @@
         },
         {
             "name": "phar-io/version",
-            "version": "3.0.4",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phar-io/version.git",
-                "reference": "e4782611070e50613683d2b9a57730e9a3ba5451"
+                "reference": "bae7c545bef187884426f042434e561ab1ddb182"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/version/zipball/e4782611070e50613683d2b9a57730e9a3ba5451",
-                "reference": "e4782611070e50613683d2b9a57730e9a3ba5451",
+                "url": "https://api.github.com/repos/phar-io/version/zipball/bae7c545bef187884426f042434e561ab1ddb182",
+                "reference": "bae7c545bef187884426f042434e561ab1ddb182",
                 "shasum": ""
             },
             "require": {
@@ -1087,9 +1087,9 @@
             "description": "Library for handling version information and constraints",
             "support": {
                 "issues": "https://github.com/phar-io/version/issues",
-                "source": "https://github.com/phar-io/version/tree/3.0.4"
+                "source": "https://github.com/phar-io/version/tree/3.1.0"
             },
-            "time": "2020-12-13T23:18:30+00:00"
+            "time": "2021-02-23T14:00:09+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
