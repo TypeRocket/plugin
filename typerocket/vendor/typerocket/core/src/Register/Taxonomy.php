@@ -194,8 +194,22 @@ class Taxonomy extends Registrable
             'view_item'                  => sprintf( _x( 'View %s', $context, 'typerocket-core' ), $upperSingular),
         ];
 
-        $this->args['label'] = $upperPlural;
-        $this->args['labels'] = $labels;
+        return $this->setLabels($labels, $upperPlural, false);;
+    }
+
+    /**
+     * Set Labels
+     *
+     * @param array $labels
+     * @param string $plural
+     * @param bool $merge
+     *
+     * @return Taxonomy $this
+     */
+    public function setLabels(array $labels, $plural = null, $merge = true)
+    {
+        $this->args['labels'] = $merge ? array_merge($this->args['labels'] ?? [], $labels) : $labels;
+        $this->args['label'] = $plural ?? $this->args['label'];
 
         return $this;
     }
