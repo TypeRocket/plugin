@@ -733,17 +733,17 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.2.4",
-            "version_normalized": "5.2.4.0",
+            "version": "v5.2.6",
+            "version_normalized": "5.2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "4e78d7d47061fa183639927ec40d607973699609"
+                "reference": "ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/4e78d7d47061fa183639927ec40d607973699609",
-                "reference": "4e78d7d47061fa183639927ec40d607973699609",
+                "url": "https://api.github.com/repos/symfony/string/zipball/ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572",
+                "reference": "ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572",
                 "shasum": ""
             },
             "require": {
@@ -760,7 +760,7 @@
                 "symfony/translation-contracts": "^1.1|^2",
                 "symfony/var-exporter": "^4.4|^5.0"
             },
-            "time": "2021-02-16T10:20:28+00:00",
+            "time": "2021-03-17T17:12:15+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -799,7 +799,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.2.4"
+                "source": "https://github.com/symfony/string/tree/v5.2.6"
             },
             "funding": [
                 {
@@ -819,17 +819,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.39",
-            "version_normalized": "5.0.39.0",
+            "version": "v5.0.41",
+            "version_normalized": "5.0.41.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "d7d66eaf32bf63486663713a7f7457e238e90383"
+                "reference": "deeef7f78e8304d0c664961f738d312be4cd8695"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/d7d66eaf32bf63486663713a7f7457e238e90383",
-                "reference": "d7d66eaf32bf63486663713a7f7457e238e90383",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/deeef7f78e8304d0c664961f738d312be4cd8695",
+                "reference": "deeef7f78e8304d0c664961f738d312be4cd8695",
                 "shasum": ""
             },
             "require": {
@@ -840,7 +840,7 @@
             "require-dev": {
                 "phpunit/phpunit": "8.5.*"
             },
-            "time": "2021-03-24T17:12:59+00:00",
+            "time": "2021-03-31T14:41:36+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -869,7 +869,7 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.39"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.41"
             },
             "install-path": "../typerocket/core"
         }

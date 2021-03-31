@@ -412,6 +412,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Utility\\Nil' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Nil.php',
         'TypeRocket\\Utility\\Path' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Path.php',
         'TypeRocket\\Utility\\PersistentCache' => __DIR__ . '/..' . '/typerocket/core/src/Utility/PersistentCache.php',
+        'TypeRocket\\Utility\\QueryCaster' => __DIR__ . '/..' . '/typerocket/core/src/Utility/QueryCaster.php',
         'TypeRocket\\Utility\\RuntimeCache' => __DIR__ . '/..' . '/typerocket/core/src/Utility/RuntimeCache.php',
         'TypeRocket\\Utility\\Sanitize' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Sanitize.php',
         'TypeRocket\\Utility\\Str' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Str.php',

@@ -325,6 +325,7 @@ return array(
     'TypeRocket\\Utility\\Nil' => $vendorDir . '/typerocket/core/src/Utility/Nil.php',
     'TypeRocket\\Utility\\Path' => $vendorDir . '/typerocket/core/src/Utility/Path.php',
     'TypeRocket\\Utility\\PersistentCache' => $vendorDir . '/typerocket/core/src/Utility/PersistentCache.php',
+    'TypeRocket\\Utility\\QueryCaster' => $vendorDir . '/typerocket/core/src/Utility/QueryCaster.php',
     'TypeRocket\\Utility\\RuntimeCache' => $vendorDir . '/typerocket/core/src/Utility/RuntimeCache.php',
     'TypeRocket\\Utility\\Sanitize' => $vendorDir . '/typerocket/core/src/Utility/Sanitize.php',
     'TypeRocket\\Utility\\Str' => $vendorDir . '/typerocket/core/src/Utility/Str.php',
