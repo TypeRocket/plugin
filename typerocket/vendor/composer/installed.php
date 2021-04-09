@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'dd5903aa5307c9732386e2e4d70a0ecc76712e61',
+    'reference' => 'bdb7b32f7d4b66a27423e4dfbb43abdf37e1d55d',
     'name' => 'typerocket/typerocket',
   ),
   'versions' => 
@@ -110,12 +110,12 @@
     ),
     'typerocket/core' => 
     array (
-      'pretty_version' => 'v5.0.42',
-      'version' => '5.0.42.0',
+      'pretty_version' => 'v5.0.43',
+      'version' => '5.0.43.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8ba3581c57bec7ddf99b6f2b79e3a17eedcda1da',
+      'reference' => '79d8f301497439570370385c039997a9629f73aa',
     ),
     'typerocket/typerocket' => 
     array (
@@ -124,7 +124,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'dd5903aa5307c9732386e2e4d70a0ecc76712e61',
+      'reference' => 'bdb7b32f7d4b66a27423e4dfbb43abdf37e1d55d',
     ),
   ),
 );
