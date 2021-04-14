@@ -229,6 +229,7 @@ return array(
     'TypeRocket\\Elements\\Traits\\RequiredTrait' => $vendorDir . '/typerocket/core/src/Elements/Traits/RequiredTrait.php',
     'TypeRocket\\Elements\\Traits\\Settings' => $vendorDir . '/typerocket/core/src/Elements/Traits/Settings.php',
     'TypeRocket\\Exceptions\\HttpError' => $vendorDir . '/typerocket/core/src/Exceptions/HttpError.php',
+    'TypeRocket\\Exceptions\\MigrationException' => $vendorDir . '/typerocket/core/src/Exceptions/MigrationException.php',
     'TypeRocket\\Exceptions\\ModelException' => $vendorDir . '/typerocket/core/src/Exceptions/ModelException.php',
     'TypeRocket\\Exceptions\\ModelNotFoundException' => $vendorDir . '/typerocket/core/src/Exceptions/ModelNotFoundException.php',
     'TypeRocket\\Exceptions\\RedirectError' => $vendorDir . '/typerocket/core/src/Exceptions/RedirectError.php',

@@ -316,6 +316,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Elements\\Traits\\RequiredTrait' => __DIR__ . '/..' . '/typerocket/core/src/Elements/Traits/RequiredTrait.php',
         'TypeRocket\\Elements\\Traits\\Settings' => __DIR__ . '/..' . '/typerocket/core/src/Elements/Traits/Settings.php',
         'TypeRocket\\Exceptions\\HttpError' => __DIR__ . '/..' . '/typerocket/core/src/Exceptions/HttpError.php',
+        'TypeRocket\\Exceptions\\MigrationException' => __DIR__ . '/..' . '/typerocket/core/src/Exceptions/MigrationException.php',
         'TypeRocket\\Exceptions\\ModelException' => __DIR__ . '/..' . '/typerocket/core/src/Exceptions/ModelException.php',
         'TypeRocket\\Exceptions\\ModelNotFoundException' => __DIR__ . '/..' . '/typerocket/core/src/Exceptions/ModelNotFoundException.php',
         'TypeRocket\\Exceptions\\RedirectError' => __DIR__ . '/..' . '/typerocket/core/src/Exceptions/RedirectError.php',
