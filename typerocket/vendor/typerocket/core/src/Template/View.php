@@ -206,6 +206,7 @@ class View
             }, 101);
         }
 
+        $this->setFolder($this->getFolderPath());
         $file = $this->getComposedFilePath();
         $templateEngine = $this->viewsEngine ?? Config::get('app.templates.' . $context) ?? Config::get('app.templates.views');
         (new $templateEngine($file, $this->getData(), $context, $this))->load();
