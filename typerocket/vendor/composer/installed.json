@@ -651,31 +651,31 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v2.2.0",
-            "version_normalized": "2.2.0.0",
+            "version": "v2.4.0",
+            "version_normalized": "2.4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "d15da7ba4957ffb8f1747218be9e1a121fd298a1"
+                "reference": "f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/d15da7ba4957ffb8f1747218be9e1a121fd298a1",
-                "reference": "d15da7ba4957ffb8f1747218be9e1a121fd298a1",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb",
+                "reference": "f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "psr/container": "^1.0"
+                "psr/container": "^1.1"
             },
             "suggest": {
                 "symfony/service-implementation": ""
             },
-            "time": "2020-09-07T11:33:47+00:00",
+            "time": "2021-04-01T10:43:52+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-main": "2.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -713,7 +713,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/master"
+                "source": "https://github.com/symfony/service-contracts/tree/v2.4.0"
             },
             "funding": [
                 {
@@ -819,17 +819,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.49",
-            "version_normalized": "5.0.49.0",
+            "version": "v5.0.51",
+            "version_normalized": "5.0.51.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "a29bb0bb152ad102c402444c3f5cbe313a53c950"
+                "reference": "f657aa60032295d54de55d95d5bccf2c29d69c48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/a29bb0bb152ad102c402444c3f5cbe313a53c950",
-                "reference": "a29bb0bb152ad102c402444c3f5cbe313a53c950",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/f657aa60032295d54de55d95d5bccf2c29d69c48",
+                "reference": "f657aa60032295d54de55d95d5bccf2c29d69c48",
                 "shasum": ""
             },
             "require": {
@@ -840,7 +840,7 @@
             "require-dev": {
                 "phpunit/phpunit": "8.5.*"
             },
-            "time": "2021-04-15T02:17:01+00:00",
+            "time": "2021-04-20T03:11:42+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -869,7 +869,7 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.49"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.51"
             },
             "install-path": "../typerocket/core"
         }

@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '0c91799f700ad162bed863d89f145ef70f67a0c5',
+    'reference' => 'cb6b70ee0caf5bd7ad50c37898249a36b884c80c',
     'name' => 'typerocket/typerocket',
   ),
   'versions' => 
@@ -92,12 +92,12 @@
     ),
     'symfony/service-contracts' => 
     array (
-      'pretty_version' => 'v2.2.0',
-      'version' => '2.2.0.0',
+      'pretty_version' => 'v2.4.0',
+      'version' => '2.4.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'd15da7ba4957ffb8f1747218be9e1a121fd298a1',
+      'reference' => 'f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb',
     ),
     'symfony/string' => 
     array (
@@ -110,12 +110,12 @@
     ),
     'typerocket/core' => 
     array (
-      'pretty_version' => 'v5.0.49',
-      'version' => '5.0.49.0',
+      'pretty_version' => 'v5.0.51',
+      'version' => '5.0.51.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a29bb0bb152ad102c402444c3f5cbe313a53c950',
+      'reference' => 'f657aa60032295d54de55d95d5bccf2c29d69c48',
     ),
     'typerocket/typerocket' => 
     array (
@@ -124,7 +124,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '0c91799f700ad162bed863d89f145ef70f67a0c5',
+      'reference' => 'cb6b70ee0caf5bd7ad50c37898249a36b884c80c',
     ),
   ),
 );

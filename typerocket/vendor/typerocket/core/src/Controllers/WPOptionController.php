@@ -37,10 +37,12 @@ class WPOptionController extends Controller
             }
 
             $model->update( $this->getFields() );
+            $this->onAction('save', 'update', $model);
             $response->flashNext( 'Updated', 'success' );
         } catch ( ModelException $e ) {
             $response->flashNext( $e->getMessage(), 'error' );
             $response->setError( 'model', $e->getMessage() );
+            $this->onAction('error', 'update', $e, $model);
         }
 
         return $this->returnJsonOrGoBack();
@@ -67,10 +69,12 @@ class WPOptionController extends Controller
             }
 
             $model->create( $this->getFields() );
+            $this->onAction('save', 'create', $model);
             $response->flashNext( 'Options created', 'success' );
         } catch ( ModelException $e ) {
             $response->flashNext( $e->getMessage(), 'error' );
             $response->setError( 'model', $e->getMessage() );
+            $this->onAction('error', 'create', $e, $model);
         }
 
         return $this->returnJsonOrGoBack();

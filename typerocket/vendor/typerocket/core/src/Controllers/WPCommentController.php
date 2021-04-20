@@ -45,11 +45,13 @@ class WPCommentController extends Controller
             }
 
             $model->findById( $id )->update( $this->getFields() );
+            $this->onAction('save', 'update', $model);
             $response->flashNext( 'Comment updated', 'success' );
             $response->setData('resourceId', $model->getID() );
         } catch( ModelException $e ) {
             $response->flashNext( $e->getMessage(), 'error' );
             $response->setError( 'model', $e->getMessage() );
+            $this->onAction('error', 'update', $e, $model);
         }
 
         return $this->returnJsonOrGoBack();
@@ -77,13 +79,19 @@ class WPCommentController extends Controller
                 throw new ModelException('Policy does not give the current user access to write.');
             }
 
-            $model->create( $this->getFields() );
+            $new = $model->create( $this->getFields() );
+
+            if($new) {
+                $this->onAction('save', 'create', $new);
+            }
+
             $response->flashNext( 'Comment created', 'success' );
             $response->setStatus(201);
             $response->setData('resourceId', $model->getID() );
         } catch( ModelException $e ) {
             $response->flashNext( $e->getMessage(), 'error' );
             $response->setError( 'model', $e->getMessage() );
+            $this->onAction('error', 'create', $e, $model);
         }
 
         return $this->returnJsonOrGoBack();
@@ -117,12 +125,14 @@ class WPCommentController extends Controller
             }
 
             $model->delete();
+            $this->onAction('destroy', $model);
             $response->flashNext( 'Comment deleted', 'success' );
             $response->setStatus(200);
             $response->setData('resourceId', $model->getID() );
         } catch( ModelException $e ) {
             $response->flashNext( $e->getMessage(), 'error' );
             $response->setError( 'model', $e->getMessage() );
+            $this->onAction('error', 'destroy', $e, $model);
         }
 
         return $this->returnJsonOrGoBack();
