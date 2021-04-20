@@ -97,6 +97,22 @@ class Model implements Formable, JsonSerializable
     }
 
     /**
+     * Cast Array to Model Results
+     *
+     * @param array $records
+     *
+     * @return Results
+     */
+    public static function castArrayToModelResults(array $resultsArray)
+    {
+        $results_class = (new static)->getResultsClass();
+        /** @var Results $results */
+        $results = new $results_class;
+
+        return $results->exchangeAndCast($resultsArray, static::class);
+    }
+
+    /**
      * Init Query
      *
      * @param Query $query
@@ -1212,6 +1228,24 @@ class Model implements Formable, JsonSerializable
     }
 
     /**
+     * Find First Where Or Create With
+     *
+     * @param string $column column to search
+     * @param string $value exact value lookup only
+     *
+     * @return static
+     */
+    public function findFirstWhereOrCreateWith($column, $value)
+    {
+        if(!$item = $this->where($column, $value)->first()) {
+            $item = new static;
+            $item->{$column} = $value;
+        }
+
+        return $item;
+    }
+
+    /**
      * Where
      *
      * @param string $column
@@ -1220,7 +1254,7 @@ class Model implements Formable, JsonSerializable
      * @param string $condition
      * @param null|int $num
      *
-     * @return Model
+     * @return static
      */
     public function findFirstWhereOrNew($column, $arg1, $arg2 = null, $condition = 'AND', $num = null)
     {
