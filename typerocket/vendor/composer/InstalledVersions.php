@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'de68781d082b5975e508b9c877e2d8fa66ded8b2',
+    'reference' => 'cca29ee0f9d61d050e7c5a12c1326a082d0c3dab',
     'name' => 'typerocket/typerocket',
   ),
   'versions' => 
@@ -147,7 +147,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'de68781d082b5975e508b9c877e2d8fa66ded8b2',
+      'reference' => 'cca29ee0f9d61d050e7c5a12c1326a082d0c3dab',
     ),
   ),
 );
