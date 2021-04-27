@@ -795,16 +795,16 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.55",
+            "version": "v5.0.59",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "4fadcbf85907fddb443ff0987262091dff418a57"
+                "reference": "db0ae1e1a30ff153dd73c91b737c75e7b86a658d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/4fadcbf85907fddb443ff0987262091dff418a57",
-                "reference": "4fadcbf85907fddb443ff0987262091dff418a57",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/db0ae1e1a30ff153dd73c91b737c75e7b86a658d",
+                "reference": "db0ae1e1a30ff153dd73c91b737c75e7b86a658d",
                 "shasum": ""
             },
             "require": {
@@ -842,9 +842,9 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.55"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.59"
             },
-            "time": "2021-04-20T19:18:50+00:00"
+            "time": "2021-04-27T03:19:53+00:00"
         }
     ],
     "packages-dev": [

@@ -261,6 +261,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Database\\Migrate' => __DIR__ . '/..' . '/typerocket/core/src/Database/Migrate.php',
         'TypeRocket\\Database\\Query' => __DIR__ . '/..' . '/typerocket/core/src/Database/Query.php',
         'TypeRocket\\Database\\Results' => __DIR__ . '/..' . '/typerocket/core/src/Database/Results.php',
+        'TypeRocket\\Database\\ResultsCollection' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsCollection.php',
         'TypeRocket\\Database\\ResultsCommentMeta' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsCommentMeta.php',
         'TypeRocket\\Database\\ResultsMeta' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsMeta.php',
         'TypeRocket\\Database\\ResultsPaged' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsPaged.php',

@@ -174,6 +174,7 @@ return array(
     'TypeRocket\\Database\\Migrate' => $vendorDir . '/typerocket/core/src/Database/Migrate.php',
     'TypeRocket\\Database\\Query' => $vendorDir . '/typerocket/core/src/Database/Query.php',
     'TypeRocket\\Database\\Results' => $vendorDir . '/typerocket/core/src/Database/Results.php',
+    'TypeRocket\\Database\\ResultsCollection' => $vendorDir . '/typerocket/core/src/Database/ResultsCollection.php',
     'TypeRocket\\Database\\ResultsCommentMeta' => $vendorDir . '/typerocket/core/src/Database/ResultsCommentMeta.php',
     'TypeRocket\\Database\\ResultsMeta' => $vendorDir . '/typerocket/core/src/Database/ResultsMeta.php',
     'TypeRocket\\Database\\ResultsPaged' => $vendorDir . '/typerocket/core/src/Database/ResultsPaged.php',
