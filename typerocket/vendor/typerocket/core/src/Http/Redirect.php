@@ -96,7 +96,7 @@ class Redirect
      */
     public function toHome( $path = '', $schema = null)
     {
-        $this->url = esc_url_raw( home_url( $path ), $schema ?: (is_ssl() ? 'https' : 'http') );
+        $this->url = get_home_url( null, $path, $schema ?: (is_ssl() ? 'https' : 'http') );
 
         return $this;
     }
@@ -165,7 +165,7 @@ class Redirect
      * @return Redirect
      */
     public function toUrl( $url ) {
-        $this->url = esc_url_raw($url);
+        $this->url = $url;
 
         return $this;
     }
@@ -220,6 +220,25 @@ class Redirect
             } else {
                 $this->url = get_site_url(null, '/', $scheme);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Redirect back to referrer if no URL is set
+     *
+     * Must be the same host
+     *
+     * @param false $self
+     * @param false $force
+     *
+     * @return $this
+     */
+    public function maybeBack($self = false, $force = false)
+    {
+        if(!$this->url) {
+            return $this->back($self, $force);
         }
 
         return $this;
