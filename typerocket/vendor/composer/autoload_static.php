@@ -259,6 +259,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Core\\System' => __DIR__ . '/..' . '/typerocket/core/src/Core/System.php',
         'TypeRocket\\Database\\EagerLoader' => __DIR__ . '/..' . '/typerocket/core/src/Database/EagerLoader.php',
         'TypeRocket\\Database\\Migrate' => __DIR__ . '/..' . '/typerocket/core/src/Database/Migrate.php',
+        'TypeRocket\\Database\\Migration' => __DIR__ . '/..' . '/typerocket/core/src/Database/Migration.php',
         'TypeRocket\\Database\\Query' => __DIR__ . '/..' . '/typerocket/core/src/Database/Query.php',
         'TypeRocket\\Database\\Results' => __DIR__ . '/..' . '/typerocket/core/src/Database/Results.php',
         'TypeRocket\\Database\\ResultsCollection' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsCollection.php',

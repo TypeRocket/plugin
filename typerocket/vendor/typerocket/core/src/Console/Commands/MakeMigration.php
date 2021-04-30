@@ -4,6 +4,8 @@ namespace TypeRocket\Console\Commands;
 use TypeRocket\Console\Command;
 use TypeRocket\Utility\File;
 use TypeRocket\Utility\Sanitize;
+use TypeRocket\Utility\Str;
+use function Webmozart\Assert\Tests\StaticAnalysis\upper;
 
 class MakeMigration extends Command
 {
@@ -16,6 +18,7 @@ class MakeMigration extends Command
     protected function config()
     {
         $this->addArgument('name', self::REQUIRED, 'The migration name.');
+        $this->addArgument('type', self::OPTIONAL, 'class or sql');
     }
 
     /**
@@ -28,6 +31,7 @@ class MakeMigration extends Command
     protected function exec()
     {
         $name = Sanitize::underscore( $this->getArgument('name') );
+        $type = strtoupper($this->getArgument('type', 'sql'));
         $root = \TypeRocket\Core\Config::get('paths.migrations');
 
         // Make directories if needed
@@ -37,20 +41,27 @@ class MakeMigration extends Command
             $this->success('Location created...');
         }
 
-        // Make migration file
         $tags = ['{{name}}'];
         $replacements = [ $name ];
-        $template = __DIR__ . '/../../../templates/Migration.txt';
-        $new = $root . '/' . time() . '.' . $name . ".sql";
 
+        if($type === 'SQL') {
+            $template = __DIR__ . '/../../../templates/Migration.txt';
+            $ext = ".sql";
+        } else {
+            $template = __DIR__ . '/../../../templates/MigrationClass.txt';
+            $ext = ".php";
+        }
+
+        // Make migration file
+        $fileName = time() . '.' . $name . $ext;
+        $new = $root . '/' . $fileName;
         $file = new File( $template );
         $new = $file->copyTemplateFile( $new, $tags, $replacements );
 
         if( $new ) {
-            $this->success('Migration created: ' . $name );
+            $this->success($type .' Migration created: ' . $name . ' as ' . $fileName );
         } else {
             $this->error('TypeRocket migration ' . $name . ' already exists.');
         }
-
     }
 }

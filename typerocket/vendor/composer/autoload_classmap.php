@@ -172,6 +172,7 @@ return array(
     'TypeRocket\\Core\\System' => $vendorDir . '/typerocket/core/src/Core/System.php',
     'TypeRocket\\Database\\EagerLoader' => $vendorDir . '/typerocket/core/src/Database/EagerLoader.php',
     'TypeRocket\\Database\\Migrate' => $vendorDir . '/typerocket/core/src/Database/Migrate.php',
+    'TypeRocket\\Database\\Migration' => $vendorDir . '/typerocket/core/src/Database/Migration.php',
     'TypeRocket\\Database\\Query' => $vendorDir . '/typerocket/core/src/Database/Query.php',
     'TypeRocket\\Database\\Results' => $vendorDir . '/typerocket/core/src/Database/Results.php',
     'TypeRocket\\Database\\ResultsCollection' => $vendorDir . '/typerocket/core/src/Database/ResultsCollection.php',

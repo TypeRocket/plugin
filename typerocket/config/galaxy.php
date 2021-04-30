@@ -19,8 +19,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | Load WordPress and run commands after_setup_theme if WordPress is found.
+    | You can run `TYPEROCKET_GALAXY_LOAD_WP=no php galaxy` to skip loading
+    | WordPress for the current running command.
     |
-    | Options: yes, no
+    | Options include: yes, no
     |
     */
     'wordpress_load' => typerocket_env('TYPEROCKET_GALAXY_LOAD_WP', 'yes', true),

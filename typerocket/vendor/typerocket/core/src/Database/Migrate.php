@@ -203,6 +203,8 @@ class Migrate
                     $query_strings[$file] = $query;
                 }
                 fclose($f);
+            } if(strpos($file, '.php', -0) && is_file($file_full)) {
+                $query_strings[$file] = ['file' => $file_full];
             }
         }
 
@@ -229,7 +231,23 @@ class Migrate
                 $result['message'] =  'Migration down finished at ' . $dtime;
             }
 
-            $result['report'] = (new SqlRunner())->runQueryString($query, $this->callback, $result);
+            if(is_array($query) && !empty($query['file'])) {
+
+                $cb = function($type, $file, \wpdb $wpdb) {
+                    $migrationObject = include($file);
+                    ob_start();
+                    $migrationObject->run($type);
+                    return ob_get_clean();
+                };
+
+                $report = $cb($type, $query['file'], $wpdb);
+
+                call_user_func($this->callback, ['message' => 'PHP Migration of ' . $file, 'wpdb' => $report], $result);
+
+                $result['report'] = $file;
+            } else {
+                $result['report'] = (new SqlRunner())->runQueryString($query, $this->callback, $result);
+            }
         }
 
         $result['migrations_run'] = $migrations_run;
