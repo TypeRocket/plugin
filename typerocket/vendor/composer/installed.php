@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'e0924d4657f4633b92306d35067750708bc782c8',
+    'reference' => '8858d8ae06bad2abc8472b43ccdfce81f9b97ac8',
     'name' => 'typerocket/typerocket',
   ),
   'versions' => 
@@ -101,21 +101,21 @@
     ),
     'symfony/string' => 
     array (
-      'pretty_version' => 'v5.2.6',
-      'version' => '5.2.6.0',
+      'pretty_version' => 'v5.2.8',
+      'version' => '5.2.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ad0bd91bce2054103f5eaa18ebeba8d3bc2a0572',
+      'reference' => '01b35eb64cac8467c3f94cd0ce2d0d376bb7d1db',
     ),
     'typerocket/core' => 
     array (
-      'pretty_version' => 'v5.0.64',
-      'version' => '5.0.64.0',
+      'pretty_version' => 'v5.0.66',
+      'version' => '5.0.66.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e0b5aca5bb68abe132f864bcf939c59e3e30fbea',
+      'reference' => 'f385c1aae0dd09df7cee82bceaf0effdec59b2b1',
     ),
     'typerocket/typerocket' => 
     array (
@@ -124,7 +124,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'e0924d4657f4633b92306d35067750708bc782c8',
+      'reference' => '8858d8ae06bad2abc8472b43ccdfce81f9b97ac8',
     ),
   ),
 );
