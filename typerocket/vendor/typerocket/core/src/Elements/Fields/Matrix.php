@@ -93,8 +93,8 @@ class Matrix extends Field implements ScriptField
         wp_enqueue_script( 'jquery-ui-datepicker', [ 'jquery' ], false, true );
         wp_enqueue_script( 'wp-color-picker' );
 
-        if(class_exists('TypeRocketPro\Features\EditorScripts')) {
-            call_user_func('TypeRocketPro\Features\EditorScripts::enqueueEditorScripts');
+        if(class_exists('\TypeRocketPro\Core\AdvancedSystem')) {
+            call_user_func('\TypeRocketPro\Elements\Traits\EditorScripts::enqueueEditorScripts');
         }
     }
 
@@ -252,6 +252,8 @@ class Matrix extends Field implements ScriptField
         $name = $this->getComponentGroup();
         $options = $this->popAllOptions();
         $options = $options ?: \TypeRocket\Core\Config::get("components.{$name}");
+        $options = apply_filters('typerocket_component_options', $options, $name, $this);
+
         $list = array_merge($options, $this->staticOptions);
 
         foreach ($list as $name) {
@@ -316,6 +318,8 @@ class Matrix extends Field implements ScriptField
         // This is to help with migration from v4/v1 to v5
         $reg = \TypeRocket\Core\Config::get("components.registry");
         $component_class = $reg["{$group}:{$type}"] ?? $reg[$type] ?? null;
+
+        $component_class = apply_filters('typerocket_component_class', $component_class, $type, $group, $reg);
 
         if(!$component_class) {
             return (new ErrorComponent)->title($type)->registeredAs($type);

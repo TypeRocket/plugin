@@ -50,6 +50,7 @@ class Image extends Field implements ScriptField
         }
 
         $value = Data::cast($value, 'int');
+        $image = $edit = '';
 
         $this->removeAttribute( 'name' );
 
@@ -63,12 +64,16 @@ class Image extends Field implements ScriptField
 
         if ($value != "") {
             $image = wp_get_attachment_image( (int) $value, $this->getSetting('size', 'thumbnail') );
-        } else {
-            $image = '';
+            $edit = Html::a( '', admin_url("post.php?post={$value}&action=edit"), [
+                'class' => 'dashicons dashicons-edit tr-image-edit',
+                'target' => '_blank',
+                'title' => __('Edit', 'typerocket-domain'),
+                'tabindex' => '0',
+            ]);
         }
 
         if (empty( $image )) {
-            $value = '';
+            $value = $edit = '';
         }
 
         $classes = Str::classNames('tr-image-picker-placeholder', [
@@ -91,7 +96,7 @@ class Image extends Field implements ScriptField
         $html .= '</div>';
         $html .= Html::div([
             'class' => $classes
-        ], $image );
+        ], $image . $edit);
 
         return $html;
     }
