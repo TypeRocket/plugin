@@ -1048,6 +1048,22 @@ class Model implements Formable, JsonSerializable
     }
 
     /**
+     * Append Raw Order By
+     *
+     * This method is not sanitized before it is run. Do not
+     * use this method with user provided input.
+     *
+     * @param string $sql string
+     * @return $this
+     */
+    public function appendRawOrderBy($sql)
+    {
+        $this->query->appendRawOrderBy($sql);
+
+        return $this;
+    }
+
+    /**
      * Reorder
      *
      * @param string $column
@@ -2107,7 +2123,8 @@ class Model implements Formable, JsonSerializable
      */
     protected function getRelationshipFromMethod($method)
     {
-      return $this->$method() ? $this->$method()->get() : null;
+        $rel = $this->$method() ?? null;
+        return is_object($rel) ? $rel->get() : null;
     }
 
     /**

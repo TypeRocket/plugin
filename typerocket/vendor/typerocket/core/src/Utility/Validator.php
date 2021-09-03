@@ -393,9 +393,8 @@ class Validator
      */
     protected function setErrorMessage(ValidatorRule $class, $fullDotPath)
     {
-        $message = $class->getError();
-        $this->errors[$fullDotPath] = $class->getFieldLabel() . ' ' .  $message;
-        $this->errorFields[$fullDotPath] = trim($message);
+        $error_message = $class->getError();
+        $error_message_full = $class->getFieldLabel() . ' ' .  $error_message;
         $type = $class::KEY;
         $index = $fullDotPath.':'.$type;
         $validate = $value = $matches = false;
@@ -417,15 +416,19 @@ class Validator
 
         if($validate) {
             if(is_callable($value)) {
-                $this->errors[$fullDotPath] = call_user_func($value, $fullDotPath, $type, $this->errors[$fullDotPath], $matches);
-                $this->errorFields[$fullDotPath] = $this->errors[$fullDotPath];
+                $error_message = $error_message_full = call_user_func($value, $fullDotPath, $type, $error_message_full, $matches, $error_message);
             } else {
-                $error_message = $class->getError();
-                $error_message = isset($value) ? str_replace('{error}', $error_message, $value) : $error_message;
-                $this->errors[$fullDotPath] = $error_message;
-                $this->errorFields[$fullDotPath] = $error_message;
+                $error_message = $error_message_full = isset($value) ? str_replace('{error}', $error_message, $value) : $error_message;
+            }
+
+            if(is_array($error_message)) {
+                $error_message_full = $error_message['full'];
+                $error_message = $error_message['field'];
             }
         }
+
+        $this->errors[$fullDotPath] = $this->errors[$fullDotPath] ?? $error_message_full;
+        $this->errorFields[$fullDotPath] = $this->errorFields[$fullDotPath] ?? trim($error_message);
     }
 
     /**
@@ -484,10 +487,15 @@ class Validator
 
         foreach( $list as $validation)
         {
-            $class = null;
+            $class = $weak = null;
 
             if(is_string($validation)) {
                 [ $type, $option, $option2, $option3 ] = array_pad(explode(':', $validation, 4), 4, null);
+
+                if($type[0] === '?') {
+                    $weak = true;
+                    $type = substr($type, 1);
+                }
 
                 if(array_key_exists($type, $this->validatorMap)) {
                     $class = $this->validatorMap[$type];
@@ -500,6 +508,7 @@ class Validator
                         'option' => $option,
                         'option2' => $option2,
                         'option3' => $option3,
+                        'weak' => $weak,
                     ]);
 
                     $class = new $class;
@@ -526,7 +535,11 @@ class Validator
      */
     protected function runValidatorRule(ValidatorRule $rule, string $fullDotPath, $value)
     {
-        $pass = $rule->validate();
+        if($rule->isOptional() && !Str::notBlank($value)) {
+            $pass = true;
+        } else {
+            $pass = $rule->validate();
+        }
 
         if( !$pass ) {
             $this->setErrorMessage($rule, $fullDotPath);
