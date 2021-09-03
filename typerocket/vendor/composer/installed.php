@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '27366d2dacbd18a876ec12852a328b0e6ab4328b',
+        'reference' => '558c5e69650e1935f482a8b3a6f811b3d1b47d89',
         'name' => 'typerocket/typerocket',
         'dev' => true,
     ),
@@ -367,7 +367,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '27366d2dacbd18a876ec12852a328b0e6ab4328b',
+            'reference' => '558c5e69650e1935f482a8b3a6f811b3d1b47d89',
             'dev_requirement' => false,
         ),
         'webmozart/assert' => array(
