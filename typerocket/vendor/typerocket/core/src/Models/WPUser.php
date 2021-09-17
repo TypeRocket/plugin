@@ -387,6 +387,7 @@ class WPUser extends Model implements AuthUser
                 }
 
                 $current_value = get_user_meta( $id, $key, true );
+                $value = $this->getNewArrayReplaceRecursiveValue($key, $current_value, $value);
 
                 if (isset( $value ) && $value !== $current_value) :
                     $value = wp_slash($value);

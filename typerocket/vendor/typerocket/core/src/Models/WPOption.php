@@ -90,6 +90,7 @@ class WPOption extends Model
                 }
 
                 $current_value = get_option( $key );
+                $value = $this->getNewArrayReplaceRecursiveValue($key, $current_value, $value);
 
                 if (( isset( $value ) && $value !== "" ) && $current_value !== $value) :
                     update_option( $key, $value );

@@ -583,6 +583,7 @@ class WPPost extends Model
                 }
 
                 $current_value = get_post_meta( $id, $key, true );
+                $value = $this->getNewArrayReplaceRecursiveValue($key, $current_value, $value);
 
                 if (( isset( $value ) && $value !== "" ) && $value !== $current_value) :
                     $value = wp_slash($value);

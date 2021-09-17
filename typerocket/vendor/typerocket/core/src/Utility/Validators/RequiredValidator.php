@@ -2,6 +2,8 @@
 
 namespace TypeRocket\Utility\Validators;
 
+use TypeRocket\Utility\Arr;
+use TypeRocket\Utility\Data;
 use TypeRocket\Utility\Str;
 use TypeRocket\Utility\Validator;
 
@@ -24,13 +26,29 @@ class RequiredValidator extends ValidatorRule
         extract($this->args);
         $option = $option ?? null;
 
-        $weak = $option === 'weak' && is_null($value);
+        $opts = explode('/', $option);
 
-        if($option === 'strong') {
-            $value = trim($value);
+        if(is_array($value)) {
+            $value = array_filter($value, function($v) {
+                return isset($v);
+            });
         }
 
-        if( !$weak && empty( $value ) ) {
+        $allow_zero = in_array('allow_zero', $opts);
+        $strong = in_array('strong', $opts);
+        $weak = in_array('weak', $opts) && (is_null($value) || Arr::isEmptyArray($value));
+
+        if($strong) {
+            $value = is_array($value) ? Arr::mapDeep('trim', $value) : trim($value);
+        }
+
+        if($allow_zero) {
+            $empty = Data::emptyOrBlankRecursive( $value );
+        } else {
+            $empty = Data::emptyRecursive($value);
+        }
+
+        if( !$weak && $empty ) {
             $this->error = __('is required.','typerocket-domain');
         }
 

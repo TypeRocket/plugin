@@ -293,6 +293,7 @@ class WPComment extends Model
                 }
 
                 $current_value = get_comment_meta( $id, $key, true );
+                $value = $this->getNewArrayReplaceRecursiveValue($key, $current_value, $value);
 
                 if (( isset( $value ) && $value !== "" ) && $value !== $current_value) :
                     $value = wp_slash($value);
@@ -317,7 +318,6 @@ class WPComment extends Model
      */
     protected function caseFieldColumns( $fields )
     {
-
         if ( ! empty( $fields['comment_post_id'] )) {
             $fields['comment_post_ID'] = (int) $fields['comment_post_id'];
             unset( $fields['comment_post_id'] );
@@ -334,7 +334,6 @@ class WPComment extends Model
         }
 
         return $fields;
-
     }
 
     /**

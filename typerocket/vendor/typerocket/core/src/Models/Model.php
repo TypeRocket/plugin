@@ -15,6 +15,7 @@ use TypeRocket\Http\Auth;
 use TypeRocket\Http\Fields;
 use TypeRocket\Http\Request;
 use TypeRocket\Interfaces\Formable;
+use TypeRocket\Models\Traits\ArrayReplaceRecursiveValues;
 use TypeRocket\Models\Traits\FieldValue;
 use TypeRocket\Models\Traits\Searchable;
 use TypeRocket\Services\AuthorizerService;
@@ -26,7 +27,7 @@ use wpdb;
 
 class Model implements Formable, JsonSerializable
 {
-    use Searchable, FieldValue;
+    use Searchable, FieldValue, ArrayReplaceRecursiveValues;
 
     protected $fillable = [];
     protected $restMetaFields = [];
@@ -594,6 +595,10 @@ class Model implements Formable, JsonSerializable
              $value = $this->mutatePropertySet($key, $value);
         }
 
+        if($current_value = $this->propertiesUnaltered[$key] ?? null) {
+            $value = $this->getNewArrayReplaceRecursiveValue($key, $current_value, $value);
+        }
+
         $this->properties[$key] = $value;
         $this->explicitProperties[$key] = $value;
 
@@ -670,6 +675,34 @@ class Model implements Formable, JsonSerializable
     public function getPropertiesUnaltered()
     {
         return $this->propertiesUnaltered;
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return $this
+     */
+    public function appendMetalessField(string $field)
+    {
+        if(!in_array($field, $this->metaless)) {
+            $this->metaless[] = $field;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     *
+     * @return $this
+     */
+    public function removeMetalessField(string $field)
+    {
+        if(($key = array_search($field, $this->metaless)) !== false) {
+            unset($this->metaless[$key]);
+        }
+
+        return $this;
     }
 
     /**
@@ -1162,6 +1195,14 @@ class Model implements Formable, JsonSerializable
 
         do_action('typerocket_model_update', $this, $fields);
 
+        if(is_array($fields)) {
+            foreach ($fields as $field => $value) {
+                if($current_value = $this->propertiesUnaltered[$field] ?? null) {
+                    $fields[$field] = $this->getNewArrayReplaceRecursiveValue($field, $current_value, $value);
+                }
+            }
+        }
+
         $v =  $this->query->where($this->idColumn, $this->getID())->update($fields);
 
         do_action('typerocket_model_after_update', $this, $fields, $v);
@@ -1615,7 +1656,7 @@ class Model implements Formable, JsonSerializable
      */
     public function getCast( $property )
     {
-        $value = !empty($this->properties[$property]) ? $this->properties[$property] : null;
+        $value = $this->properties[$property] ?? null;
 
         if ( ! empty( $this->cast[$property] ) ) {
             $handle = $this->cast[$property];
@@ -2053,7 +2094,7 @@ class Model implements Formable, JsonSerializable
      */
     public function getPropertyValue($key)
     {
-      return $this->getPropertyFromArray($key);
+        return $this->getPropertyFromArray($key);
     }
 
     /**
@@ -2101,17 +2142,23 @@ class Model implements Formable, JsonSerializable
      */
     protected function getPropertyFromArray($key)
     {
-        $value = null;
-
-        if (array_key_exists($key, $this->properties)) {
-            $value = $this->properties[$key];
-        }
+        $value = $this->properties[$key] ?? null;
 
         if ($this->hasGetMutator($key)) {
             return $this->mutatePropertyGet($key, $value);
         }
 
         return $value;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getPropertyValueDirect(string $key)
+    {
+        return $this->properties[$key] ?? null;
     }
 
     /**
