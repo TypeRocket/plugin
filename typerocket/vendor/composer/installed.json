@@ -367,17 +367,17 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.4.0",
-            "version_normalized": "1.4.0.0",
+            "version": "1.5.0",
+            "version_normalized": "1.5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "6a467b8989322d92aa1c8bf2bebcc6e5c2ba55c0"
+                "reference": "30f38bffc6f24293dadd1823936372dfa9e86e2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/6a467b8989322d92aa1c8bf2bebcc6e5c2ba55c0",
-                "reference": "6a467b8989322d92aa1c8bf2bebcc6e5c2ba55c0",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/30f38bffc6f24293dadd1823936372dfa9e86e2f",
+                "reference": "30f38bffc6f24293dadd1823936372dfa9e86e2f",
                 "shasum": ""
             },
             "require": {
@@ -385,9 +385,10 @@
                 "phpdocumentor/reflection-common": "^2.0"
             },
             "require-dev": {
-                "ext-tokenizer": "*"
+                "ext-tokenizer": "*",
+                "psalm/phar": "^4.8"
             },
-            "time": "2020-09-17T18:55:26+00:00",
+            "time": "2021-09-17T15:28:14+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -413,7 +414,7 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.4.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.5.0"
             },
             "install-path": "../phpdocumentor/type-resolver"
         },
@@ -2537,17 +2538,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.92",
-            "version_normalized": "5.0.92.0",
+            "version": "v5.0.93",
+            "version_normalized": "5.0.93.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "69248249daeb076ac62bcc82b9caa87d2146965b"
+                "reference": "d0f32cafbebe3293de545b222c3950c15372b1dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/69248249daeb076ac62bcc82b9caa87d2146965b",
-                "reference": "69248249daeb076ac62bcc82b9caa87d2146965b",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/d0f32cafbebe3293de545b222c3950c15372b1dd",
+                "reference": "d0f32cafbebe3293de545b222c3950c15372b1dd",
                 "shasum": ""
             },
             "require": {
@@ -2558,7 +2559,7 @@
             "require-dev": {
                 "phpunit/phpunit": "8.5.*"
             },
-            "time": "2021-09-17T01:05:45+00:00",
+            "time": "2021-09-20T17:19:21+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2587,7 +2588,7 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.92"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.93"
             },
             "install-path": "../typerocket/core"
         },
