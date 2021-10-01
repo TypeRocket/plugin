@@ -802,17 +802,17 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.20",
-            "version_normalized": "8.5.20.0",
+            "version": "8.5.21",
+            "version_normalized": "8.5.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9deefba183198398a09b927a6ac6bc1feb0b7b70"
+                "reference": "50a58a60b85947b0bee4c8ecfe0f4bbdcf20e984"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9deefba183198398a09b927a6ac6bc1feb0b7b70",
-                "reference": "9deefba183198398a09b927a6ac6bc1feb0b7b70",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/50a58a60b85947b0bee4c8ecfe0f4bbdcf20e984",
+                "reference": "50a58a60b85947b0bee4c8ecfe0f4bbdcf20e984",
                 "shasum": ""
             },
             "require": {
@@ -850,7 +850,7 @@
                 "ext-xdebug": "*",
                 "phpunit/php-invoker": "^2.0.0"
             },
-            "time": "2021-08-31T06:44:38+00:00",
+            "time": "2021-09-25T07:37:20+00:00",
             "bin": [
                 "phpunit"
             ],
@@ -886,7 +886,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.20"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.21"
             },
             "funding": [
                 {
@@ -2538,17 +2538,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.0.93",
-            "version_normalized": "5.0.93.0",
+            "version": "v5.0.94",
+            "version_normalized": "5.0.94.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "d0f32cafbebe3293de545b222c3950c15372b1dd"
+                "reference": "0c63c9059985c705ec1026f1d18c39d9998c9a97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/d0f32cafbebe3293de545b222c3950c15372b1dd",
-                "reference": "d0f32cafbebe3293de545b222c3950c15372b1dd",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/0c63c9059985c705ec1026f1d18c39d9998c9a97",
+                "reference": "0c63c9059985c705ec1026f1d18c39d9998c9a97",
                 "shasum": ""
             },
             "require": {
@@ -2559,7 +2559,7 @@
             "require-dev": {
                 "phpunit/phpunit": "8.5.*"
             },
-            "time": "2021-09-20T17:19:21+00:00",
+            "time": "2021-09-30T13:55:25+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2588,7 +2588,7 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.0.93"
+                "source": "https://github.com/TypeRocket/core/tree/v5.0.94"
             },
             "install-path": "../typerocket/core"
         },

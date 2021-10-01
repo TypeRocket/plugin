@@ -2,6 +2,17 @@
 
 All notable changes of the PHPUnit 8.5 release series are documented in this file using the [Keep a CHANGELOG](https://keepachangelog.com/) principles.
 
+## [8.5.21] - 2021-09-25
+
+### Changed
+
+* PHPUnit no longer converts PHP deprecations to exceptions by default (configure `convertDeprecationsToExceptions="true"` to enable this)
+* The PHPUnit XML configuration file generator now configures `convertDeprecationsToExceptions="true"`
+
+### Fixed
+
+* [#4772](https://github.com/sebastianbergmann/phpunit/pull/4772): TestDox HTML report not displayed correctly when browser has custom colour settings
+
 ## [8.5.20] - 2021-08-31
 
 ### Fixed
@@ -167,6 +178,7 @@ All notable changes of the PHPUnit 8.5 release series are documented in this fil
 * [#3967](https://github.com/sebastianbergmann/phpunit/issues/3967): Cannot double interface that extends interface that extends `\Throwable`
 * [#3968](https://github.com/sebastianbergmann/phpunit/pull/3968): Test class run in a separate PHP process are passing when `exit` called inside
 
+[8.5.21]: https://github.com/sebastianbergmann/phpunit/compare/8.5.20...8.5.21
 [8.5.20]: https://github.com/sebastianbergmann/phpunit/compare/8.5.19...8.5.20
 [8.5.19]: https://github.com/sebastianbergmann/phpunit/compare/8.5.18...8.5.19
 [8.5.18]: https://github.com/sebastianbergmann/phpunit/compare/8.5.17...8.5.18
