@@ -1116,6 +1116,7 @@ return array(
     'phpDocumentor\\Reflection\\PseudoTypes\\CallableString' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/CallableString.php',
     'phpDocumentor\\Reflection\\PseudoTypes\\False_' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/False_.php',
     'phpDocumentor\\Reflection\\PseudoTypes\\HtmlEscapedString' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/HtmlEscapedString.php',
+    'phpDocumentor\\Reflection\\PseudoTypes\\LiteralString' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/LiteralString.php',
     'phpDocumentor\\Reflection\\PseudoTypes\\LowercaseString' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/LowercaseString.php',
     'phpDocumentor\\Reflection\\PseudoTypes\\NonEmptyLowercaseString' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/NonEmptyLowercaseString.php',
     'phpDocumentor\\Reflection\\PseudoTypes\\NonEmptyString' => $vendorDir . '/phpdocumentor/type-resolver/src/PseudoTypes/NonEmptyString.php',

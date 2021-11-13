@@ -1203,7 +1203,7 @@ class Model implements Formable, JsonSerializable
             }
         }
 
-        $v =  $this->query->where($this->idColumn, $this->getID())->update($fields);
+        $v = $this->query->where($this->idColumn, $this->getID())->update($fields);
 
         do_action('typerocket_model_after_update', $this, $fields, $v);
 
@@ -1584,16 +1584,57 @@ class Model implements Formable, JsonSerializable
     }
 
     /**
-     * Save changes directly
+     * Save Changes Then Get New Model
      *
      * @param array|Fields $fields
      *
      * @return mixed
      */
+    public function saveAndGet($fields = [])
+    {
+        $idColumn = $this->getIdColumn();
+
+        if( isset( $this->properties[$idColumn] ) && $this->findById($this->getID()) ) {
+            if($updated = $this->update($fields)) {
+                if($updated instanceof Model) {
+                    return $updated;
+                }
+
+                return $this->findById($this->getID());
+            }
+
+            return null;
+        }
+
+        if($created = $this->create($fields)) {
+            if($created instanceof Model) {
+                return $created;
+            }
+
+            return $this->findById($created);
+        }
+
+        return null;
+    }
+
+    /**
+     * Save changes directly
+     *
+     * - Return Model when using built-in WP models.
+     * - Return bool when update on custom model.
+     * - Return int when create on custom model.
+     *
+     * @param array|Fields $fields
+     *
+     * @return mixed|bool|int
+     */
     public function save( $fields = [] )
     {
         if( isset( $this->properties[$this->idColumn] ) && $this->findById($this->properties[$this->idColumn]) ) {
-            return $this->update($fields);
+            $update = $this->update($fields);
+            if($update === 1 || $update === 0) {
+                return (bool) $update;
+            }
         }
         return $this->create($fields);
     }
