@@ -10,7 +10,6 @@
 namespace PHPUnit\Framework;
 
 use const PHP_EOL;
-use function array_diff;
 use function array_keys;
 use function array_merge;
 use function basename;
@@ -121,9 +120,9 @@ class TestSuite implements IteratorAggregate, SelfDescribing, Test
     private $iteratorFilter;
 
     /**
-     * @var string[]
+     * @var int
      */
-    private $declaredClasses;
+    private $declaredClassesPointer;
 
     /**
      * Constructs a new TestSuite:.
@@ -155,7 +154,7 @@ class TestSuite implements IteratorAggregate, SelfDescribing, Test
             );
         }
 
-        $this->declaredClasses = get_declared_classes();
+        $this->declaredClassesPointer = count(get_declared_classes());
 
         if (!$theClass instanceof ReflectionClass) {
             if (class_exists($theClass, true)) {
@@ -382,7 +381,7 @@ class TestSuite implements IteratorAggregate, SelfDescribing, Test
         // The given file may contain further stub classes in addition to the
         // test class itself. Figure out the actual test class.
         $filename   = FileLoader::checkAndLoad($filename);
-        $newClasses = array_diff(get_declared_classes(), $this->declaredClasses);
+        $newClasses = array_slice(get_declared_classes(), $this->declaredClassesPointer);
 
         // The diff is empty in case a parent class (with test methods) is added
         // AFTER a child class that inherited from it. To account for that case,
@@ -392,8 +391,8 @@ class TestSuite implements IteratorAggregate, SelfDescribing, Test
             // On the assumption that test classes are defined first in files,
             // process discovered classes in approximate LIFO order, so as to
             // avoid unnecessary reflection.
-            $this->foundClasses    = array_merge($newClasses, $this->foundClasses);
-            $this->declaredClasses = get_declared_classes();
+            $this->foundClasses           = array_merge($newClasses, $this->foundClasses);
+            $this->declaredClassesPointer = count(get_declared_classes());
         }
 
         // The test class's name must match the filename, either in full, or as

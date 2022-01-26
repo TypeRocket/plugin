@@ -15,18 +15,25 @@ namespace phpDocumentor\Reflection\PseudoTypes;
 
 use phpDocumentor\Reflection\PseudoType;
 use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Integer;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 /**
- * Value Object representing the type 'int'.
+ * Value Object representing the type 'list'.
  *
  * @psalm-immutable
  */
-final class PositiveInteger extends Integer implements PseudoType
+final class List_ extends Array_ implements PseudoType
 {
     public function underlyingType(): Type
     {
-        return new Integer();
+        return new Array_();
+    }
+
+    public function __construct(?Type $valueType = null)
+    {
+        parent::__construct($valueType, new Integer());
     }
 
     /**
@@ -34,6 +41,10 @@ final class PositiveInteger extends Integer implements PseudoType
      */
     public function __toString(): string
     {
-        return 'positive-int';
+        if ($this->valueType instanceof Mixed_) {
+            return 'list';
+        }
+
+        return 'list<' . $this->valueType . '>';
     }
 }
