@@ -101,7 +101,7 @@ class Model implements Formable, JsonSerializable
     /**
      * Cast Array to Model Results
      *
-     * @param array $records
+     * @param array $resultsArray
      *
      * @return Results
      */
@@ -131,7 +131,7 @@ class Model implements Formable, JsonSerializable
      *
      * @param wpdb $wpdb
      *
-     * @return null
+     * @return null|string
      */
     protected function initTable($wpdb)
     {
@@ -1125,6 +1125,20 @@ class Model implements Formable, JsonSerializable
     public function take( $limit, $offset = 0, $returnOne = true )
     {
         $this->query->take($limit, $offset, $returnOne);
+
+        return $this;
+    }
+
+    /**
+     * Group By
+     *
+     * @param string|string[] $column
+     *
+     * @return $this
+     */
+    public function groupBy($column)
+    {
+        $this->query->groupBy($column);
 
         return $this;
     }
