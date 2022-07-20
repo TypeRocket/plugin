@@ -216,14 +216,29 @@ abstract class Field
     }
 
     /**
-     * Get Form Field string
-     *
+     * @deprecated
      * @return string
      */
     public function getFromString()
     {
+        return $this->getFormString();
+    }
+
+    /**
+     * Get Form Field string
+     *
+     * @return string
+     */
+    public function getFormString() : string
+    {
         // converting to string must happen first
         $fieldString     = $this->getString();
+        $before_form_string = $this->getSetting('before_form_string');
+        $field_cb_value = $this->getValue();
+
+        if(is_callable($before_form_string)) {
+            $before_form_string($field_cb_value, $this);
+        }
 
         if(!$fieldString) {
             return '';
@@ -242,6 +257,10 @@ abstract class Field
         }
 
         $help = $this->getSetting( 'help' );
+
+        if(is_callable($help)) {
+            $help = $help($field_cb_value, $this);
+        }
 
         $id     = $id ? "id=\"{$id}\"" : '';
         $idHelp = $idInput ? "id=\"{$idInput}--help\"" : '';
@@ -272,7 +291,7 @@ abstract class Field
         $this->beforeEcho();
         $form = $this->getForm();
         if($form instanceof BaseForm) {
-            $string = $this->getFromString();
+            $string = $this->getFormString();
         } else {
             $string = $this->getString();
         }
@@ -281,9 +300,32 @@ abstract class Field
     }
 
     /**
+     * Set Before Form String
+     *
+     * @param callable $callable
+     * @return Field
+     */
+    public function setBeforeFormString(callable $callable)
+    {
+        return $this->setSetting('before_form_string', $callable);
+    }
+
+    /**
+     * Append to Section Classes
+     *
+     * @param string $classes
+     *
+     * @return $this
+     */
+    public function appendToSectionClasses(string $classes)
+    {
+        return $this->appendToStringSetting('classes', $classes);
+    }
+
+    /**
      * Clone Field
      *
-     * @param null $form
+     * @param null|BaseForm|Formable $form
      *
      * @return Field
      */
@@ -395,13 +437,15 @@ abstract class Field
     /**
      * Set Help Text
      *
-     * @param string $value help text
+     * @param string|callable $value help text
      *
      * @return $this
      */
     public function setHelp( $value )
     {
-        if($value) {
+        if(is_callable($value)) {
+            $this->settings['help'] = $value;
+        } elseif($value) {
             $this->settings['help'] = $value;
         } else {
             unset($this->settings['help']);
@@ -450,7 +494,7 @@ abstract class Field
     /**
      * Get Type
      *
-     * @return null
+     * @return null|string
      */
     public function getType()
     {
@@ -664,7 +708,7 @@ abstract class Field
      * Sanitize field value
      *
      * @param string|null $value
-     * @param null $default
+     * @param null|string $default
      *
      * @return mixed
      */

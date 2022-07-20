@@ -104,7 +104,7 @@ trait FormConnectorTrait
             $model = $model->findById($this->itemId);
         }
 
-        if( method_exists($model, 'getRouteResource') && method_exists($this, 'setResource') ) {
+        if( is_object($model) && method_exists($model, 'getRouteResource') && method_exists($this, 'setResource') ) {
             $this->setResource($model->getRouteResource());
         }
 
@@ -148,7 +148,7 @@ trait FormConnectorTrait
     /**
      * Get or Set Group
      *
-     * @param null $group
+     * @param null|string $group
      *
      * @return $this|null|string
      */

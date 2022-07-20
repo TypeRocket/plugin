@@ -7,11 +7,13 @@ use TypeRocket\Utility\Str;
 class SqlRunner
 {
     protected $query_prefix_tag = '{!!prefix!!}';
+    protected $query_charset_tag = '{!!charset!!}';
+    protected $query_collate_tag = '{!!collate!!}';
 
     /**
      * @param $file_sql
-     * @param null $callback
-     * @param null $cb_data
+     * @param null|callable $callback
+     * @param null|string|array $cb_data
      *
      * @throws SqlException
      */
@@ -26,25 +28,41 @@ class SqlRunner
     }
 
     /**
+     * Compile Query String
+     *
      * @param $sql
-     * @param null $callback
-     * @param null $cb_data
+     *
+     * @return string
+     */
+    public function compileQueryString($sql) {
+        /** @var \wpdb $wpdb */
+        global $wpdb;
+        $prefix = $wpdb->prefix;
+        $charset = $wpdb->charset;
+        $collate = $wpdb->collate;
+
+        $compiled = str_replace($this->query_prefix_tag, $prefix, $sql);
+        $compiled = str_replace($this->query_charset_tag, $charset, $compiled);
+        return str_replace($this->query_collate_tag, $collate, $compiled);
+    }
+
+    /**
+     * @param $sql
+     * @param null|callable $callback
+     * @param null|string|array $cb_data
      *
      * @return array
      * @throws SqlException
      */
     public function runQueryString($sql, $callback = null, $cb_data = null, $file = null) {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
-        $prefix = $wpdb->prefix;
-        $prefixed = str_replace($this->query_prefix_tag, $prefix, $sql);
-        return $this->runQueryArray( explode(';'.PHP_EOL, $prefixed ), $callback, $cb_data, $file );
+        $compiled = $this->compileQueryString($sql);
+        return $this->runQueryArray( explode(';'.PHP_EOL, $compiled ), $callback, $cb_data, $file );
     }
 
     /**
-     * @param $queries
-     * @param null $callback
-     * @param null $cb_data
+     * @param array $queries
+     * @param null|callable $callback
+     * @param null|array|string $cb_data
      *
      * @return array
      * @throws SqlException
