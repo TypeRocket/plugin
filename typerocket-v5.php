@@ -3,7 +3,7 @@
 Plugin Name: TypeRocket - Andromeda
 Plugin URI: https://typerocket.com/
 Description: TypeRocket is a framework that joins refined UI elements and modern programming architecture together.
-Version: 5.0.34
+Version: 5.0.35
 Requires at least: 5.5
 Requires PHP: 7.2
 Author: TypeRocket
@@ -34,7 +34,7 @@ final class TypeRocketPlugin
                 return;
             }
 
-            define('TYPEROCKET_PLUGIN_VERSION', '5.0.34');
+            define('TYPEROCKET_PLUGIN_VERSION', '5.0.35');
             define('TYPEROCKET_PLUGIN_INSTALL', __DIR__);
 
             if(!defined('TYPEROCKET_ROOT_WP'))
@@ -134,6 +134,10 @@ final class TypeRocketPlugin
             'menu' => __('TypeRocket'),
             'capability' => 'activate_plugins'
         ]);
+
+        tr_meta_box('Upgrade To TypeRocket Pro')->setCallback(function() {
+            echo \TypeRocket\Template\View::new(__DIR__ . '/meta-dashboard.php')->setEngine(\TypeRocket\Template\TemplateEngine::class);
+        })->addScreen('dashboard');
     }
 }
 
