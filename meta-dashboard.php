@@ -9,11 +9,11 @@
 </style>
 <div class="typerocket-v5-open-meta-content">
     <div>
-        <img style="max-width: 100%;" src="https://raw.githubusercontent.com/TypeRocket/art/main/avatar/rocket.jpg" alt="TypeRocket Pro">
+        <img style="max-width: 100%;" src="https://typerocket-public.s3.us-west-2.amazonaws.com/rocket-avatar.png" alt="TypeRocket Pro">
     </div>
     <div>
         <h3><strong>You are now rapidly building a modern WordPress site without sacrificing your developer experience or site's speed.</strong></h3>
-        <p>Make every feature your way, with <a href="https://typerocket.com/pro/" target="_blank">TypeRocket Pro</a>.
+        <p>Take the next step. Make every feature your way, with <a href="https://typerocket.com/pro/" target="_blank">TypeRocket Pro</a>.
             You shouldn't have to give up site speed, a beautiful WordPress admin, and elegant PHP syntax by adding yet-another-plugin.</p>
         <p><a class="button button-primary" href="https://typerocket.com/pro/" target="_blank">Get TypeRocket Pro</a> &nbsp; <a href="https://typerocket.com/compare-versions/" target="_blank">See Features</a></p>
     </div>
