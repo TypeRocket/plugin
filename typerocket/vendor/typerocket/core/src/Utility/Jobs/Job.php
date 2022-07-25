@@ -98,6 +98,15 @@ abstract class Job implements JobCanQueue
     }
 
     /**
+     * @param array $payload
+     * @return int
+     */
+    public static function dispatch(array $payload = [], $time = null)
+    {
+        return Queue::addJob(new static($payload), $time);
+    }
+
+    /**
      * Look to properties for job and action data
      *
      * @param string $key
