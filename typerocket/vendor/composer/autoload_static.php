@@ -1148,6 +1148,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Services\\ErrorService' => __DIR__ . '/..' . '/typerocket/core/src/Services/ErrorService.php',
         'TypeRocket\\Services\\JobQueueRunner' => __DIR__ . '/..' . '/typerocket/core/src/Services/JobQueueRunner.php',
         'TypeRocket\\Services\\MailerService' => __DIR__ . '/..' . '/typerocket/core/src/Services/MailerService.php',
+        'TypeRocket\\Services\\SecureAuthCookiesService' => __DIR__ . '/..' . '/typerocket/core/src/Services/SecureAuthCookiesService.php',
         'TypeRocket\\Services\\Service' => __DIR__ . '/..' . '/typerocket/core/src/Services/Service.php',
         'TypeRocket\\Template\\Component' => __DIR__ . '/..' . '/typerocket/core/src/Template/Component.php',
         'TypeRocket\\Template\\Composer' => __DIR__ . '/..' . '/typerocket/core/src/Template/Composer.php',

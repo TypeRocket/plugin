@@ -1023,6 +1023,7 @@ return array(
     'TypeRocket\\Services\\ErrorService' => $vendorDir . '/typerocket/core/src/Services/ErrorService.php',
     'TypeRocket\\Services\\JobQueueRunner' => $vendorDir . '/typerocket/core/src/Services/JobQueueRunner.php',
     'TypeRocket\\Services\\MailerService' => $vendorDir . '/typerocket/core/src/Services/MailerService.php',
+    'TypeRocket\\Services\\SecureAuthCookiesService' => $vendorDir . '/typerocket/core/src/Services/SecureAuthCookiesService.php',
     'TypeRocket\\Services\\Service' => $vendorDir . '/typerocket/core/src/Services/Service.php',
     'TypeRocket\\Template\\Component' => $vendorDir . '/typerocket/core/src/Template/Component.php',
     'TypeRocket\\Template\\Composer' => $vendorDir . '/typerocket/core/src/Template/Composer.php',
