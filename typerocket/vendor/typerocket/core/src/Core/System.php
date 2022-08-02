@@ -1,6 +1,7 @@
 <?php
 namespace TypeRocket\Core;
 
+use Composer\InstalledVersions;
 use TypeRocket\Controllers\FieldsController;
 use TypeRocket\Controllers\RestController;
 use TypeRocket\Elements\BaseForm;
@@ -15,6 +16,7 @@ use TypeRocket\Http\RouteCollection;
 use TypeRocket\Http\Router;
 use TypeRocket\Http\SSL;
 use TypeRocket\Register\Registry;
+use TypeRocket\Services\Service;
 use TypeRocket\Utility\Helper;
 use TypeRocket\Utility\RuntimeCache;
 use TypeRocket\Utility\Str;
@@ -28,6 +30,9 @@ class System
     protected $stash = [];
     protected $loaded = false;
     protected $frontend_mode = false;
+
+    protected array $loadedExtensions = [];
+    protected array $loadedServices = [];
 
     /**
      * Boot Core
@@ -65,6 +70,7 @@ class System
             do_action('typerocket_before_load', $this);
             $this->loadRuntimeCacheValues();
             $this->maybeLoadAdvancedSystem();
+            $this->loadServices();
             $this->loadExtensions();
             $this->initHooks();
             $this->loadResponders();
@@ -78,11 +84,22 @@ class System
         | Router
         |--------------------------------------------------------------------------
         |
-        | Load TypeRocket router through the typerocket_loaded action so it can
+        | Load TypeRocket router through the typerocket_loaded action, so it can
         | be unregistered if desired.
         |
         */
         add_action('typerocket_loaded', static::class."::loadRoutes");
+
+        /*
+        |--------------------------------------------------------------------------
+        | Site Health
+        |--------------------------------------------------------------------------
+        |
+        | Add TypeRocket Information to the WordPress Site Health page. Located at
+        | the URL of /wp-admin/site-health.php?tab=debug in the WordPress admin.
+        |
+        */
+        add_action('debug_information', [$this, 'health']);
 
         return $this;
     }
@@ -286,6 +303,28 @@ class System
         foreach ($ext as $extClass) {
             if(class_exists($extClass)) {
                 (new Resolver())->resolve($extClass);
+                $this->loadedExtensions[] = $extClass;
+            }
+        }
+    }
+
+    /**
+     * Load Services
+     */
+    public function loadServices()
+    {
+        // Application Services
+        $conf = Config::get('app');
+        $services = apply_filters('typerocket_services', $conf['services'] );
+
+        /**
+         * @var string[] $services
+         */
+        foreach ($services as $service) {
+            $instance = (new Resolver)->resolve($service);
+            if($instance instanceof Service) {
+                Container::register($service, [$instance, 'register'], $instance->isSingleton(), $instance::ALIAS);
+                $this->loadedServices[] = get_class($instance);
             }
         }
     }
@@ -475,6 +514,64 @@ class System
         }
 
         update_option(static::STATE, array_unique($value), 'yes');
+    }
+
+    /**
+     * Add TypeRocket Information to WordPress Site Health
+     *
+     * @param $info
+     * @return array
+     */
+    public function health($info) : array
+    {
+        $paths = Config::getFromContainer()->locate('paths');
+        $app = Config::getFromContainer()->locate('app');
+        $urls = Config::getFromContainer()->locate('urls');
+        $plugin_version = defined('TYPEROCKET_PLUGIN_VERSION') ? TYPEROCKET_PLUGIN_VERSION : null;
+
+        return array_merge([
+            'typerocket' => [
+                'label'  => __( 'TypeRocket' ),
+                'fields' => [
+                    'path-app'                => [
+                        'label' => __( 'App Path' ),
+                        'value' => $paths['app'],
+                    ],
+                    'path-config'                => [
+                        'label' => __( 'Config Path' ),
+                        'value' => Config::getFromContainer()->getRoot(),
+                    ],
+                    'path-assets'                => [
+                        'label' => __( 'Assets Path' ),
+                        'value' => $paths['assets'],
+                    ],
+                    'url-assets'                => [
+                        'label' => __( 'Assets URL' ),
+                        'value' => $urls['assets'],
+                    ],
+                    'extensions-active' => [
+                        'label' => __( 'Loaded Extensions' ),
+                        'value' => implode(", ", $this->loadedExtensions),
+                    ],
+                    'services-active' => [
+                        'label' => __( 'Loaded Services' ),
+                        'value' => implode(", ", $this->loadedServices),
+                    ],
+                    'version-core'                => [
+                        'label' => __( 'Core Version' ),
+                        'value' => InstalledVersions::getVersion('typerocket/core'),
+                    ],
+                    'version-pro'                => [
+                        'label' => __( 'Pro Version' ),
+                        'value' => InstalledVersions::getVersion('typerocket/professional'),
+                    ],
+                    'app-type' => [
+                        'label' => __( 'App Type' ),
+                        'value' => $plugin_version ? "Plugin Version {$plugin_version}": 'Custom/Composer',
+                    ],
+                ]
+            ]
+        ], $info);
     }
 
     /**
