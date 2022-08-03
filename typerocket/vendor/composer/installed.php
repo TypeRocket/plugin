@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'e1203e73dc1a27e4c22073774f893b4d55269379',
+        'reference' => 'df2e7b13f93e4ccdceb03eb06960594c048339d8',
         'name' => 'typerocket/typerocket',
         'dev' => true,
     ),
@@ -404,12 +404,12 @@
             'dev_requirement' => true,
         ),
         'typerocket/core' => array(
-            'pretty_version' => 'v5.1.3',
-            'version' => '5.1.3.0',
+            'pretty_version' => 'v5.1.4',
+            'version' => '5.1.4.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../typerocket/core',
             'aliases' => array(),
-            'reference' => '084a47a3930c448168f4ae022fc8d01bd3f46656',
+            'reference' => '700ae932456f1538a1b4c233f4289930bc914593',
             'dev_requirement' => false,
         ),
         'typerocket/typerocket' => array(
@@ -418,7 +418,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'e1203e73dc1a27e4c22073774f893b4d55269379',
+            'reference' => 'df2e7b13f93e4ccdceb03eb06960594c048339d8',
             'dev_requirement' => false,
         ),
         'webmozart/assert' => array(
