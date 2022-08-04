@@ -883,16 +883,16 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.1.4",
+            "version": "v5.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "700ae932456f1538a1b4c233f4289930bc914593"
+                "reference": "e889f348cb05a7849a4aa3efdf76cb3176886d69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/700ae932456f1538a1b4c233f4289930bc914593",
-                "reference": "700ae932456f1538a1b4c233f4289930bc914593",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/e889f348cb05a7849a4aa3efdf76cb3176886d69",
+                "reference": "e889f348cb05a7849a4aa3efdf76cb3176886d69",
                 "shasum": ""
             },
             "require": {
@@ -933,9 +933,9 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.1.4"
+                "source": "https://github.com/TypeRocket/core/tree/v5.1.6"
             },
-            "time": "2022-08-03T16:34:00+00:00"
+            "time": "2022-08-04T03:29:29+00:00"
         },
         {
             "name": "woocommerce/action-scheduler",

@@ -6,6 +6,7 @@ use JsonSerializable;
 use ReflectionClass;
 use ReflectionException;
 use TypeRocket\Core\Container;
+use TypeRocket\Database\Connection;
 use TypeRocket\Database\EagerLoader;
 use TypeRocket\Database\Query;
 use TypeRocket\Database\Results;
@@ -137,7 +138,7 @@ class Model implements Formable, JsonSerializable
      */
     protected $errors;
 
-    /** @var mixed|Query  */
+    /** @var Query */
     protected $query;
 
     /**
@@ -217,15 +218,17 @@ class Model implements Formable, JsonSerializable
     protected $dataCache = [];
 
     /**
+     * @var string name of connection from database drivers config list
+     */
+    protected string $connection = 'wp';
+
+    /**
      * Construct Model based on resource
      * @throws \Exception
      */
     public function __construct()
     {
-        /** @var wpdb $wpdb */
-        global $wpdb;
-
-        $type = null;
+        $wpdb = Connection::getFromContainer()->get($this->connection);
 
         try {
             $type = (new ReflectionClass( $this ))->getShortName();
@@ -237,8 +240,9 @@ class Model implements Formable, JsonSerializable
             $this->resource = strtolower( Inflect::pluralize($type) );
         }
 
-        $this->table = $this->initTable( $wpdb );
-        $this->query = $this->initQuery( new Query );
+        $query = $this->setupQueryConnectionForModel($wpdb);
+        $this->table = $this->initTable( $query->getWpdb() );
+        $this->query = $this->initQuery( $query );
         $this->query->resultsClass = $this->resultsClass;
         $this->query->table($this->getTable());
         $this->query->setIdColumn($this->idColumn);
@@ -246,6 +250,15 @@ class Model implements Formable, JsonSerializable
         do_action('typerocket_model', $this );
 
         $this->init();
+    }
+
+    /**
+     * @param \wpdb $wpdb
+     * @return Query
+     */
+    public function setupQueryConnectionForModel(\wpdb $wpdb)
+    {
+        return (new Query)->setWpdb($wpdb);
     }
 
     /**
@@ -2182,10 +2195,9 @@ class Model implements Formable, JsonSerializable
      */
     public function getTable()
     {
-        /** @var wpdb $wpdb */
-        global $wpdb;
+        $connection = $this->query->getWpdb();
 
-        return  $this->table ? $this->table : $wpdb->prefix . $this->resource;
+        return  $this->table ?: $connection->prefix . $this->resource;
     }
 
     /**
@@ -2249,7 +2261,7 @@ class Model implements Formable, JsonSerializable
     /**
      * Get Junction
      *
-     * @return null|string
+     * @return null|array
      */
     public function getJunction()
     {

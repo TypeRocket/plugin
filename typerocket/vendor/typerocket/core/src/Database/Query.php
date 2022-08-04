@@ -18,6 +18,8 @@ class Query
     protected $selectTable = null;
     protected $joinAs = null;
     protected $tableAs = null;
+    protected string $connection = 'wp';
+    protected ?\wpdb $wpdb = null;
 
     /**
      * Query constructor.
@@ -28,6 +30,8 @@ class Query
      */
     public function __construct($table = null, $selectTable = null, $idColumn = null)
     {
+        $wpdb = Connection::getFromContainer()->get($this->connection);
+
         if(is_string($table)) {
             $this->query['table'] = $table;
         }
@@ -36,6 +40,10 @@ class Query
 
         if($idColumn) {
             $this->idColumn = $idColumn;
+        }
+
+        if(!$this->wpdb) {
+            $this->setWpdb($wpdb);
         }
     }
 
@@ -137,6 +145,25 @@ class Query
         $this->tableAs = $as;
 
         return $this;
+    }
+
+    /**
+     * @param \wpdb|null $wpdb
+     * @return $this
+     */
+    public function setWpdb(?\wpdb $wpdb = null)
+    {
+        $this->wpdb = $wpdb;
+
+        return $this;
+    }
+
+    /**
+     * @return \wpdb
+     */
+    public function getWpdb() : \wpdb
+    {
+        return $this->wpdb;
     }
 
     /**
@@ -883,8 +910,7 @@ class Query
      */
     protected function runQuery( $query = [] )
     {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
+        $wpdb = $this->wpdb;
 
         if( empty($query) ) {
             $query = $this->query;
@@ -934,9 +960,6 @@ class Query
      */
     public function compileFullQuery()
     {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
-
         $sql_insert_columns = $sql_union = $sql_insert_values = $distinct = '';
 
         // compilers
@@ -996,9 +1019,8 @@ class Query
      *
      * @return string
      */
-    protected function compileSelectColumns() {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
+    protected function compileSelectColumns()
+    {
         $query = $this->query;
         $sql = '*';
         $selectTable = $this->selectTable;
@@ -1095,8 +1117,7 @@ class Query
      */
     protected function compileTake()
     {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
+        $wpdb = $this->wpdb;
         $query = $this->query;
         $sql = '';
 
@@ -1149,8 +1170,6 @@ class Query
      */
     protected function compileInsert()
     {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
         $query = $this->query;
         $sql_insert = [ 'sql_insert_columns' => '', 'sql_insert_values' => '' ];
 
@@ -1196,9 +1215,8 @@ class Query
      *
      * @return string
      */
-    protected function compileUpdate() {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
+    protected function compileUpdate()
+    {
         $query = $this->query;
         $sql = '';
 
@@ -1242,8 +1260,7 @@ class Query
      */
     protected function prepareValue( $value )
     {
-        /** @var \wpdb $wpdb */
-        global $wpdb;
+        $wpdb = $this->wpdb;
         $prepared = null;
 
         if( is_array($value) ) {
