@@ -2720,17 +2720,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.1.24",
-            "version_normalized": "5.1.24.0",
+            "version": "v5.1.26",
+            "version_normalized": "5.1.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "efa6b84efd7bbf8063d7db8c131dc32fc7a885fa"
+                "reference": "0daf8667642012a803dc60f70a0b30f0b666e233"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/efa6b84efd7bbf8063d7db8c131dc32fc7a885fa",
-                "reference": "efa6b84efd7bbf8063d7db8c131dc32fc7a885fa",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/0daf8667642012a803dc60f70a0b30f0b666e233",
+                "reference": "0daf8667642012a803dc60f70a0b30f0b666e233",
                 "shasum": ""
             },
             "require": {
@@ -2744,7 +2744,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
             },
-            "time": "2022-08-29T18:49:03+00:00",
+            "time": "2022-08-29T19:42:46+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2773,7 +2773,7 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.1.24"
+                "source": "https://github.com/TypeRocket/core/tree/v5.1.26"
             },
             "install-path": "../typerocket/core"
         },
