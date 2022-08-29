@@ -81,6 +81,38 @@ class Data
     }
 
     /**
+     * Index Data by Unique Value
+     *
+     * @param string $index
+     * @param iterable|array<int, object|array> $array an array to traverse with object or arrays
+     * @param bool $unique
+     *
+     * @return array<int, object|array>
+     * @throws \Exception
+     */
+    public static function createMapIndexBy(string $index, $array, $unique = true) : array
+    {
+        $indexed_list = [];
+
+        foreach ($array as $item) {
+            if(!is_array($item) && !is_object($item)) {
+                $type = gettype($item);
+                throw new \Exception("Nested array or object required for Data::createMapIndexBy(): {$type} is not valid.");
+            }
+
+            $key = is_object($item) ? ($item->$index ?? null) : ($item[$index] ?? null);
+
+            if($unique && array_key_exists($key, $indexed_list)) {
+                throw new \Exception("Array key must be unique for Data::createMapIndexBy(): {$key} already taken.");
+            }
+
+            $indexed_list[$key] = $item;
+        }
+
+        return $indexed_list;
+    }
+
+    /**
      * @param mixed $value
      * @param string|callable $type
      *
