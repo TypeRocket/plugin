@@ -12,7 +12,7 @@ class Arr
      */
     public static function isEmptyArray($array) : bool
     {
-        return is_array($array) && count($array) === 0;
+        return $array === [];
     }
 
     /**
@@ -223,6 +223,55 @@ class Arr
     }
 
     /**
+     * Array Get
+     *
+     * Strictly get a value from an array using dot notation without wilds (*).
+     *
+     * @param array|\ArrayAccess $array Array to search.
+     * @param string|array $needle Value to check in dot notation, or an array of string values.
+     * @param mixed $default Fallback if value is null.
+     */
+    public static function get($array, $needle, $default = null)
+    {
+        $search = is_array($needle) ? $needle : explode('.', $needle);
+
+        foreach ($search as $index) {
+            if(is_array($array) && array_key_exists($index, $array)) {
+                $array = $array[$index];
+            }
+            else {
+                return $default;
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * Array Has
+     *
+     * Strictly check if dot notation without wilds (*) index exists.
+     *
+     * @param array|\ArrayAccess $array Array to search.
+     * @param string|array $needle Value to check in dot notation, or an array of string values.
+     */
+    public static function has($array, $needle)
+    {
+        $search = is_array($needle) ? $needle : explode('.', $needle);
+
+        foreach ($search as $index) {
+            if(is_array($array) && array_key_exists($index, $array)) {
+                $array = $array[$index];
+            }
+            else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Dots Set
      *
      * Set an array value using dot notation.
@@ -297,6 +346,77 @@ class Arr
         }
 
         return $loc;
+    }
+
+    /**
+     * Is Array Sequential
+     *
+     * @param array $array The array being evaluated.
+     * @return bool
+     */
+    public static function isSequential(array $array) : bool
+    {
+        if ([] === $array) return false;
+        return array_keys($array) === range(0, count($array) - 1);
+    }
+
+    /**
+     * Is Array Associative
+     *
+     * @param array $array The array being evaluated.
+     * @return bool
+     */
+    public static function isAssociative(array $array) : bool
+    {
+        if ([] === $array) return false;
+        return !static::isSequential($array);
+    }
+
+    /**
+     * Is Array Accessible
+     *
+     * @param mixed $var The variable being evaluated.
+     */
+    public static function isAccessible($var) : bool
+    {
+        return is_array($var) || $var instanceof \ArrayAccess;
+    }
+
+    /**
+     * Array Divide
+     *
+     * Return key and values as separate arrays.
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function divide(array $array) : array
+    {
+        return [array_keys($array), array_values($array)];
+    }
+
+    /**
+     * Array Partition
+     *
+     * Partition and spread array semi-evenly across a number of groups.
+     *
+     * @param array $array The array being evaluated.
+     * @param int $groups The number of groups.
+     */
+    public static function partition(array $array, int $groups) : array
+    {
+        $count = count( $array );
+        $parts = floor( $count / $groups );
+        $rem = $count % $groups;
+        $partition = [];
+        $mark = 0;
+        for ($index = 0; $index < $groups; $index++)
+        {
+            $incr = ($index < $rem) ? $parts + 1 : $parts;
+            $partition[$index] = array_slice( $array, $mark, $incr );
+            $mark += $incr;
+        }
+        return $partition;
     }
 
     /**
