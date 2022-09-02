@@ -883,16 +883,16 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.1.27",
+            "version": "v5.1.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "2f75aa26f47d9e9f68fbceb6d7de035e27b5f4ce"
+                "reference": "3e1e2f85d459927a7224e681d012ec6eb973dec8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/2f75aa26f47d9e9f68fbceb6d7de035e27b5f4ce",
-                "reference": "2f75aa26f47d9e9f68fbceb6d7de035e27b5f4ce",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/3e1e2f85d459927a7224e681d012ec6eb973dec8",
+                "reference": "3e1e2f85d459927a7224e681d012ec6eb973dec8",
                 "shasum": ""
             },
             "require": {
@@ -933,9 +933,9 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.1.27"
+                "source": "https://github.com/TypeRocket/core/tree/v5.1.30"
             },
-            "time": "2022-08-31T00:33:07+00:00"
+            "time": "2022-09-02T14:58:01+00:00"
         },
         {
             "name": "woocommerce/action-scheduler",

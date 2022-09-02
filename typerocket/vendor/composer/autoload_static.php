@@ -1381,6 +1381,8 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Utility\\RuntimeCache' => __DIR__ . '/..' . '/typerocket/core/src/Utility/RuntimeCache.php',
         'TypeRocket\\Utility\\Sanitize' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Sanitize.php',
         'TypeRocket\\Utility\\Str' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Str.php',
+        'TypeRocket\\Utility\\Traits\\ArrayAccessible' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Traits/ArrayAccessible.php',
+        'TypeRocket\\Utility\\Traits\\ArrayIterable' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Traits/ArrayIterable.php',
         'TypeRocket\\Utility\\Url' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Url.php',
         'TypeRocket\\Utility\\Validator' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Validator.php',
         'TypeRocket\\Utility\\Validators\\CallbackValidator' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Validators/CallbackValidator.php',
