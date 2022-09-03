@@ -1109,6 +1109,7 @@ return array(
     'TypeRocket\\Database\\ResultsPostMeta' => $vendorDir . '/typerocket/core/src/Database/ResultsPostMeta.php',
     'TypeRocket\\Database\\ResultsTermMeta' => $vendorDir . '/typerocket/core/src/Database/ResultsTermMeta.php',
     'TypeRocket\\Database\\ResultsUserMeta' => $vendorDir . '/typerocket/core/src/Database/ResultsUserMeta.php',
+    'TypeRocket\\Database\\SqlRaw' => $vendorDir . '/typerocket/core/src/Database/SqlRaw.php',
     'TypeRocket\\Database\\SqlRunner' => $vendorDir . '/typerocket/core/src/Database/SqlRunner.php',
     'TypeRocket\\Elements\\BaseFields' => $vendorDir . '/typerocket/core/src/Elements/BaseFields.php',
     'TypeRocket\\Elements\\BaseForm' => $vendorDir . '/typerocket/core/src/Elements/BaseForm.php',

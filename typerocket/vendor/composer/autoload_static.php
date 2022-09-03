@@ -1217,6 +1217,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Database\\ResultsPostMeta' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsPostMeta.php',
         'TypeRocket\\Database\\ResultsTermMeta' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsTermMeta.php',
         'TypeRocket\\Database\\ResultsUserMeta' => __DIR__ . '/..' . '/typerocket/core/src/Database/ResultsUserMeta.php',
+        'TypeRocket\\Database\\SqlRaw' => __DIR__ . '/..' . '/typerocket/core/src/Database/SqlRaw.php',
         'TypeRocket\\Database\\SqlRunner' => __DIR__ . '/..' . '/typerocket/core/src/Database/SqlRunner.php',
         'TypeRocket\\Elements\\BaseFields' => __DIR__ . '/..' . '/typerocket/core/src/Elements/BaseFields.php',
         'TypeRocket\\Elements\\BaseForm' => __DIR__ . '/..' . '/typerocket/core/src/Elements/BaseForm.php',
