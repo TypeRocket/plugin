@@ -137,17 +137,17 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.14.0",
-            "version_normalized": "4.14.0.0",
+            "version": "v4.15.1",
+            "version_normalized": "4.15.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "34bea19b6e03d8153165d8f30bba4c3be86184c1"
+                "reference": "0ef6c55a3f47f89d7a374e6f835197a0b5fcf900"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/34bea19b6e03d8153165d8f30bba4c3be86184c1",
-                "reference": "34bea19b6e03d8153165d8f30bba4c3be86184c1",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/0ef6c55a3f47f89d7a374e6f835197a0b5fcf900",
+                "reference": "0ef6c55a3f47f89d7a374e6f835197a0b5fcf900",
                 "shasum": ""
             },
             "require": {
@@ -158,7 +158,7 @@
                 "ircmaxell/php-yacc": "^0.0.7",
                 "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0 || ^9.0"
             },
-            "time": "2022-05-31T20:59:12+00:00",
+            "time": "2022-09-04T07:30:47+00:00",
             "bin": [
                 "bin/php-parse"
             ],
@@ -190,7 +190,7 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.14.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.1"
             },
             "install-path": "../nikic/php-parser"
         },
@@ -2720,17 +2720,17 @@
         },
         {
             "name": "typerocket/core",
-            "version": "v5.1.36",
-            "version_normalized": "5.1.36.0",
+            "version": "v5.1.37",
+            "version_normalized": "5.1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TypeRocket/core.git",
-                "reference": "c589a9710285ada75dabcd5f123ae45935583697"
+                "reference": "719408206172763b84dea589571b5150afa2f609"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TypeRocket/core/zipball/c589a9710285ada75dabcd5f123ae45935583697",
-                "reference": "c589a9710285ada75dabcd5f123ae45935583697",
+                "url": "https://api.github.com/repos/TypeRocket/core/zipball/719408206172763b84dea589571b5150afa2f609",
+                "reference": "719408206172763b84dea589571b5150afa2f609",
                 "shasum": ""
             },
             "require": {
@@ -2744,7 +2744,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
             },
-            "time": "2022-09-03T00:23:16+00:00",
+            "time": "2022-09-07T19:54:00+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2773,7 +2773,7 @@
             "support": {
                 "docs": "https://typerocket.com/docs/v5/",
                 "issues": "https://github.com/TypeRocket/core/issues",
-                "source": "https://github.com/TypeRocket/core/tree/v5.1.36"
+                "source": "https://github.com/TypeRocket/core/tree/v5.1.37"
             },
             "install-path": "../typerocket/core"
         },

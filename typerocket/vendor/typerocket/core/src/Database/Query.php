@@ -125,10 +125,11 @@ class Query
     /**
      * @return string
      */
-    public function getIdColumWithTable()
+    public function getIdColumWithTable($idColumn = null)
     {
+        $idColumn ??= $this->idColumn;
         $table = $this->query['table'] ? "`{$this->query['table']}`." : '';
-        return "{$table}`{$this->idColumn}`";
+        return "{$table}`{$idColumn}`";
     }
 
     /**
@@ -287,6 +288,22 @@ class Query
     }
 
     /**
+     * Last Where
+     *
+     * @return array|null
+     */
+    public function lastWhere() : ?array
+    {
+        $key = array_key_last($this->query['where']);
+
+        if($key === null) {
+            return null;
+        }
+
+        return ['key' => $key, 'value' => $this->query['where'][$key]];
+    }
+
+    /**
      * Modify Where
      *
      * @param int $index
@@ -302,7 +319,7 @@ class Query
         }
 
         if($index === -1) {
-            $index = count($this->query['where']) - 1;
+            $index = array_key_last($this->query['where']);
         }
 
         $this->query['where'][$index] = $merge ? array_merge($this->query['where'][$index], $args) : $args;
@@ -942,6 +959,15 @@ class Query
             $result = false;
             if( $wpdb->query( $sql ) ) {
                 $result = $wpdb->insert_id;
+
+                if($result === 0 && $wpdb->rows_affected === 1)
+                {
+                    $column_id = $this->getIdColumn();
+
+                    if($column_id_value = $this->query['data'][$column_id] ?? null) {
+                        return $column_id_value;
+                    }
+                }
             }
         } elseif( array_key_exists('update', $query) ) {
             $result = $wpdb->query( $sql );

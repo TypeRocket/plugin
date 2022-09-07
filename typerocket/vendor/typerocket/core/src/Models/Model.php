@@ -1643,12 +1643,13 @@ class Model implements Formable, JsonSerializable
 
     /**
      * @param string $relationship
+     * @param bool $exists
      * @param null|callable $scope
-     *
+     * @param string $condition AND, OR
      * @return $this
      * @throws \Exception
      */
-    public function has(string $relationship, $scope = null)
+    public function whereRelationship(string $relationship, bool $exists, $scope = null, $condition = 'AND')
     {
         if(!method_exists($this, $relationship)) {
             throw new \Exception("No such relationship of '{$relationship}' exists for " . get_class($this));
@@ -1660,8 +1661,18 @@ class Model implements Formable, JsonSerializable
             throw new \Exception("Trying to get relationship of '{$relationship}' but no Model class is returned for " . get_class($this));
         }
 
-        $rel->getQuery()->modifyWhere(-1, [
-            'value' => $this->getQuery()->getIdColumWithTable(),
+        $junction = $rel->getJunction();
+        $related = $rel->getRelatedBy();
+        $id_column = null;
+        $where_on_index = -1;
+
+        if($related) {
+            $id_column = $related['query']['id_local'] ?? $this->getIdColumn();
+            $where_on_index = $related['where_on']['key'];
+        }
+
+        $rel->getQuery()->modifyWhere($where_on_index, [
+            'value' => $this->getQuery()->getIdColumWithTable($id_column),
             'operator' => '=',
             'raw' => true
         ]);
@@ -1670,9 +1681,42 @@ class Model implements Formable, JsonSerializable
             $scope($rel);
         }
 
-        $this->query->merge($rel->getQuery());
+        $exists = $exists ? 'EXISTS ' : 'NOT EXISTS ';
+        $exists .= '(' . $rel->getQuery()->compileFullQuery() . ')';
+
+        $this->query->appendRawWhere($condition, $exists);
 
         return $this;
+    }
+
+    /**
+     * Has No / Doesn't Have
+     *
+     * @param string $relationship
+     * @param null|callable $scope
+     * @param string $condition
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function hasNo(string $relationship, $scope = null, $condition = 'AND')
+    {
+        return $this->whereRelationship($relationship, false, $scope, $condition);
+    }
+
+    /**
+     * Has
+     *
+     * @param string $relationship
+     * @param null|callable $scope
+     * @param string $condition
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function has(string $relationship, $scope = null, $condition = 'AND')
+    {
+        return $this->whereRelationship($relationship, true, $scope, $condition);
     }
 
     /**
@@ -2048,7 +2092,10 @@ class Model implements Formable, JsonSerializable
         }
 
         $id = $this->getPropertyValueDirect($id_local);
-        return $relationship->where( $id_foreign, $id)->take(1);
+        $result = $relationship->where( $id_foreign, $id)->take(1);
+        $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
+
+        return $result;
     }
 
     /**
@@ -2094,7 +2141,10 @@ class Model implements Formable, JsonSerializable
         }
 
         $id = $this->getProperty( $id_local );
-        return $relationship->where( $id_foreign ?? $relationship->getIdColumn(), $id)->take(1);
+        $result = $relationship->where( $id_foreign ?? $relationship->getIdColumn(), $id)->take(1);
+        $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
+
+        return $result;
     }
 
     /**
@@ -2140,7 +2190,10 @@ class Model implements Formable, JsonSerializable
             $scope($relationship);
         }
 
-        return $relationship->findAll()->where( $id_foreign, $id );
+        $result = $relationship->findAll()->where( $id_foreign, $id );
+        $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
+
+        return $result;
     }
 
     /**
@@ -2157,35 +2210,19 @@ class Model implements Formable, JsonSerializable
      *
      * @return null|Model
      */
-    public function belongsToMany( $modelClass, $junction_table, $id_column = null, $id_foreign = null, $scope = null, $reselect = true, $id_local = null )
+    public function belongsToMany( $modelClass, $junction_table, $id_column = null, $id_foreign = null, $scope = null, $reselect = true, $id_local = null, $id_foreign_local = null )
     {
         [$modelClass, $modelClassOn] = array_pad((array) $modelClass, 2, null);
 
         // Column ID
         if( ! $id_column && $this->resource ) {
-            $id_column = $this->resource . '_id';
+            $id_column =  $this->resource . '_id';
         }
 
-        $id = $this->$id_column ?? $this->getID();
+        $id = $this->$id_local ?? $this->$id_column ?? $this->getID();
 
         /** @var Model $relationship */
         $relationship = new $modelClass;
-
-        // Foreign ID
-        if( ! $id_foreign && $relationship->resource ) {
-            $id_foreign =  $relationship->resource . '_id';
-        }
-        $rel_table = $relationship->getTable();
-        $id_local ??= $this->getIdColumn();
-
-        // Set Junction: `attach` and `detach` will use inverse columns
-        $relationship->setJunction( [
-            'table' => $junction_table,
-            'columns' => [$id_foreign, $id_column],
-            'id_foreign' => $id,
-            'id_column' => $id_column,
-            'id_local' => $id_local,
-        ] );
 
         if(isset($modelClassOn) && class_exists($modelClassOn)) {
             $relationshipOn = new $modelClassOn;
@@ -2193,11 +2230,31 @@ class Model implements Formable, JsonSerializable
             $relationshipOn = $relationship;
         }
 
+        // Foreign ID
+        if( ! $id_foreign && $relationship->resource ) {
+            $id_foreign =  $relationship->resource . '_id';
+        }
+
+        $rel_table = $relationship->getTable();
+        $id_local ??= $this->getIdColumn();
+        $id_foreign_local ??= $relationshipOn->getIdColumn();
+
+        // Set Junction: `attach` and `detach` will use inverse columns
+        $relationship->setJunction([
+            'table' => $junction_table,
+            'columns' => [$id_foreign, $id_column],
+            'id_foreign' => $id,
+            'id_column' => $id_column,
+            'id_local' => $id_local,
+            'id_foreign_local' => $id_foreign_local,
+        ]);
+
         // Join
         $join_table = $junction_table;
-        $rel_join = $relationshipOn->getTable().'.'.$relationshipOn->getIdColumn();
+        $rel_join = $relationshipOn->getTable().'.'.$id_foreign_local;
         $foreign_join = $join_table.'.'.$id_foreign;
         $where_column = $join_table.'.'.$id_column;
+        $id_local_column = $this->getTable().'.'.$id_local;
         $relationship->getQuery()->distinct()->join($join_table, $foreign_join, $rel_join);
 
         $relationship->setRelatedModel( $this );
@@ -2210,6 +2267,8 @@ class Model implements Formable, JsonSerializable
                 'id_column' => $id_column,
                 'id_foreign' => $id_foreign,
                 'id_local' => $id_local,
+                'id_local_column' => $id_local ? $id_local_column : null,
+                'id_foreign_local' => $id_foreign_local,
                 'where_column' => $where_column,
                 'scope' => $scope
             ]
@@ -2223,7 +2282,10 @@ class Model implements Formable, JsonSerializable
             $relationship->reselect($rel_table.'.*');
         }
 
-        return $relationship->where($where_column, $id)->findAll();
+        $result = $relationship->where($where_column, $id)->findAll();
+        $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
+
+        return $result;
     }
 
     /**
@@ -2240,6 +2302,7 @@ class Model implements Formable, JsonSerializable
         $junction = $this->getJunction();
         $columns = $junction['columns'];
         $id_foreign = $junction['id_foreign'];
+        $id_foreign_local = $junction['id_foreign_local'];
 
         foreach ( $args as $id ) {
             if( is_array($id) ) {
@@ -2247,7 +2310,11 @@ class Model implements Formable, JsonSerializable
                 $names = array_keys($id);
                 $rows[] = array_merge([ $attach_id, $id_foreign ], $id);
                 $columns = array_merge($columns, $names);
-            } else {
+            }
+            elseif ($id instanceof Model) {
+                $rows[] = [ $id->$id_foreign_local ?? $id->getID(), $id_foreign ];
+            }
+            else {
                 $rows[] = [ $id, $id_foreign ];
             }
         }
@@ -2442,7 +2509,7 @@ class Model implements Formable, JsonSerializable
      */
     public function __isset($key)
     {
-        return !is_null($this->getProperty($key));
+        return $key && !is_null($this->getProperty($key));
     }
 
     /**
