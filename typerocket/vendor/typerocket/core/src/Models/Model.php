@@ -173,7 +173,7 @@ class Model implements Formable, JsonSerializable
     /**
      * @var array
      */
-    #[ArrayShape(['type' => 'string', 'query' => 'array'])]
+    #[ArrayShape(['type' => 'string', 'query' => 'array', 'where_on' => 'array'])]
     protected $relatedBy;
 
     /**
@@ -1661,7 +1661,6 @@ class Model implements Formable, JsonSerializable
             throw new \Exception("Trying to get relationship of '{$relationship}' but no Model class is returned for " . get_class($this));
         }
 
-        $junction = $rel->getJunction();
         $related = $rel->getRelatedBy();
         $id_column = null;
         $where_on_index = -1;
@@ -2052,12 +2051,14 @@ class Model implements Formable, JsonSerializable
     /**
      * Has One
      *
-     * @param string $modelClass
+     * @template M
+     *
+     * @param class-string<M> $modelClass
      * @param null|string $id_foreign
      * @param null|string|callable $id_local
      * @param null|callable $scope
      *
-     * @return null|Model
+     * @return null|Model|M
      */
     public function hasOne($modelClass, $id_foreign = null, $id_local = null, $scope = null)
     {
@@ -2091,8 +2092,12 @@ class Model implements Formable, JsonSerializable
             $scope($relationship);
         }
 
+        $rel_table = $relationship->getTable();
+        $id_foreign = $id_foreign ?? $relationship->getIdColumn();
+        $id_foreign_where = str_contains($id_foreign, '.') ? $id_foreign : "{$rel_table}.$id_foreign";
+
         $id = $this->getPropertyValueDirect($id_local);
-        $result = $relationship->where( $id_foreign, $id)->take(1);
+        $result = $relationship->where($id_foreign_where, $id)->take(1);
         $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
 
         return $result;
@@ -2101,12 +2106,14 @@ class Model implements Formable, JsonSerializable
     /**
      * Belongs To
      *
-     * @param string $modelClass
+     * @template M
+     *
+     * @param class-string<M> $modelClass
      * @param null|string $id_local
      * @param null|string|callable $id_foreign
      * @param null|callable $scope
      *
-     * @return null|Model
+     * @return null|Model|M
      */
     public function belongsTo($modelClass, $id_local = null, $id_foreign = null, $scope = null)
     {
@@ -2119,6 +2126,8 @@ class Model implements Formable, JsonSerializable
             $id_foreign = $relationship->getIdColumn();
         } elseif(is_null($id_foreign) && is_null($scope)) {
             $id_foreign = $relationship->getIdColumn();
+        } else {
+            $id_foreign = $id_foreign ?? $relationship->getIdColumn();
         }
 
         if( ! $id_local && $relationship->resource ) {
@@ -2141,7 +2150,11 @@ class Model implements Formable, JsonSerializable
         }
 
         $id = $this->getProperty( $id_local );
-        $result = $relationship->where( $id_foreign ?? $relationship->getIdColumn(), $id)->take(1);
+
+        $rel_table = $relationship->getTable();
+        $id_foreign_where = str_contains($id_foreign, '.') ? $id_foreign : "{$rel_table}.$id_foreign";
+
+        $result = $relationship->where($id_foreign_where, $id)->take(1);
         $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
 
         return $result;
@@ -2150,12 +2163,14 @@ class Model implements Formable, JsonSerializable
     /**
      * Has Many
      *
-     * @param string $modelClass
+     * @template M
+     *
+     * @param class-string<M> $modelClass
      * @param null|string $id_foreign
      * @param null|string|callable $id_local
      * @param null|callable $scope
      *
-     * @return null|Model
+     * @return null|Model|M
      */
     public function hasMany($modelClass, $id_foreign = null, $id_local = null, $scope = null)
     {
@@ -2190,7 +2205,10 @@ class Model implements Formable, JsonSerializable
             $scope($relationship);
         }
 
-        $result = $relationship->findAll()->where( $id_foreign, $id );
+        $rel_table = $relationship->getTable();
+        $id_foreign_where = str_contains($id_foreign, '.') ? $id_foreign : "{$rel_table}.$id_foreign";
+
+        $result = $relationship->findAll()->where( $id_foreign_where, $id );
         $relationship->relatedBy['where_on'] = $relationship->getQuery()->lastWhere();
 
         return $result;
@@ -2201,14 +2219,16 @@ class Model implements Formable, JsonSerializable
      *
      * This is for Many-to-Many relationships.
      *
-     * @param string|array $modelClass
+     * @template M
+     *
+     * @param class-string<M> $modelClass
      * @param string $junction_table
      * @param null|string $id_column
      * @param null|string $id_foreign
      * @param null|callable $scope
      * @param bool $reselect
      *
-     * @return null|Model
+     * @return null|Model|M
      */
     public function belongsToMany( $modelClass, $junction_table, $id_column = null, $id_foreign = null, $scope = null, $reselect = true, $id_local = null, $id_foreign_local = null )
     {
@@ -2293,7 +2313,7 @@ class Model implements Formable, JsonSerializable
      *
      * @param array $args
      *
-     * @return array $query
+     * @return array{0: mixed, 1: Query}
      */
     public function attach( array $args )
     {
@@ -2329,7 +2349,7 @@ class Model implements Formable, JsonSerializable
      *
      * @param array $args
      *
-     * @return array
+     * @return array{0: mixed, 1: Query}
      */
     public function detach( array $args = [] )
     {
@@ -2357,7 +2377,7 @@ class Model implements Formable, JsonSerializable
      *
      * @param array $args
      *
-     * @return array $results
+     * @return array{detach: array{0: mixed, 1: Query}, attach: array{0: mixed, 1: Query}}
      */
     public function sync( array $args = [] )
     {
@@ -2371,13 +2391,13 @@ class Model implements Formable, JsonSerializable
     /**
      * Get Table
      *
-     * @return null
+     * @return string
      */
     public function getTable()
     {
         $connection = $this->query->getWpdb();
 
-        return  $this->table ?: $connection->prefix . $this->resource;
+        return $this->table ?: $connection->prefix . $this->resource;
     }
 
     /**
