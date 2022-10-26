@@ -7,29 +7,28 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report;
+namespace PHPUnit\Util;
 
-use PHPUnit\TextUI\XmlConfiguration\Directory;
+use Throwable;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
- *
- * @psalm-immutable
  */
-final class Xml
+final class Cloner
 {
     /**
-     * @var Directory
+     * @psalm-template OriginalType
+     *
+     * @psalm-param OriginalType $original
+     *
+     * @psalm-return OriginalType
      */
-    private $target;
-
-    public function __construct(Directory $target)
+    public static function clone(object $original): object
     {
-        $this->target = $target;
-    }
-
-    public function target(): Directory
-    {
-        return $this->target;
+        try {
+            return clone $original;
+        } catch (Throwable $t) {
+            return $original;
+        }
     }
 }
