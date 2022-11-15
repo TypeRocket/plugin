@@ -21,14 +21,14 @@ $tabs->tab('About', 'rocket', function() {
     <div class="tr-p-20">
         <?php echo \TypeRocket\Html\Element::title('TypeRocket Open'); ?>
         <a class="button button-primary button-hero" target="_blank" href="https://typerocket.com/pro/">Get TypeRocket Pro</a>
-        <p class="hide-if-no-customize">or, <a target="_blank" href="https://typerocket.com/docs/v5/">get started</a>.</p>
+        <p class="hide-if-no-customize">or, <a target="_blank" href="https://typerocket.com/docs/v6/">get started</a>.</p>
         <h3>First Steps</h3>
         <p><?php _e('We’ve assembled some links to get you started:'); ?></p>
         <ul>
             <li><i class="dashicons dashicons-email"></i> <a target="_blank" href="https://us8.list-manage.com/subscribe?u=7bbb7409e86c85970f6150c5e&id=1d45a226d0">Join the TypRocket Mailing List.</a></li>
             <li><i class="dashicons dashicons-youtube"></i> <a target="_blank" href="https://www.youtube.com/watch?v=yqGiHCuDohQ&list=PLh6jokL0yBPT6uJPnMFcZJJ1PzNs8XaK8">Watch our MVC Video series.</a></li>
-            <li><i class="dashicons dashicons-admin-post"></i> <a target="_blank" href="https://typerocket.com/docs/v5/post-types-making/">Add your first post type.</a></li>
-            <li><i class="dashicons dashicons-admin-page"></i> <a target="_blank" href="https://typerocket.com/docs/v5/extension-page-builder/">Learn the page builder.</a></li>
+            <li><i class="dashicons dashicons-admin-post"></i> <a target="_blank" href="https://typerocket.com/docs/v6/post-types-making/">Add your first post type.</a></li>
+            <li><i class="dashicons dashicons-admin-page"></i> <a target="_blank" href="https://typerocket.com/docs/v6/extension-page-builder/">Learn the page builder.</a></li>
         </ul>
     </div>
     <?php

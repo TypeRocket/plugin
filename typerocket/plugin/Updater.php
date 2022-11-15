@@ -1,5 +1,5 @@
 <?php
-namespace TypeRocketPlugin;
+namespace TypeRocket\OpenPlugin;
 
 final class Updater
 {

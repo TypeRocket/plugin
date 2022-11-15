@@ -7,13 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
 {
     public static $files = array (
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
-        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
@@ -23,13 +20,11 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
+            'TypeRocket\\OpenPlugin\\' => 22,
             'TypeRocket\\' => 11,
-            'TypeRocketPlugin\\' => 17,
         ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Php80\\' => 23,
-            'Symfony\\Polyfill\\Php73\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
@@ -51,21 +46,13 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
     );
 
     public static $prefixDirsPsr4 = array (
-        'TypeRocket\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/typerocket/core/src',
-        ),
-        'TypeRocketPlugin\\' => 
+        'TypeRocket\\OpenPlugin\\' => 
         array (
             0 => __DIR__ . '/../..' . '/plugin',
         ),
-        'Symfony\\Polyfill\\Php80\\' => 
+        'TypeRocket\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
-        ),
-        'Symfony\\Polyfill\\Php73\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
+            0 => __DIR__ . '/..' . '/typerocket/core/src',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -114,7 +101,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
     );
 
     public static $classMap = array (
-        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'DeepCopy\\DeepCopy' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
         'DeepCopy\\Exception\\CloneException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/CloneException.php',
@@ -145,7 +131,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'Doctrine\\Instantiator\\Exception\\UnexpectedValueException' => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator/Exception/UnexpectedValueException.php',
         'Doctrine\\Instantiator\\Instantiator' => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator/Instantiator.php',
         'Doctrine\\Instantiator\\InstantiatorInterface' => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator/InstantiatorInterface.php',
-        'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit\\Framework\\ActualValueIsNotAnObjectException' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/ActualValueIsNotAnObjectException.php',
@@ -814,7 +799,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'PhpParser\\Parser\\Tokens' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Parser/Tokens.php',
         'PhpParser\\PrettyPrinterAbstract' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/PrettyPrinterAbstract.php',
         'PhpParser\\PrettyPrinter\\Standard' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/PrettyPrinter/Standard.php',
-        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Psr\\Container\\ContainerExceptionInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerExceptionInterface.php',
         'Psr\\Container\\ContainerInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerInterface.php',
         'Psr\\Container\\NotFoundExceptionInterface' => __DIR__ . '/..' . '/psr/container/src/NotFoundExceptionInterface.php',
@@ -1018,7 +1002,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'SebastianBergmann\\Type\\UnknownType' => __DIR__ . '/..' . '/sebastian/type/src/type/UnknownType.php',
         'SebastianBergmann\\Type\\VoidType' => __DIR__ . '/..' . '/sebastian/type/src/type/VoidType.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
-        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
         'Symfony\\Component\\Console\\Attribute\\AsCommand' => __DIR__ . '/..' . '/symfony/console/Attribute/AsCommand.php',
         'Symfony\\Component\\Console\\CI\\GithubActionReporter' => __DIR__ . '/..' . '/symfony/console/CI/GithubActionReporter.php',
@@ -1150,9 +1133,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'Symfony\\Polyfill\\Intl\\Grapheme\\Grapheme' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/Grapheme.php',
         'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Normalizer.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
-        'Symfony\\Polyfill\\Php73\\Php73' => __DIR__ . '/..' . '/symfony/polyfill-php73/Php73.php',
-        'Symfony\\Polyfill\\Php80\\Php80' => __DIR__ . '/..' . '/symfony/polyfill-php80/Php80.php',
-        'Symfony\\Polyfill\\Php80\\PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/PhpToken.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',
@@ -1161,8 +1141,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TheSeer\\Tokenizer\\TokenCollectionException' => __DIR__ . '/..' . '/theseer/tokenizer/src/TokenCollectionException.php',
         'TheSeer\\Tokenizer\\Tokenizer' => __DIR__ . '/..' . '/theseer/tokenizer/src/Tokenizer.php',
         'TheSeer\\Tokenizer\\XMLSerializer' => __DIR__ . '/..' . '/theseer/tokenizer/src/XMLSerializer.php',
-        'TypeRocketPlugin\\SettingsController' => __DIR__ . '/../..' . '/plugin/SettingsController.php',
-        'TypeRocketPlugin\\Updater' => __DIR__ . '/../..' . '/plugin/Updater.php',
         'TypeRocket\\Auth\\Policy' => __DIR__ . '/..' . '/typerocket/core/src/Auth/Policy.php',
         'TypeRocket\\Auth\\Roles' => __DIR__ . '/..' . '/typerocket/core/src/Auth/Roles.php',
         'TypeRocket\\Console\\Command' => __DIR__ . '/..' . '/typerocket/core/src/Console/Command.php',
@@ -1341,6 +1319,8 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Models\\WPTerm' => __DIR__ . '/..' . '/typerocket/core/src/Models/WPTerm.php',
         'TypeRocket\\Models\\WPTermTaxonomy' => __DIR__ . '/..' . '/typerocket/core/src/Models/WPTermTaxonomy.php',
         'TypeRocket\\Models\\WPUser' => __DIR__ . '/..' . '/typerocket/core/src/Models/WPUser.php',
+        'TypeRocket\\OpenPlugin\\SettingsController' => __DIR__ . '/../..' . '/plugin/SettingsController.php',
+        'TypeRocket\\OpenPlugin\\Updater' => __DIR__ . '/../..' . '/plugin/Updater.php',
         'TypeRocket\\Register\\MetaBox' => __DIR__ . '/..' . '/typerocket/core/src/Register/MetaBox.php',
         'TypeRocket\\Register\\Page' => __DIR__ . '/..' . '/typerocket/core/src/Register/Page.php',
         'TypeRocket\\Register\\PostType' => __DIR__ . '/..' . '/typerocket/core/src/Register/PostType.php',
@@ -1376,6 +1356,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Utility\\Jobs\\Job' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Jobs/Job.php',
         'TypeRocket\\Utility\\Jobs\\Queue' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Jobs/Queue.php',
         'TypeRocket\\Utility\\Manifest' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Manifest.php',
+        'TypeRocket\\Utility\\Media' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Media.php',
         'TypeRocket\\Utility\\ModelField' => __DIR__ . '/..' . '/typerocket/core/src/Utility/ModelField.php',
         'TypeRocket\\Utility\\Nil' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Nil.php',
         'TypeRocket\\Utility\\Path' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Path.php',
@@ -1401,8 +1382,6 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Utility\\Validators\\UrlValidator' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Validators/UrlValidator.php',
         'TypeRocket\\Utility\\Validators\\ValidatorRule' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Validators/ValidatorRule.php',
         'TypeRocket\\Utility\\Value' => __DIR__ . '/..' . '/typerocket/core/src/Utility/Value.php',
-        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
-        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

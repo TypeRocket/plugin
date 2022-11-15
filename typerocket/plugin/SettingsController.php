@@ -1,5 +1,5 @@
 <?php
-namespace TypeRocketPlugin;
+namespace TypeRocket\OpenPlugin;
 
 use TypeRocket\Controllers\Controller;
 use TypeRocket\Template\TemplateEngine;

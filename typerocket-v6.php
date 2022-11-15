@@ -1,18 +1,20 @@
 <?php
 /*
-Plugin Name: TypeRocket - Andromeda
+Plugin Name: TypeRocket - Antennae
 Plugin URI: https://typerocket.com/
 Description: TypeRocket is a framework that joins refined UI elements and modern programming architecture together.
-Version: 5.1.16
+Version: 6.0.0
 Requires at least: 6.1
-Requires PHP: 7.4
+Requires PHP: 8.0.2
 Author: TypeRocket
 Author URI: https://typerocket.com/
 License: GPLv3 or later
 */
+namespace TypeRocket;
+
 defined( 'ABSPATH' ) or die( 'Nothing here to see!' );
 
-final class TypeRocketPlugin
+final class OpenPlugin
 {
     protected $path = null;
     protected $message = '';
@@ -34,7 +36,7 @@ final class TypeRocketPlugin
                 return;
             }
 
-            define('TYPEROCKET_PLUGIN_VERSION', '5.1.16');
+            define('TYPEROCKET_PLUGIN_VERSION', '6.0.0');
             define('TYPEROCKET_PLUGIN_INSTALL', __DIR__);
 
             if(!defined('TYPEROCKET_ROOT_WP'))
@@ -48,9 +50,9 @@ final class TypeRocketPlugin
                     return $value || $host == 'typerocket.com';
                 }, 10, 2);
 
-                new \TypeRocketPlugin\Updater([
-                    'slug' => 'typerocket-v5',
-                    'api_url' => 'https://typerocket.com/plugins/typerocket-v5/'
+                new \TypeRocket\OpenPlugin\Updater([
+                    'slug' => 'typerocket-v6',
+                    'api_url' => 'https://typerocket.com/plugins/typerocket-v6/'
                 ]);
             }
 
@@ -130,7 +132,7 @@ final class TypeRocketPlugin
 
     public function typerocket_loaded()
     {
-        tr_page('settings@TypeRocketPlugin\\SettingsController', 'typerocket', __('TypeRocket Settings'), [
+        tr_page('settings@TypeRocket\\OpenPlugin\\SettingsController', 'typerocket', __('TypeRocket Settings'), [
             'menu' => __('TypeRocket'),
             'capability' => 'activate_plugins'
         ]);
@@ -141,4 +143,4 @@ final class TypeRocketPlugin
     }
 }
 
-new TypeRocketPlugin();
+new OpenPlugin();

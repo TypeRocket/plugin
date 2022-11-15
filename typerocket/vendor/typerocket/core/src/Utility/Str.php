@@ -101,7 +101,7 @@ class Str
      */
     public static function contains($needle, $haystack) : bool
     {
-        return str_contains($haystack, $needle); // ( mb_strpos( (string) $subject, (string) $needle ) !== false );
+        return str_contains((string) $haystack, (string) $needle);
     }
 
     /**
@@ -114,7 +114,11 @@ class Str
      */
     public static function starts($needle, $haystack): bool
     {
-        return str_starts_with($haystack, $needle);
+        if(!$needle) {
+            return true;
+        }
+
+        return str_starts_with((string) $haystack, (string) $needle);
     }
 
     /**
@@ -128,7 +132,7 @@ class Str
      */
     public static function camelize($input, $separator = '_', $capitalize_first_char = true)
     {
-        $str = str_replace($separator, '', ucwords($input, $separator));
+        $str = str_replace($separator, '', ucwords($input ?? '', $separator));
 
         if (!$capitalize_first_char) {
             $str = lcfirst($str);
