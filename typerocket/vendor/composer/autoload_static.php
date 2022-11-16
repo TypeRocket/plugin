@@ -20,7 +20,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
-            'TypeRocket\\OpenPlugin\\' => 22,
+            'TypeRocket\\OpenPlugin6\\' => 23,
             'TypeRocket\\' => 11,
         ),
         'S' => 
@@ -46,7 +46,7 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
     );
 
     public static $prefixDirsPsr4 = array (
-        'TypeRocket\\OpenPlugin\\' => 
+        'TypeRocket\\OpenPlugin6\\' => 
         array (
             0 => __DIR__ . '/../..' . '/plugin',
         ),
@@ -1319,8 +1319,8 @@ class ComposerStaticInit1ea299e54fdefaef41f855b3138bc6c1
         'TypeRocket\\Models\\WPTerm' => __DIR__ . '/..' . '/typerocket/core/src/Models/WPTerm.php',
         'TypeRocket\\Models\\WPTermTaxonomy' => __DIR__ . '/..' . '/typerocket/core/src/Models/WPTermTaxonomy.php',
         'TypeRocket\\Models\\WPUser' => __DIR__ . '/..' . '/typerocket/core/src/Models/WPUser.php',
-        'TypeRocket\\OpenPlugin\\SettingsController' => __DIR__ . '/../..' . '/plugin/SettingsController.php',
-        'TypeRocket\\OpenPlugin\\Updater' => __DIR__ . '/../..' . '/plugin/Updater.php',
+        'TypeRocket\\OpenPlugin6\\SettingsController' => __DIR__ . '/../..' . '/plugin/SettingsController.php',
+        'TypeRocket\\OpenPlugin6\\Updater' => __DIR__ . '/../..' . '/plugin/Updater.php',
         'TypeRocket\\Register\\MetaBox' => __DIR__ . '/..' . '/typerocket/core/src/Register/MetaBox.php',
         'TypeRocket\\Register\\Page' => __DIR__ . '/..' . '/typerocket/core/src/Register/Page.php',
         'TypeRocket\\Register\\PostType' => __DIR__ . '/..' . '/typerocket/core/src/Register/PostType.php',

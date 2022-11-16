@@ -6,7 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'TypeRocket\\OpenPlugin\\' => array($baseDir . '/plugin'),
+    'TypeRocket\\OpenPlugin6\\' => array($baseDir . '/plugin'),
     'TypeRocket\\' => array($vendorDir . '/typerocket/core/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Polyfill\\Intl\\Normalizer\\' => array($vendorDir . '/symfony/polyfill-intl-normalizer'),

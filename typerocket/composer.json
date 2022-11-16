@@ -32,7 +32,7 @@
             "helpers.php"
         ],
         "psr-4": {
-            "TypeRocket\\OpenPlugin\\": "plugin/"
+            "TypeRocket\\OpenPlugin6\\": "plugin/"
         }
     },
     "scripts": {

@@ -3,7 +3,7 @@
         'name' => 'typerocket/typerocket',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'c009fd7bf68bdafac89f9b0f4960d89db3b9bbbc',
+        'reference' => '33638a82fe718d39973ee87bb68f6630affc45bb',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -352,7 +352,7 @@
         'typerocket/typerocket' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'c009fd7bf68bdafac89f9b0f4960d89db3b9bbbc',
+            'reference' => '33638a82fe718d39973ee87bb68f6630affc45bb',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
