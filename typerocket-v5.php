@@ -21,47 +21,51 @@ final class TypeRocketPlugin
 
     public function __construct()
     {
-        add_action('plugins_loaded', function() {
-            if(defined('TYPEROCKET_PLUGIN_INSTALL') || defined('TYPEROCKET_PATH')) {
-                add_filter('plugin_action_links',function ($actions, $plugin_file) {
-                    if( $found = strpos(__FILE__, $plugin_file) ) {
-                        $actions['settings'] = '<span style="color: red">Inactive Install</span>';
-                    }
-
-                    return $actions;
-                }, 10, 2 );
-
-                return;
-            }
-
-            define('TYPEROCKET_PLUGIN_VERSION', '5.1.16');
-            define('TYPEROCKET_PLUGIN_INSTALL', __DIR__);
-
-            if(!defined('TYPEROCKET_ROOT_WP'))
-                define('TYPEROCKET_ROOT_WP', ABSPATH);
-
-            $this->loadConfig();
-            require 'typerocket/init.php';
-
-            if(typerocket_env('TYPEROCKET_UPDATES', true)) {
-                add_filter('http_request_host_is_external', function($value, $host) {
-                    return $value || $host == 'typerocket.com';
-                }, 10, 2);
-
-                new \TypeRocketPlugin\Updater([
-                    'slug' => 'typerocket-v5',
-                    'api_url' => 'https://typerocket.com/plugins/typerocket-v5/'
-                ]);
-            }
-
-            $this->path = plugin_dir_path(__FILE__);
-            define('TYPEROCKET_AUTO_LOADER', '__return_false');
-            add_action('admin_notices',  [$this, 'activation_notice']);
-            add_action('typerocket_loaded', [$this, 'typerocket_loaded']);
-            add_filter('plugin_action_links', [$this, 'links'], 10, 2 );
-        }, 15);
-
+        add_action('plugins_loaded', [$this, 'plugins_loaded'], 15);
         register_activation_hook( __FILE__, [$this, 'activation']);
+    }
+
+    public function plugins_loaded()
+    {
+        if(defined('TYPEROCKET_PLUGIN_INSTALL') || defined('TYPEROCKET_PATH')) {
+            add_filter('plugin_action_links', function($actions, $plugin_file) {
+                if( strpos(__FILE__, $plugin_file) ) {
+                    $actions['settings'] = '<span style="color: red">Inactive Install</span>';
+                }
+
+                return $actions;
+            }, 10, 2 );
+
+            return;
+        }
+
+        define('TYPEROCKET_PLUGIN_VERSION', '5.1.16');
+        define('TYPEROCKET_PLUGIN_INSTALL', __DIR__);
+        define('TYPEROCKET_PLUGIN_PRO', false);
+
+        if(!defined('TYPEROCKET_ROOT_WP')) {
+            define('TYPEROCKET_ROOT_WP', ABSPATH);
+        }
+
+        $this->loadConfig();
+        require 'typerocket/init.php';
+
+        if(typerocket_env('TYPEROCKET_UPDATES', true)) {
+            add_filter('http_request_host_is_external', function($value, $host) {
+                return $value || $host == 'typerocket.com';
+            }, 10, 2);
+
+            new \TypeRocketPlugin\Updater([
+                'slug' => 'typerocket-v5',
+                'api_url' => 'https://typerocket.com/plugins/typerocket-v5/'
+            ]);
+        }
+
+        $this->path = plugin_dir_path(__FILE__);
+        define('TYPEROCKET_AUTO_LOADER', '__return_false');
+        add_action('admin_notices',  [$this, 'activation_notice']);
+        add_action('typerocket_loaded', [$this, 'typerocket_loaded']);
+        add_filter('plugin_action_links', [$this, 'links'], 10, 2 );
     }
 
     public function links($actions, $plugin_file)
