@@ -135,8 +135,9 @@ final class Updater
         if ($remote = $this->getApiJsonResponseBody()) {
 
             $locate = $this->getData('locate');
+            $version = $transient->checked[$locate] ?? null;
 
-            if (!$version = $transient->checked[$locate]) {
+            if (!$version) {
                 return $transient;
             }
 
