@@ -22,7 +22,7 @@
     },
     "require": {
         "php": "^8.0.2",
-        "typerocket/core": "6.0.0-RC1"
+        "typerocket/core": "6.0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"

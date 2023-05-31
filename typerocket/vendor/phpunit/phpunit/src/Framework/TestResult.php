@@ -804,6 +804,7 @@ final class TestResult implements Countable
         }
 
         if ($this->beStrictAboutTestsThatDoNotTestAnything &&
+            !$test->doesNotPerformAssertions() &&
             $test->getNumAssertions() === 0) {
             $risky = true;
         }
@@ -902,7 +903,7 @@ final class TestResult implements Countable
             } catch (ReflectionException $e) {
                 throw new Exception(
                     $e->getMessage(),
-                    (int) $e->getCode(),
+                    $e->getCode(),
                     $e
                 );
             }
@@ -917,7 +918,7 @@ final class TestResult implements Countable
                 } catch (ReflectionException $e) {
                     throw new Exception(
                         $e->getMessage(),
-                        (int) $e->getCode(),
+                        $e->getCode(),
                         $e
                     );
                 }
