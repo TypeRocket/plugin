@@ -144,6 +144,7 @@ class Helper
      * @return string
      */
     public static function appNamespace($append = null) {
+        $append ??= '';
         $space = $append ? "\\" . TYPEROCKET_APP_NAMESPACE . "\\" : TYPEROCKET_APP_NAMESPACE;
         return $space . ltrim($append, '\\');
     }
@@ -160,7 +161,7 @@ class Helper
     }
 
     /**
-     * Instance the From
+     * Instance the Form
      *
      * @param string|Formable|array|null $resource posts, users, comments, options your own
      * @param string|null $action update, delete, or create

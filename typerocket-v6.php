@@ -3,7 +3,7 @@
 Plugin Name: TypeRocket - Antennae
 Plugin URI: https://typerocket.com/
 Description: TypeRocket is a framework that joins refined UI elements and modern programming architecture together.
-Version: 6.0.1
+Version: 6.0.2
 Requires at least: 6.1
 Requires PHP: 8.0.2
 Author: TypeRocket
@@ -41,7 +41,7 @@ final class OpenPlugin6
             return;
         }
 
-        define('TYPEROCKET_PLUGIN_VERSION', '6.0.1');
+        define('TYPEROCKET_PLUGIN_VERSION', '6.0.2');
         define('TYPEROCKET_PLUGIN_INSTALL', __DIR__);
         define('TYPEROCKET_PLUGIN_PRO', false);
 
