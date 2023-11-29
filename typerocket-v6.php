@@ -85,7 +85,7 @@ final class OpenPlugin6
         if( defined('TYPEROCKET_OVERRIDE_PATH') ) {
             $temp_dir = TYPEROCKET_OVERRIDE_PATH;
         } else {
-            $temp_dir = get_template_directory();
+            $temp_dir = get_stylesheet_directory();
         }
 
         // maybe get config from theme
